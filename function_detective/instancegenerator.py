@@ -53,41 +53,41 @@ INTERACTIVE_PASSIVE_EXAMPLES = NUM_TESTS
 ONESHOT_EXAMPLES = 10
 
 MODE_CONFIGS = [
-    {"mode": ACTIVE_IO_MODE, "name_suffix": "query_mode", "max_turns": MAX_TURNS, "baseline_kind": None},
-    {"mode": PASSIVE_IO_MODE, "name_suffix": "example_mode", "max_turns": MAX_TURNS, "baseline_kind": None},
+    {"mode": ACTIVE_IO_MODE, "name_suffix": "active_inputs", "max_turns": MAX_TURNS, "baseline_kind": None},
+    {"mode": PASSIVE_IO_MODE, "name_suffix": "passive_examples", "max_turns": MAX_TURNS, "baseline_kind": None},
     {
         "mode": ACTIVE_MEMBERSHIP_MODE,
-        "name_suffix": "pair_in_set_mode",
+        "name_suffix": "active_pair_checks",
         "max_turns": MAX_TURNS,
         "baseline_kind": None,
     },
     {
         "mode": PASSIVE_MEMBERSHIP_MODE,
-        "name_suffix": "labeled_pairs_mode",
+        "name_suffix": "passive_labeled_pairs",
         "max_turns": MAX_TURNS,
         "baseline_kind": None,
     },
     {
         "mode": PASSIVE_IO_ONESHOT_MODE,
-        "name_suffix": "example_mode_oneshot",
+        "name_suffix": "passive_examples_oneshot",
         "max_turns": 1,
         "baseline_kind": "oneshot",
     },
     {
         "mode": PASSIVE_MEMBERSHIP_ONESHOT_MODE,
-        "name_suffix": "labeled_pairs_mode_oneshot",
+        "name_suffix": "passive_labeled_pairs_oneshot",
         "max_turns": 1,
         "baseline_kind": "oneshot",
     },
 ]
 
 MODE_INSTANCE_FILES = {
-    ACTIVE_IO_MODE: "instance_query_mode",
-    PASSIVE_IO_MODE: "instance_example_mode",
-    ACTIVE_MEMBERSHIP_MODE: "instance_pair_in_set_mode",
-    PASSIVE_MEMBERSHIP_MODE: "instance_labeled_pairs_mode",
-    PASSIVE_IO_ONESHOT_MODE: "instance_example_mode_oneshot",
-    PASSIVE_MEMBERSHIP_ONESHOT_MODE: "instance_labeled_pairs_mode_oneshot",
+    ACTIVE_IO_MODE: "instance_active_inputs",
+    PASSIVE_IO_MODE: "instance_passive_examples",
+    ACTIVE_MEMBERSHIP_MODE: "instance_active_pair_checks",
+    PASSIVE_MEMBERSHIP_MODE: "instance_passive_labeled_pairs",
+    PASSIVE_IO_ONESHOT_MODE: "instance_passive_examples_oneshot",
+    PASSIVE_MEMBERSHIP_ONESHOT_MODE: "instance_passive_labeled_pairs_oneshot",
 }
 
 

@@ -23,7 +23,12 @@ clem run -g function_detective -m <model_name>
 Run single mode into separate results folder:
 
 ```bash
-clem run -g function_detective -m <model_name> -i instance_example_mode -r results_example_mode
+clem run -g function_detective -m <model_name> -i instance_passive_examples -r results_passive_examples
+clem run -g function_detective -m <model_name> -i instance_active_inputs -r results_active_inputs
+clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs -r results_passive_labeled_pairs
+clem run -g function_detective -m <model_name> -i instance_active_pair_checks -r results_active_pair_checks
+clem run -g function_detective -m <model_name> -i instance_passive_examples_oneshot -r results_passive_examples_oneshot
+clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs_oneshot -r results_passive_labeled_pairs_oneshot
 ```
 
 Regenerate instances:

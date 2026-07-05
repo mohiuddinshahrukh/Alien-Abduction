@@ -3,13 +3,13 @@ SOLVE_TAG = "SOLVE:"
 OUTPUT_TAG = "OUTPUT:"
 NEXT_TAG = "NEXT:"
 
-ACTIVE_IO_MODE = "query_mode"
-PASSIVE_IO_MODE = "example_mode"
-ACTIVE_MEMBERSHIP_MODE = "pair_in_set_mode"
-PASSIVE_MEMBERSHIP_MODE = "labeled_pairs_mode"
+ACTIVE_IO_MODE = "active_inputs"
+PASSIVE_IO_MODE = "passive_examples"
+ACTIVE_MEMBERSHIP_MODE = "active_pair_checks"
+PASSIVE_MEMBERSHIP_MODE = "passive_labeled_pairs"
 
-PASSIVE_IO_ONESHOT_MODE = "example_mode_oneshot"
-PASSIVE_MEMBERSHIP_ONESHOT_MODE = "labeled_pairs_mode_oneshot"
+PASSIVE_IO_ONESHOT_MODE = "passive_examples_oneshot"
+PASSIVE_MEMBERSHIP_ONESHOT_MODE = "passive_labeled_pairs_oneshot"
 
 PASSIVE_MODES = {
     PASSIVE_IO_MODE,

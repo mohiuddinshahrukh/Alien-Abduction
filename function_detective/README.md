@@ -1,8 +1,6 @@
-# Alien Abduction
+# Function Detective
 
 Implemented by: Shahrukh Mohiuddin
-
-Internal game id: `function_detective`
 
 In this game a single player probes a hidden Python function through input-output interaction and must infer a functionally equivalent implementation. The player receives the function signature, can test candidate inputs, observes the resulting outputs, and eventually submits Python code as the final solution.
 
@@ -34,19 +32,18 @@ The game package follows the standard Clembench layout:
 - `protocol.py`: interaction tags used in prompts and responses
 - `resources/`: prompt templates and other game assets
 - `in/instances.json`: generated benchmark instances across all modes
-- `in/instance_example_mode.json`: only Example Mode instances
-- `in/instance_query_mode.json`: only Query Mode instances
-- `in/instance_labeled_pairs_mode.json`: only Labeled Pairs Mode instances
-- `in/instance_pair_in_set_mode.json`: only Pair-in-Set Mode instances
-- `in/instance_example_mode_oneshot.json`: only Example Mode One-Shot instances
-- `in/instance_labeled_pairs_mode_oneshot.json`: only Labeled Pairs One-Shot instances
+- `in/instance_passive_examples.json`: only Passive Examples instances
+- `in/instance_active_inputs.json`: only Active Inputs instances
+- `in/instance_passive_labeled_pairs.json`: only Passive Labeled Pairs instances
+- `in/instance_active_pair_checks.json`: only Active Pair Checks instances
+- `in/instance_passive_examples_oneshot.json`: only Passive Examples One-Shot instances
+- `in/instance_passive_labeled_pairs_oneshot.json`: only Passive Labeled Pairs One-Shot instances
 
 ### Running
 
-Generate instances from repository root:
+Generate instances from the game directory:
 
 ```bash
-cd function_detective
 python instancegenerator.py
 ```
 
@@ -59,30 +56,30 @@ clem run -g function_detective -m <model_name>
 Run a single mode by selecting its instance file:
 
 ```bash
-clem run -g function_detective -m <model_name> -i instance_example_mode -r results_example_mode
-clem run -g function_detective -m <model_name> -i instance_query_mode -r results_query_mode
-clem run -g function_detective -m <model_name> -i instance_labeled_pairs_mode -r results_labeled_pairs_mode
-clem run -g function_detective -m <model_name> -i instance_pair_in_set_mode -r results_pair_in_set_mode
-clem run -g function_detective -m <model_name> -i instance_example_mode_oneshot -r results_example_mode_oneshot
-clem run -g function_detective -m <model_name> -i instance_labeled_pairs_mode_oneshot -r results_labeled_pairs_mode_oneshot
+clem run -g function_detective -m <model_name> -i instance_passive_examples -r results_passive_examples
+clem run -g function_detective -m <model_name> -i instance_active_inputs -r results_active_inputs
+clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs -r results_passive_labeled_pairs
+clem run -g function_detective -m <model_name> -i instance_active_pair_checks -r results_active_pair_checks
+clem run -g function_detective -m <model_name> -i instance_passive_examples_oneshot -r results_passive_examples_oneshot
+clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs_oneshot -r results_passive_labeled_pairs_oneshot
 ```
 
 Score the results:
 
 ```bash
-clem score -g function_detective
+clem score function_detective
 ```
 
 ### Results Layout
 
 Results are now typically generated per mode in separate folders, for example:
 
-- `results_example_mode`
-- `results_query_mode`
-- `results_labeled_pairs_mode`
-- `results_pair_in_set_mode`
-- `results_example_mode_oneshot`
-- `results_labeled_pairs_mode_oneshot`
+- `results_passive_examples`
+- `results_active_inputs`
+- `results_passive_labeled_pairs`
+- `results_active_pair_checks`
+- `results_passive_examples_oneshot`
+- `results_passive_labeled_pairs_oneshot`
 
 Within a results folder, the stored run layout is organized by game, then model, then mode:
 

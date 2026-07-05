@@ -133,7 +133,7 @@ def solution(x):
             {
                 METRIC_SUCCESS: True,
                 METRIC_ABORTED: False,
-                "mode": "query_mode",
+                "mode": "active_inputs",
                 "binary_accuracy": 1.0,
                 "efficiency": 0.75,
                 "efficiency_raw": 0.75,
@@ -160,7 +160,7 @@ def solution(x):
             {
                 METRIC_SUCCESS: True,
                 METRIC_ABORTED: False,
-                "mode": "example_mode_oneshot",
+                "mode": "passive_examples_oneshot",
                 "binary_accuracy": 1.0,
                 "efficiency": 0.25,
                 "efficiency_raw": 1.0,
@@ -216,12 +216,12 @@ def solution(x):
 
         game = FunctionDetective.__new__(FunctionDetective)
         game._state = None
-        game.mode = "example_mode_oneshot"
+        game.mode = "passive_examples_oneshot"
         game.state = FunctionDetectiveGameState(
             max_turns=1,
             function_signature="(x: int) -> int",
             function_callable="add_one",
-            mode="example_mode_oneshot",
+            mode="passive_examples_oneshot",
         )
         game.state.test_accuracy = 0.0
         game.state.test_efficiency = 1.0
@@ -245,12 +245,12 @@ def solution(x):
 
         game = FunctionDetective.__new__(FunctionDetective)
         game._state = None
-        game.mode = "query_mode"
+        game.mode = "active_inputs"
         game.state = FunctionDetectiveGameState(
             max_turns=15,
             function_signature="(x: int) -> int",
             function_callable="add_one",
-            mode="query_mode",
+            mode="active_inputs",
         )
         game.state.info_request_count = 4
         game._set_efficiency_metrics()

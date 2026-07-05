@@ -148,7 +148,7 @@ class FunctionDetective(DialogueGameMaster):
     def _build_mode_prompt_config(self) -> Dict[str, str]:
         if self.mode == ACTIVE_IO_MODE:
             return {
-                "mode_name": "Query Mode",
+                "mode_name": "Active Inputs",
                 "mode_description": (
                     "You choose test inputs x, and I return the exact output f(x)."
                 ),
@@ -163,7 +163,7 @@ class FunctionDetective(DialogueGameMaster):
             }
         if self.mode == ACTIVE_MEMBERSHIP_MODE:
             return {
-                "mode_name": "Pair-in-Set Mode",
+                "mode_name": "Active Pair Checks",
                 "mode_description": (
                     "You propose function inputs together with a candidate output, and I tell you whether that pair is correct."
                 ),
@@ -178,7 +178,7 @@ class FunctionDetective(DialogueGameMaster):
             }
         if self.mode == PASSIVE_IO_MODE:
             return {
-                "mode_name": "Example Mode",
+                "mode_name": "Passive Examples",
                 "mode_description": (
                     "I control which valid input-output examples you see. You can request them one at a time."
                 ),
@@ -193,7 +193,7 @@ class FunctionDetective(DialogueGameMaster):
             }
         if self.mode == PASSIVE_MEMBERSHIP_MODE:
             return {
-                "mode_name": "Labeled Pairs Mode",
+                "mode_name": "Passive Labeled Pairs",
                 "mode_description": (
                     "I reveal candidate input-output pairs one at a time and tell you whether each one is correct."
                 ),
@@ -208,7 +208,7 @@ class FunctionDetective(DialogueGameMaster):
             }
         if self.mode == PASSIVE_IO_ONESHOT_MODE:
             return {
-                "mode_name": "Example Mode One-Shot",
+                "mode_name": "Passive Examples One-Shot",
                 "mode_description": (
                     "I have already given you a fixed list of valid input-output examples. Solve using those examples only."
                 ),
@@ -219,7 +219,7 @@ class FunctionDetective(DialogueGameMaster):
                 "preloaded_examples": render_examples_block(self.passive_examples),
             }
         return {
-            "mode_name": "Labeled Pairs One-Shot",
+            "mode_name": "Passive Labeled Pairs One-Shot",
             "mode_description": (
                 "I have already given you a fixed list of candidate input-output pairs with true or false labels. Solve using those statements only."
             ),
