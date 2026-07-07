@@ -22,6 +22,27 @@ Output root:
 /Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/analysis_runs/<analysis_name>/
 ```
 
+Run all modes plus per-model breakdowns:
+
+```bash
+cd /Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction
+./run_analysis_all_macos.command
+```
+
+This writes a hierarchy like:
+
+```text
+/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/analysis_runs/
+  passive_examples/
+    _all_models/
+    gpt-4.1-mini/
+    gpt-4.1-nano/
+  active_inputs/
+    _all_models/
+    gpt-4.1-mini/
+    gpt-4.1-nano/
+```
+
 Main artifacts:
 
 - `episodes.csv`
