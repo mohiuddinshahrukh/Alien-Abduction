@@ -502,10 +502,22 @@ def generate_negative_output(expected: Any, return_type: str, observed_values: O
 
 
 def create_passive_io_examples(static_tests: List[Dict], num_examples: int) -> List[Dict]:
-    examples = []
-    for case in select_informative_cases(static_tests, num_examples):
-        examples.append({"kind": "io", "args": case["args"], "expected": case["expected"]})
-    return examples
+    informative_cases = select_informative_cases(static_tests, num_examples)
+    examples = [
+        {"kind": "io", "args": case["args"], "expected": case["expected"]}
+        for case in informative_cases
+    ]
+
+    if not examples:
+        return []
+
+    # Small finite domains such as boolean logic can exhaust unique valid pairs quickly.
+    # Repeat the informative pool so passive modes still have a stable evidence budget.
+    while len(examples) < num_examples:
+        source = informative_cases[len(examples) % len(informative_cases)]
+        examples.append({"kind": "io", "args": source["args"], "expected": source["expected"]})
+
+    return examples[:num_examples]
 
 
 def create_passive_membership_examples(

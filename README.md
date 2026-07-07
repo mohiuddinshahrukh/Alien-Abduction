@@ -23,12 +23,35 @@ clem run -g function_detective -m <model_name>
 Run single mode into separate results folder:
 
 ```bash
-clem run -g function_detective -m <model_name> -i instance_passive_examples -r results_passive_examples
-clem run -g function_detective -m <model_name> -i instance_active_inputs -r results_active_inputs
-clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs -r results_passive_labeled_pairs
-clem run -g function_detective -m <model_name> -i instance_active_pair_checks -r results_active_pair_checks
-clem run -g function_detective -m <model_name> -i instance_passive_examples_oneshot -r results_passive_examples_oneshot
-clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs_oneshot -r results_passive_labeled_pairs_oneshot
+clem run -g function_detective -m <model_name> -i instance_passive_examples -r results/passive_examples
+clem run -g function_detective -m <model_name> -i instance_active_inputs -r results/active_inputs
+clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs -r results/passive_labeled_pairs
+clem run -g function_detective -m <model_name> -i instance_active_pair_checks -r results/active_pair_checks
+clem run -g function_detective -m <model_name> -i instance_passive_examples_oneshot -r results/passive_examples_oneshot
+clem run -g function_detective -m <model_name> -i instance_passive_labeled_pairs_oneshot -r results/passive_labeled_pairs_oneshot
+```
+
+Run every configured model across every local game and every per-mode instance manifest on macOS:
+
+```bash
+./run_everything_macos.command
+```
+
+This script runs `clem run`, then `clem transcribe`, `clem score`, `clem eval`, and finally the local analysis pipeline for each generated results folder.
+
+Result layout is normalized after each mode run to:
+
+```text
+results/
+  <mode>/
+    results.csv
+    raw.csv
+    results.html
+    <model_name>/
+      run.json
+      <experiment_name>/
+        experiment.json
+        instance_00000/
 ```
 
 Regenerate instances:

@@ -51,6 +51,7 @@ MAX_TURNS = 15
 NUM_TESTS = 100
 INTERACTIVE_PASSIVE_EXAMPLES = NUM_TESTS
 ONESHOT_EXAMPLES = 10
+LOGIC_PASSIVE_EXAMPLES_MIN = 30
 
 MODE_CONFIGS = [
     {"mode": ACTIVE_IO_MODE, "name_suffix": "active_inputs", "max_turns": MAX_TURNS, "baseline_kind": None},
@@ -145,10 +146,16 @@ class FunctionDetectiveInstanceGenerator(GameInstanceGenerator):
                 game_instance["test_cases"] = static_tests
 
                 if mode_config["mode"] in {PASSIVE_IO_MODE, PASSIVE_IO_ONESHOT_MODE}:
-                    count = ONESHOT_EXAMPLES if mode_config["baseline_kind"] == "oneshot" else INTERACTIVE_PASSIVE_EXAMPLES
+                    count = self._passive_example_count(
+                        category=function_data["category"],
+                        baseline_kind=mode_config["baseline_kind"],
+                    )
                     game_instance["passive_examples"] = create_passive_io_examples(static_tests, num_examples=count)
                 elif mode_config["mode"] in {PASSIVE_MEMBERSHIP_MODE, PASSIVE_MEMBERSHIP_ONESHOT_MODE}:
-                    count = ONESHOT_EXAMPLES if mode_config["baseline_kind"] == "oneshot" else INTERACTIVE_PASSIVE_EXAMPLES
+                    count = self._passive_example_count(
+                        category=function_data["category"],
+                        baseline_kind=mode_config["baseline_kind"],
+                    )
                     game_instance["passive_examples"] = create_passive_membership_examples(
                         static_tests=static_tests,
                         return_type=function_data["signature"].split("->")[-1].strip() if "->" in function_data["signature"] else "Any",
@@ -185,6 +192,13 @@ class FunctionDetectiveInstanceGenerator(GameInstanceGenerator):
                 len(experiments),
                 sum(len(experiment["game_instances"]) for experiment in experiments),
             )
+
+    @staticmethod
+    def _passive_example_count(category: str, baseline_kind: str | None) -> int:
+        default_count = ONESHOT_EXAMPLES if baseline_kind == "oneshot" else INTERACTIVE_PASSIVE_EXAMPLES
+        if category == "LOGIC":
+            return max(default_count, LOGIC_PASSIVE_EXAMPLES_MIN)
+        return default_count
 
 
 if __name__ == "__main__":

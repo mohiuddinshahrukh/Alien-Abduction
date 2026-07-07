@@ -17,6 +17,7 @@ from function_detective.protocol import NEXT_TAG
 from function_detective.instancegenerator import (
     FunctionDetectiveInstanceGenerator,
     INTERACTIVE_PASSIVE_EXAMPLES,
+    LOGIC_PASSIVE_EXAMPLES_MIN,
     MAX_TURNS,
     MODE_INSTANCE_FILES,
     NUM_TESTS,
@@ -104,6 +105,12 @@ def solution(x):
         self.assertEqual(len(examples), 3)
         self.assertEqual(examples[0]["kind"], "io")
         self.assertEqual(examples[0]["args"], [0])
+
+    def test_passive_io_examples_repeat_when_unique_pool_is_small(self):
+        examples = create_passive_io_examples(self.static_tests[:2], num_examples=6)
+        self.assertEqual(len(examples), 6)
+        self.assertEqual(examples[0]["args"], examples[2]["args"])
+        self.assertEqual(examples[1]["args"], examples[3]["args"])
 
     def test_passive_membership_examples_include_true_and_false(self):
         examples = create_passive_membership_examples(
@@ -196,6 +203,16 @@ def solution(x):
     def test_interactive_passive_example_budget_is_generous(self):
         self.assertEqual(INTERACTIVE_PASSIVE_EXAMPLES, NUM_TESTS)
         self.assertGreater(INTERACTIVE_PASSIVE_EXAMPLES, MAX_TURNS)
+
+    def test_logic_category_uses_minimum_passive_example_budget(self):
+        self.assertEqual(
+            FunctionDetectiveInstanceGenerator._passive_example_count("LOGIC", None),
+            INTERACTIVE_PASSIVE_EXAMPLES,
+        )
+        self.assertEqual(
+            FunctionDetectiveInstanceGenerator._passive_example_count("LOGIC", "oneshot"),
+            LOGIC_PASSIVE_EXAMPLES_MIN,
+        )
 
     def test_string_static_test_generation_is_large_enough_for_passive_budget(self):
         def append_exclamation(value: str) -> str:
