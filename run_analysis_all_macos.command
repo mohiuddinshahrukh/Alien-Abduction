@@ -17,15 +17,34 @@ if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
   exit 1
 fi
 
-RESULTS_ROOT="${RESULTS_ROOT:-$REPO_ROOT/results}"
+typeset -a MODE_RESULTS
 
-if [[ ! -d "$RESULTS_ROOT" ]]; then
-  echo "Results directory not found: $RESULTS_ROOT" >&2
+for candidate in "$REPO_ROOT"/results_*; do
+  if [[ -d "$candidate" ]]; then
+    MODE_RESULTS+=("$candidate")
+  fi
+done
+
+if [[ "${INCLUDE_COMBINED_RESULTS:-0}" == "1" && -d "$REPO_ROOT/results" ]]; then
+  for candidate in "$REPO_ROOT"/results/*(/); do
+    MODE_RESULTS+=("${candidate%/}")
+  done
+fi
+
+if (( ${#MODE_RESULTS[@]} == 0 )); then
+  echo "No per-mode results folders found under $REPO_ROOT" >&2
   exit 1
 fi
 
-for mode_dir in "$RESULTS_ROOT"/*(/); do
-  mode="$(basename "$mode_dir")"
+MODE_RESULTS=(${(on)MODE_RESULTS})
+
+for mode_dir in "${MODE_RESULTS[@]}"; do
+  base_name="$(basename "$mode_dir")"
+  if [[ "$base_name" == results_* ]]; then
+    mode="${base_name#results_}"
+  else
+    mode="$base_name"
+  fi
 
   echo
   echo "==================================================="
@@ -36,7 +55,12 @@ for mode_dir in "$RESULTS_ROOT"/*(/); do
     --input "$mode_dir" \
     --name "$mode/_all_models"
 
-  for model_dir in "$mode_dir"/*(/); do
+  model_root="$mode_dir"
+  if [[ -d "$mode_dir/function_detective" ]]; then
+    model_root="$mode_dir/function_detective"
+  fi
+
+  for model_dir in "$model_root"/*(/); do
     model="$(basename "$model_dir")"
 
     echo "Analyzing model: $model"

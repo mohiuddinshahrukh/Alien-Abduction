@@ -233,6 +233,7 @@ class FunctionDetective(DialogueGameMaster):
     def _build_initial_prompt(self) -> str:
         prompt = self.experiment["guesser_initial_prompt"]
         config = self._build_mode_prompt_config()
+        prompt_examples = self._build_prompt_examples()
         param_list_str = ", ".join(
             f"{name}: {param_type}" for name, param_type in zip(self.param_names, self.param_types)
         ) if self.param_names else "none"
@@ -256,12 +257,38 @@ class FunctionDetective(DialogueGameMaster):
             "$EXAMPLE_TEST_LINE$": config["example_test_line"],
             "$EXAMPLE_OUTPUT_LINE$": config["example_output_line"],
             "$PRELOADED_EXAMPLES_SECTION$": (
-                "Preloaded examples:\n" + config["preloaded_examples"] if self.mode in ONESHOT_MODES else ""
+                "Preloaded examples:\n" + render_examples_block(prompt_examples) if prompt_examples else ""
             ),
         }
         for placeholder, value in replacements.items():
             prompt = prompt.replace(placeholder, value)
         return prompt
+
+    def _build_prompt_seed_example(self) -> Dict[str, Any] | None:
+        if self.passive_examples:
+            return self.passive_examples[0]
+        if not self.test_cases:
+            return None
+
+        first_case = self.test_cases[0]
+        if self.mode in MEMBERSHIP_MODES:
+            return {
+                "kind": "membership",
+                "args": first_case["args"],
+                "candidate_output": first_case["expected"],
+                "is_member": True,
+            }
+        return {
+            "kind": "io",
+            "args": first_case["args"],
+            "expected": first_case["expected"],
+        }
+
+    def _build_prompt_examples(self) -> List[Dict[str, Any]]:
+        if self.mode in ONESHOT_MODES:
+            return list(self.passive_examples)
+        seed_example = self._build_prompt_seed_example()
+        return [seed_example] if seed_example else []
 
     def _build_active_io_example_input(self) -> str:
         if not self.param_names:
@@ -548,14 +575,18 @@ class FunctionDetective(DialogueGameMaster):
             if example["is_member"]:
                 self._record_positive_observation(example["args"], example["candidate_output"])
 
-    def _seed_prompt_passive_example(self) -> None:
-        if self.mode not in PASSIVE_MODES or self.mode in ONESHOT_MODES or not self.passive_examples:
+    def _seed_prompt_example(self) -> None:
+        if self.mode in ONESHOT_MODES:
             return
 
-        example = self.passive_examples[0]
-        self.state.passive_index = 1
-        self.state.revealed_example_count = 1
-        self.state.revealed_examples.append(example)
+        example = self._build_prompt_seed_example()
+        if not example:
+            return
+
+        if self.mode in PASSIVE_MODES:
+            self.state.passive_index = min(1, len(self.passive_examples))
+            self.state.revealed_example_count = 1
+            self.state.revealed_examples.append(example)
 
         if example["kind"] == "io":
             self._record_positive_observation(example["args"], example["expected"])
@@ -615,7 +646,7 @@ class FunctionDetective(DialogueGameMaster):
             return
 
         self._compute_internal_consistency(guessed_code)
-        self.state.test_accuracy = 1.0 if is_correct else 0.0
+        self.state.test_accuracy = float(_accuracy)
         self._set_efficiency_metrics()
 
         if is_correct:
@@ -657,7 +688,7 @@ class FunctionDetective(DialogueGameMaster):
         )
         self.state.n_test_cases = len(self.test_cases)
         self.state.passive_examples_total = len(self.passive_examples)
-        self._seed_prompt_passive_example()
+        self._seed_prompt_example()
 
         sandbox_ok, sandbox_message = get_sandbox_status()
         if not sandbox_ok:
@@ -761,7 +792,7 @@ class FunctionDetective(DialogueGameMaster):
         self.log_key("efficiency_raw", getattr(self.state, "efficiency_raw", 0.0))
         self.log_key("slack", getattr(self.state, "test_slack", 0.0))
         self.log_key("accuracy", getattr(self.state, "test_accuracy", 0.0))
-        self.log_key("binary_accuracy", getattr(self.state, "test_accuracy", 0.0))
+        self.log_key("binary_accuracy", 1.0 if self.state.success else 0.0)
         self.log_key("tolerance_used", getattr(self.state, "tolerance_used", 0))
         self.log_key("n_test_cases", getattr(self.state, "n_test_cases", len(self.test_cases)))
         self.log_key("parse_error_count", self.state.parse_error_count)
@@ -784,6 +815,7 @@ class FunctionDetectiveScorer(GameScorer):
 
     def compute_episode_scores(self, interactions: Dict):
         binary_success = 1 if interactions.get(METRIC_SUCCESS, False) else 0
+        raw_accuracy = float(interactions.get("accuracy", interactions.get("binary_accuracy", binary_success)))
         binary_accuracy = float(interactions.get("binary_accuracy", binary_success))
         efficiency = float(interactions.get("efficiency", 0.0))
         efficiency_raw = float(interactions.get("efficiency_raw", efficiency))
@@ -797,6 +829,7 @@ class FunctionDetectiveScorer(GameScorer):
         self.log_episode_score(BENCH_SCORE, quality_score)
         self.log_episode_score("quality_score", quality_score)
         self.log_episode_score("binary_success", binary_success)
+        self.log_episode_score("accuracy", raw_accuracy)
         self.log_episode_score("binary_accuracy", binary_accuracy)
         self.log_episode_score("efficiency", efficiency * 100.0)
         self.log_episode_score("efficiency_raw", efficiency_raw)

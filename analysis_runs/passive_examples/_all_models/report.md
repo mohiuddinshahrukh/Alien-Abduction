@@ -1,30 +1,31 @@
 # Function Detective Analysis
 
-- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results/passive_examples`
+- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results_passive_examples`
 - Output folder: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/analysis_runs/passive_examples/_all_models`
-- Models found: Qwen3.6-35B-A3B-FP8, Qwen3.6-35B-A3B-FP8-without-reasoning, gpt-4.1-2025-04-14, gpt-4.1-mini, gpt-4.1-nano
+- Models found: gpt-4.1-mini, gpt-4.1-nano, gpt-5-nano
 - Modes found: passive_examples
 - Domains found: list, logic, numbers, string, two_numbers
 - Test-case counts detected: 2, 4, 100
 
 ## Scoring
 
-- Accuracy = 1 for an exact hidden-function recovery, else 0.
+- Raw accuracy = held-out test accuracy of the submitted solution across evaluation cases.
+- Binary accuracy = 1 for an exact hidden-function recovery, else 0.
 - Interactive efficiency = `(T_total - T_used + 1) / T_total`, clamped to `[0, 1]`.
 - One-shot modes do not use the tolerance term and do not multiply correctness by efficiency.
-- Interactive quality score = `100 * Accuracy * Efficiency`.
-- One-shot quality score = `100 * Accuracy`.
+- Interactive quality score = `100 * Binary Accuracy * Efficiency`.
+- One-shot quality score = `100 * Binary Accuracy`.
 
 ## Auto Findings
 
-- Strongest model overall: `Qwen3.6-35B-A3B-FP8`
-- Strongest domain by correct guesses: `numbers`
-- Weakest domain: `logic`
-- Strongest callable: `abs_diff`
-- Weakest callable: `uppercase_str`
-- Biggest failure reason: `aborted`
-- Average failed-episode observed-pair consistency: `0.000`
-- Failure pattern read: `mostly inconsistent`
+- Strongest model overall: `gpt-5-nano`
+- Strongest domain by correct guesses: `logic`
+- Weakest domain: `list`
+- Strongest callable: `logic_or`
+- Weakest callable: `count_zeros`
+- Biggest failure reason: `wrong_function_guess`
+- Average failed-episode observed-pair consistency: `0.670`
+- Failure pattern read: `mostly locally consistent`
 
 ## Figures
 
@@ -36,6 +37,7 @@
 - [fig_06_failed_zero_accuracy_consistency](figures/fig_06_failed_zero_accuracy_consistency.png)
 - [fig_06b_failed_zero_accuracy_consistency_by_domain](figures/fig_06b_failed_zero_accuracy_consistency_by_domain.png)
 - [fig_07_failed_zero_accuracy_consistency_distribution](figures/fig_07_failed_zero_accuracy_consistency_distribution.png)
+- [fig_08_consistency_vs_failure_reason](figures/fig_08_consistency_vs_failure_reason.png)
 - [fig_09_failure_reason_stacked](figures/fig_09_failure_reason_stacked.png)
 - [fig_10_protocol_violation_bar](figures/fig_10_protocol_violation_bar.png)
 - [fig_11_efficiency_distribution](figures/fig_11_efficiency_distribution.png)

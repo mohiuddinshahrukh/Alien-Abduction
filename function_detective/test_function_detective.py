@@ -131,6 +131,47 @@ def solution(x):
         self.assertIn("1. ", rendered)
         self.assertIn("(0, 0)", rendered)
 
+    def test_active_prompt_includes_real_seed_example(self):
+        if MASTER_IMPORT_ERROR is not None:
+            self.skipTest(f"master.py dependencies unavailable: {MASTER_IMPORT_ERROR}")
+
+        game = FunctionDetective.__new__(FunctionDetective)
+        game.experiment = {"guesser_initial_prompt": "Header\n$PRELOADED_EXAMPLES_SECTION$\nFooter"}
+        game.mode = "active_inputs"
+        game.passive_examples = []
+        game.test_cases = [{"args": [-10], "expected": 10}]
+        game.param_names = ["x"]
+        game.param_types = ["int"]
+        game.return_type = "int"
+        game.num_params = 1
+        game.signature = "(x: int) -> int"
+        game.category = "NUMBERS"
+        game.max_turns = 15
+
+        prompt = game._build_initial_prompt()
+        self.assertIn("Preloaded examples:", prompt)
+        self.assertIn("1. (-10, 10)", prompt)
+
+    def test_seed_prompt_example_populates_active_observations(self):
+        if MASTER_IMPORT_ERROR is not None:
+            self.skipTest(f"master.py dependencies unavailable: {MASTER_IMPORT_ERROR}")
+
+        game = FunctionDetective.__new__(FunctionDetective)
+        game.mode = "active_inputs"
+        game.passive_examples = []
+        game.test_cases = [{"args": [-10], "expected": 10}]
+        game._state = None
+        game.state = FunctionDetectiveGameState(
+            max_turns=15,
+            function_signature="(x: int) -> int",
+            function_callable="absolute_value",
+            mode="active_inputs",
+        )
+
+        game._seed_prompt_example()
+        self.assertEqual(game.state.observed_pairs[0]["args"], [-10])
+        self.assertEqual(game.state.observed_pairs[0]["output"], 10)
+
     def test_quality_score_uses_binary_accuracy_and_interactive_efficiency(self):
         if MASTER_IMPORT_ERROR is not None:
             self.skipTest(f"master.py dependencies unavailable: {MASTER_IMPORT_ERROR}")
@@ -178,6 +219,31 @@ def solution(x):
         episode_scores = scorer.scores["episode scores"]
         self.assertEqual(episode_scores[BENCH_SCORE], 100.0)
         self.assertEqual(episode_scores["quality_score"], 100.0)
+
+    def test_quality_score_uses_binary_accuracy_not_raw_accuracy(self):
+        if MASTER_IMPORT_ERROR is not None:
+            self.skipTest(f"master.py dependencies unavailable: {MASTER_IMPORT_ERROR}")
+
+        scorer = FunctionDetectiveScorer("function_detective", {}, {})
+        scorer.compute_episode_scores(
+            {
+                METRIC_SUCCESS: False,
+                METRIC_ABORTED: False,
+                "mode": "active_inputs",
+                "accuracy": 0.82,
+                "binary_accuracy": 0.0,
+                "efficiency": 0.75,
+                "efficiency_raw": 0.75,
+                "tolerance_used": 1,
+                "n_test_cases": 100,
+            }
+        )
+
+        episode_scores = scorer.scores["episode scores"]
+        self.assertEqual(episode_scores[BENCH_SCORE], 0.0)
+        self.assertEqual(episode_scores["quality_score"], 0.0)
+        self.assertEqual(episode_scores["accuracy"], 0.82)
+        self.assertEqual(episode_scores["binary_accuracy"], 0.0)
 
     def test_detects_sandbox_failure_feedback(self):
         self.assertTrue(

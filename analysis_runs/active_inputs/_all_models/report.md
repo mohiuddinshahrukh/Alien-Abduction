@@ -1,29 +1,30 @@
 # Function Detective Analysis
 
-- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results/active_inputs`
+- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results_active_inputs`
 - Output folder: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/analysis_runs/active_inputs/_all_models`
-- Models found: Qwen3.6-35B-A3B-FP8, Qwen3.6-35B-A3B-FP8-without-reasoning, gpt-4.1-2025-04-14, gpt-4.1-mini, gpt-4.1-nano
+- Models found: gpt-4.1-mini, gpt-4.1-nano, gpt-5-nano
 - Modes found: active_inputs
 - Domains found: list, logic, numbers, string, two_numbers
 - Test-case counts detected: 2, 4, 100
 
 ## Scoring
 
-- Accuracy = 1 for an exact hidden-function recovery, else 0.
+- Raw accuracy = held-out test accuracy of the submitted solution across evaluation cases.
+- Binary accuracy = 1 for an exact hidden-function recovery, else 0.
 - Interactive efficiency = `(T_total - T_used + 1) / T_total`, clamped to `[0, 1]`.
 - One-shot modes do not use the tolerance term and do not multiply correctness by efficiency.
-- Interactive quality score = `100 * Accuracy * Efficiency`.
-- One-shot quality score = `100 * Accuracy`.
+- Interactive quality score = `100 * Binary Accuracy * Efficiency`.
+- One-shot quality score = `100 * Binary Accuracy`.
 
 ## Auto Findings
 
-- Strongest model overall: `gpt-4.1-2025-04-14`
-- Strongest domain by correct guesses: `logic`
-- Weakest domain: `two_numbers`
-- Strongest callable: `logic_and`
-- Weakest callable: `clamp_to_0_9`
-- Biggest failure reason: `protocol_or_format_error`
-- Average failed-episode observed-pair consistency: `0.186`
+- Strongest model overall: `gpt-5-nano`
+- Strongest domain by correct guesses: `string`
+- Weakest domain: `list`
+- Strongest callable: `logic_or`
+- Weakest callable: `abs_diff`
+- Biggest failure reason: `wrong_function_guess`
+- Average failed-episode observed-pair consistency: `0.448`
 - Failure pattern read: `mostly inconsistent`
 
 ## Figures

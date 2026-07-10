@@ -1,6 +1,6 @@
 # Function Detective Analysis
 
-- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results/active_inputs`
+- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results_active_inputs`
 - Output folder: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/analysis_runs/active_inputs/gpt-4.1-nano`
 - Models found: gpt-4.1-nano
 - Modes found: active_inputs
@@ -9,21 +9,22 @@
 
 ## Scoring
 
-- Accuracy = 1 for an exact hidden-function recovery, else 0.
+- Raw accuracy = held-out test accuracy of the submitted solution across evaluation cases.
+- Binary accuracy = 1 for an exact hidden-function recovery, else 0.
 - Interactive efficiency = `(T_total - T_used + 1) / T_total`, clamped to `[0, 1]`.
 - One-shot modes do not use the tolerance term and do not multiply correctness by efficiency.
-- Interactive quality score = `100 * Accuracy * Efficiency`.
-- One-shot quality score = `100 * Accuracy`.
+- Interactive quality score = `100 * Binary Accuracy * Efficiency`.
+- One-shot quality score = `100 * Binary Accuracy`.
 
 ## Auto Findings
 
 - Strongest model overall: `gpt-4.1-nano`
-- Strongest domain by correct guesses: `string`
-- Weakest domain: `list`
+- Strongest domain by correct guesses: `two_numbers`
+- Weakest domain: `logic`
 - Strongest callable: `logic_or`
 - Weakest callable: `abs_diff`
 - Biggest failure reason: `wrong_function_guess`
-- Average failed-episode observed-pair consistency: `0.712`
+- Average failed-episode observed-pair consistency: `0.667`
 - Failure pattern read: `mostly locally consistent`
 
 ## Figures

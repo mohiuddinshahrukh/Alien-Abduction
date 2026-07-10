@@ -1,6 +1,6 @@
 # Function Detective Analysis
 
-- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results/active_pair_checks`
+- Input folder analyzed: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/results_active_pair_checks`
 - Output folder: `/Users/shahrukh/Documents/Shahrukh_Thesis/Alien-Abduction/analysis_runs/active_pair_checks/gpt-4.1-nano`
 - Models found: gpt-4.1-nano
 - Modes found: active_pair_checks
@@ -9,21 +9,22 @@
 
 ## Scoring
 
-- Accuracy = 1 for an exact hidden-function recovery, else 0.
+- Raw accuracy = held-out test accuracy of the submitted solution across evaluation cases.
+- Binary accuracy = 1 for an exact hidden-function recovery, else 0.
 - Interactive efficiency = `(T_total - T_used + 1) / T_total`, clamped to `[0, 1]`.
 - One-shot modes do not use the tolerance term and do not multiply correctness by efficiency.
-- Interactive quality score = `100 * Accuracy * Efficiency`.
-- One-shot quality score = `100 * Accuracy`.
+- Interactive quality score = `100 * Binary Accuracy * Efficiency`.
+- One-shot quality score = `100 * Binary Accuracy`.
 
 ## Auto Findings
 
 - Strongest model overall: `gpt-4.1-nano`
-- Strongest domain by correct guesses: `numbers`
-- Weakest domain: `logic`
+- Strongest domain by correct guesses: `two_numbers`
+- Weakest domain: `list`
 - Strongest callable: `abs_diff`
 - Weakest callable: `uppercase_str`
-- Biggest failure reason: `aborted`
-- Average failed-episode observed-pair consistency: `0.000`
+- Biggest failure reason: `protocol_or_format_error`
+- Average failed-episode observed-pair consistency: `0.269`
 - Failure pattern read: `mostly inconsistent`
 
 ## Figures
@@ -35,6 +36,7 @@
 - [fig_06_failed_zero_accuracy_consistency](figures/fig_06_failed_zero_accuracy_consistency.png)
 - [fig_06b_failed_zero_accuracy_consistency_by_domain](figures/fig_06b_failed_zero_accuracy_consistency_by_domain.png)
 - [fig_07_failed_zero_accuracy_consistency_distribution](figures/fig_07_failed_zero_accuracy_consistency_distribution.png)
+- [fig_08_consistency_vs_failure_reason](figures/fig_08_consistency_vs_failure_reason.png)
 - [fig_09_failure_reason_stacked](figures/fig_09_failure_reason_stacked.png)
 - [fig_10_protocol_violation_bar](figures/fig_10_protocol_violation_bar.png)
 - [fig_11_efficiency_distribution](figures/fig_11_efficiency_distribution.png)

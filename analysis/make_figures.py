@@ -10,7 +10,17 @@ import pandas as pd
 import seaborn as sns
 
 
-sns.set_theme(style="whitegrid", context="talk")
+sns.set_theme(style="whitegrid", context="notebook")
+plt.rcParams.update(
+    {
+        "axes.titlesize": 18,
+        "axes.labelsize": 13,
+        "xtick.labelsize": 10,
+        "ytick.labelsize": 10,
+        "legend.fontsize": 10,
+        "legend.title_fontsize": 11,
+    }
+)
 
 DOMAIN_LABELS = {
     "numbers": "Numbers",
@@ -21,12 +31,12 @@ DOMAIN_LABELS = {
 }
 
 MODE_LABELS = {
-    "passive_examples": "passive_examples",
-    "active_inputs": "active_inputs",
-    "passive_labeled_pairs": "passive_labeled_pairs",
-    "active_pair_checks": "active_pair_checks",
-    "passive_examples_oneshot": "passive_examples_oneshot",
-    "passive_labeled_pairs_oneshot": "passive_labeled_pairs_oneshot",
+    "passive_examples": "Passive Examples",
+    "active_inputs": "Active Inputs",
+    "passive_labeled_pairs": "Passive Labeled Pairs",
+    "active_pair_checks": "Active Pair Checks",
+    "passive_examples_oneshot": "Passive Examples One-Shot",
+    "passive_labeled_pairs_oneshot": "Passive Labeled Pairs One-Shot",
 }
 
 
@@ -53,7 +63,8 @@ def _model_palette(df: pd.DataFrame) -> Dict[str, tuple]:
 
 
 def _save(fig: plt.Figure, figures_dir: Path, name: str) -> None:
-    fig.tight_layout()
+    fig.tight_layout(pad=2.0, w_pad=2.0, h_pad=2.0)
+    fig.subplots_adjust(top=0.90, bottom=0.16, left=0.10, right=0.97)
     fig.savefig(figures_dir / f"{name}.png", dpi=200, bbox_inches="tight")
     fig.savefig(figures_dir / f"{name}.pdf", bbox_inches="tight")
     plt.close(fig)
@@ -64,9 +75,9 @@ def _skip_if_empty(frame: pd.DataFrame) -> bool:
 
 
 def _barplot(data: pd.DataFrame, x: str, y: str, hue: Optional[str], title: str):
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 7))
     sns.barplot(data=data, x=x, y=y, hue=hue, errorbar=None, ax=ax)
-    ax.set_title(title)
+    ax.set_title(title, pad=18)
     return fig
 
 
@@ -81,7 +92,31 @@ def _apply_mode_tick_labels(ax) -> None:
     ticks = ax.get_xticks()
     labels = [_label_mode(tick.get_text()) for tick in ax.get_xticklabels()]
     ax.set_xticks(ticks)
-    ax.set_xticklabels(labels)
+    ax.set_xticklabels(labels, rotation=90, ha="center", va="top", fontsize=10)
+
+
+def _apply_model_tick_labels(ax) -> None:
+    ticks = ax.get_xticks()
+    labels = [tick.get_text() for tick in ax.get_xticklabels()]
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(labels, rotation=18, ha="right", fontsize=10)
+
+
+def _style_axes(ax, x_is_model: bool = False) -> None:
+    ax.tick_params(axis="both", which="major", pad=8)
+    ax.xaxis.labelpad = 10
+    ax.yaxis.labelpad = 10
+    if x_is_model:
+        _apply_model_tick_labels(ax)
+    legend = ax.get_legend()
+    if legend is not None:
+        for text in legend.get_texts():
+            text.set_fontsize(10)
+
+
+def _style_mode_axis(ax) -> None:
+    _apply_mode_tick_labels(ax)
+    ax.tick_params(axis="x", pad=10)
 
 
 def _annotate_bars(ax, fmt: str = "{:.1f}") -> None:
@@ -105,6 +140,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
     model_summary = df.groupby("model", dropna=False, observed=True)["quality_score"].mean().reset_index()
     if len(model_summary) > 1:
         fig = _barplot(model_summary, "model", "quality_score", None, "Average Quality Score by Model")
+        _style_axes(fig.axes[0], x_is_model=True)
         _annotate_bars(fig.axes[0], "{:.1f}")
         _save(fig, figures_dir, "fig_01_model_comparison_bar")
         register("fig_01_model_comparison_bar")
@@ -117,6 +153,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_xlabel("Function Domain")
         ax.set_ylabel("Quality Score")
         _apply_domain_tick_labels(ax)
+        _style_axes(ax)
         _annotate_bars(ax, "{:.1f}")
         _save(fig, figures_dir, "fig_02_domain_comparison_bar")
         register("fig_02_domain_comparison_bar")
@@ -129,6 +166,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_xlabel("Function Domain")
         ax.set_ylabel("Solved Functions")
         _apply_domain_tick_labels(ax)
+        _style_axes(ax)
         _annotate_bars(ax, "{:.0f}")
         _save(fig, figures_dir, "fig_03_success_rate_by_domain")
         register("fig_03_success_rate_by_domain")
@@ -169,6 +207,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_title("Correct Guesses Heatmap")
         ax.set_xlabel("Function Domain")
         ax.set_ylabel("Mode" if df["mode"].nunique() > 1 else "Model")
+        _style_axes(ax)
         _save(fig, figures_dir, "fig_05_pass_rate_heatmap")
         register("fig_05_pass_rate_heatmap")
 
@@ -195,8 +234,9 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
             _apply_domain_tick_labels(ax)
         elif consistency_group == "mode":
             ax.set_xlabel("Mode")
-            _apply_mode_tick_labels(ax)
+            _style_mode_axis(ax)
         ax.set_ylabel("Observed-Pair Consistency")
+        _style_axes(ax)
         _annotate_bars(ax, "{:.2f}")
         _save(fig, figures_dir, "fig_06_failed_zero_accuracy_consistency")
         register("fig_06_failed_zero_accuracy_consistency")
@@ -235,6 +275,9 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_ylabel("Observed-Pair Consistency")
         if x_axis == "domain":
             _apply_domain_tick_labels(ax)
+        else:
+            _style_mode_axis(ax)
+        _style_axes(ax)
         _save(fig, figures_dir, "fig_07_failed_zero_accuracy_consistency_distribution")
         register("fig_07_failed_zero_accuracy_consistency_distribution")
 
@@ -267,6 +310,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_ylabel("Episodes")
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, [_humanize(label) for label in labels], title="")
+        _style_axes(ax, x_is_model=True)
         _save(fig, figures_dir, "fig_09_failure_reason_stacked")
         register("fig_09_failure_reason_stacked")
 
@@ -290,7 +334,8 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         if x_axis == "domain":
             _apply_domain_tick_labels(ax)
         elif x_axis == "mode":
-            _apply_mode_tick_labels(ax)
+            _style_mode_axis(ax)
+        _style_axes(ax)
         _annotate_bars(ax, "{:.1f}")
         _save(fig, figures_dir, "fig_10_protocol_violation_bar")
         register("fig_10_protocol_violation_bar")
@@ -307,6 +352,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_ylabel("Efficiency")
         if x_axis == "domain":
             _apply_domain_tick_labels(ax)
+        _style_axes(ax, x_is_model=(x_axis == "model"))
         _save(fig, figures_dir, "fig_11_efficiency_distribution")
         register("fig_11_efficiency_distribution")
 
@@ -387,6 +433,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_xlabel("Function Domain")
         ax.set_ylabel("Budget Used Ratio")
         _apply_domain_tick_labels(ax)
+        _style_axes(ax)
         _annotate_bars(ax, "{:.2f}")
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, [_label_outcome(label) for label in labels], title="")
@@ -407,6 +454,7 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
         ax.set_xlabel("Function Domain")
         ax.set_ylabel("Average Guess Turn")
         _apply_domain_tick_labels(ax)
+        _style_axes(ax)
         _annotate_bars(ax, "{:.1f}")
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, [_label_outcome(label) for label in labels], title="")
@@ -436,6 +484,9 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
             ax.set_title("Correct Guesses by Mode Family")
             ax.set_xlabel("Mode Family")
             ax.set_ylabel("Solved Functions")
+            ax.set_xticks(ax.get_xticks())
+            ax.set_xticklabels([_humanize(tick.get_text()) for tick in ax.get_xticklabels()], rotation=0)
+            _style_axes(ax)
             _save(fig, figures_dir, "fig_15_active_passive_delta")
             register("fig_15_active_passive_delta")
 
@@ -445,6 +496,9 @@ def make_figures(df: pd.DataFrame, output_dir: Path) -> Dict[str, Path]:
             sns.barplot(data=oneshot_delta, x="mode_family", y="internal_consistency_score", hue=hue, palette=palette if hue else None, errorbar=None, ax=ax)
             ax.set_ylim(0, 1)
             ax.set_title("Interactive vs One-Shot Consistency")
+            ax.set_xticks(ax.get_xticks())
+            ax.set_xticklabels([_humanize(tick.get_text()) for tick in ax.get_xticklabels()], rotation=0)
+            _style_axes(ax)
             _save(fig, figures_dir, "fig_16_oneshot_interactive_delta")
             register("fig_16_oneshot_interactive_delta")
 
