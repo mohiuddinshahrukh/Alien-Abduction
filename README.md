@@ -20,6 +20,13 @@ Run from repository root after setting up Clembench environment:
 clem run -g function_detective -m <model_name>
 ```
 
+Before running, build local sandbox image used for isolated function validation:
+
+```bash
+cd Alien-Abduction
+docker build -t functionigma-sandbox sandbox_runner
+```
+
 Run single mode into separate results folder:
 
 ```bash
