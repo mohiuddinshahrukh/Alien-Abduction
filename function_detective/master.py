@@ -1,4 +1,5 @@
 import importlib.util
+import re
 import inspect
 import json
 import logging
@@ -11,6 +12,7 @@ from clemcore.backends import Model
 from clemcore.clemgame import DialogueGameMaster, GameBenchmark, GameError, GameMaster, GameScorer, GameSpec, ParseError, Player
 from clemcore.clemgame.master import GameState
 from clemcore.clemgame.metrics import BENCH_SCORE, METRIC_ABORTED, METRIC_LOSE, METRIC_SUCCESS
+
 
 try:
     from protocol import (
@@ -139,7 +141,6 @@ class FunctionGuesser(Player):
             sanitized.append(str(message.content) if hasattr(message, "content") else str(message))
         return " ".join(sanitized)
 
-
 class FunctionDetective(DialogueGameMaster):
     def __init__(self, game_spec: GameSpec, experiment: Dict, player_models: List[Model]):
         super().__init__(game_spec, experiment, player_models)
@@ -152,10 +153,12 @@ class FunctionDetective(DialogueGameMaster):
                 "mode_description": (
                     "You choose test inputs x, and I return the exact output f(x)."
                 ),
-                "action_choices": f"- {TEST_TAG} <inputs>\n- {SOLVE_TAG} ```python ... ```",
+                #"action_choices": f"- {TEST_TAG} <inputs>\n- {SOLVE_TAG} ```python ... ```",
+                "action_choices": f"- JSON format described at the end of the prompt\n- {SOLVE_TAG} ```python ... ```",
                 "probe_guide": (
-                    f"To request function values, write exactly one line: `{TEST_TAG} <inputs>`.\n"
-                    "Provide one value per function argument, in signature order."
+                    #f"To request function values, write exactly one line: `{TEST_TAG} <inputs>`.\n"
+                    f"To request function values, respond with the JSON format.\n"
+                    #"Provide one value per function argument, in signature order."
                 ),
                 "example_test_line": f"{TEST_TAG} {self._build_active_io_example_input()}",
                 "example_output_line": f"{OUTPUT_TAG} {self._build_active_io_example_output()}",
@@ -167,10 +170,11 @@ class FunctionDetective(DialogueGameMaster):
                 "mode_description": (
                     "You propose function inputs together with a candidate output, and I tell you whether that pair is correct."
                 ),
-                "action_choices": f"- {TEST_TAG} <inputs>, <candidate_output>\n- {SOLVE_TAG} ```python ... ```",
+                #"action_choices": f"- {TEST_TAG} <inputs>, <candidate_output>\n- {SOLVE_TAG} ```python ... ```",
+                "action_choices": f"- JSON format described at the end of the prompt\n- {SOLVE_TAG} ```python ... ```",
                 "probe_guide": (
-                    f"To query graph membership, write exactly one line: `{TEST_TAG} <input1>, ..., <candidate_output>`.\n"
-                    "The last value is the candidate function output; the reply is True iff it matches the hidden function."
+                    #f"To query graph membership, write exactly one line: `{TEST_TAG} <input1>, ..., <candidate_output>`.\n"
+                    "To request function values, respond with the JSON format.\nthe reply is True iff the predicted_output matches the hidden function."
                 ),
                 "example_test_line": f"{TEST_TAG} {self._build_active_membership_example_input()}",
                 "example_output_line": f"{OUTPUT_TAG} True",
@@ -182,9 +186,11 @@ class FunctionDetective(DialogueGameMaster):
                 "mode_description": (
                     "I control which valid input-output examples you see. You can request them one at a time."
                 ),
-                "action_choices": f"- {NEXT_TAG}\n- {SOLVE_TAG} ```python ... ```",
+                #"action_choices": f"- {NEXT_TAG}\n- {SOLVE_TAG} ```python ... ```",
+                "action_choices": f"- JSON format described at the end of the prompt\n- {SOLVE_TAG} ```python ... ```",                
                 "probe_guide": (
-                    f"To receive the next valid example, write exactly `{NEXT_TAG}`.\n"
+                    #f"To receive the next valid example, write exactly `{NEXT_TAG}`.\n"
+                    f"To receive the next valid example, respond with the JSON format.\n"
                     "Each reply is a valid pair (x, f(x))."
                 ),
                 "example_test_line": NEXT_TAG,
@@ -197,9 +203,11 @@ class FunctionDetective(DialogueGameMaster):
                 "mode_description": (
                     "I reveal candidate input-output pairs one at a time and tell you whether each one is correct."
                 ),
-                "action_choices": f"- {NEXT_TAG}\n- {SOLVE_TAG} ```python ... ```",
+                #"action_choices": f"- {NEXT_TAG}\n- {SOLVE_TAG} ```python ... ```",
+                "action_choices": f"- JSON format described at the end of the prompt\n- {SOLVE_TAG} ```python ... ```",
                 "probe_guide": (
-                    f"To receive the next graph-membership statement, write exactly `{NEXT_TAG}`.\n"
+                    #f"To receive the next graph-membership statement, write exactly `{NEXT_TAG}`.\n"
+                    f"To receive the next valid example, respond with the JSON format.\n"
                     "Each reply has the form ((x, y), True/False)."
                 ),
                 "example_test_line": NEXT_TAG,
@@ -212,10 +220,13 @@ class FunctionDetective(DialogueGameMaster):
                 "mode_description": (
                     "I have already given you a fixed list of valid input-output examples. Solve using those examples only."
                 ),
-                "action_choices": f"- {SOLVE_TAG} ```python ... ```",
+                #"action_choices": f"- {SOLVE_TAG} ```python ... ```",
+                "action_choices": f"- JSON format described at the end of the prompt\n",
                 "probe_guide": "No further example requests are allowed in this one-shot baseline.",
-                "example_test_line": SOLVE_TAG + " ```python",
-                "example_output_line": "def solution(...):\n    ...\n```",
+                #"example_test_line": SOLVE_TAG + " ```python",
+                "example_test_line": "JSON output format described at the end of the prompt",
+                #"example_output_line": "def solution(...):\n    ...\n```",
+                "example_output_line": "",
                 "preloaded_examples": render_examples_block(self.passive_examples),
             }
         return {
@@ -223,10 +234,13 @@ class FunctionDetective(DialogueGameMaster):
             "mode_description": (
                 "I have already given you a fixed list of candidate input-output pairs with true or false labels. Solve using those statements only."
             ),
-            "action_choices": f"- {SOLVE_TAG} ```python ... ```",
+            #"action_choices": f"- {SOLVE_TAG} ```python ... ```",
+            "action_choices": f"- JSON format described at the end of the prompt\n",
             "probe_guide": "No further example requests are allowed in this one-shot baseline.",
-            "example_test_line": SOLVE_TAG + " ```python",
-            "example_output_line": "def solution(...):\n    ...\n```",
+            #"example_test_line": SOLVE_TAG + " ```python",
+            "example_test_line": "JSON output format described at the end of the prompt",            
+            #"example_output_line": "def solution(...):\n    ...\n```",
+            "example_output_line": "",
             "preloaded_examples": render_examples_block(self.passive_examples),
         }
 
@@ -262,6 +276,8 @@ class FunctionDetective(DialogueGameMaster):
         }
         for placeholder, value in replacements.items():
             prompt = prompt.replace(placeholder, value)
+        
+        logger.error(f"Initial prompt built:\n{prompt}")
         return prompt
 
     def _build_prompt_seed_example(self) -> Dict[str, Any] | None:
@@ -446,14 +462,17 @@ class FunctionDetective(DialogueGameMaster):
         self.log_key("internal_consistency_violations", self.state.internal_consistency_violations)
 
     def _log_probe_result(self) -> None:
+        gm_output = format_value(self.state.probe_output)
         self.log_to_self(
             "probe_result",
             (
                 f"Round: {self.state.probe_round}\n"
                 f"Inputs: {format_input_object(self.state.probe_args)}\n"
-                f"Output: {format_value(self.state.probe_output)}"
+                f"Output: {gm_output}#{format_value(self.state.probe_output)}"
             ),
         )
+        self.gamedata[-1]["gm_output"] = gm_output
+        self.gamedata[-1]["gm_output_label"] = True
 
     def _log_episode_summary(self) -> None:
         lines = [f"Mode: {self.mode}", f"Accuracy: {self.state.test_accuracy:.3f}"]
@@ -489,10 +508,13 @@ class FunctionDetective(DialogueGameMaster):
 
     def _format_parse_error_instructions(self) -> str:
         if self.mode in ONESHOT_MODES:
-            return f"Output ONLY:\n{SOLVE_TAG} ```python ... ```"
+            #return f"Output ONLY:\n{SOLVE_TAG} ```python ... ```"
+            return f"Output ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\n"            
         if self.mode in PASSIVE_MODES:
-            return f"Output ONLY:\n{NEXT_TAG}\nOR\n{SOLVE_TAG} ```python ... ```"
-        return f"Output ONLY:\n{TEST_TAG} ...\nOR\n{SOLVE_TAG} ```python ... ```"
+            #return f"Output ONLY:\n{NEXT_TAG}\nOR\n{SOLVE_TAG} ```python ... ```"
+            return f"Output ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\n{SOLVE_TAG} ```python ... ```"
+        #return f"Output ONLY:\n{TEST_TAG} ...\nOR\n{SOLVE_TAG} ```python ... ```"
+        return f"Output ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\n{SOLVE_TAG} ```python ... ```"
 
     def _clean_source_for_reveal(self, func) -> str:
         try:
@@ -568,12 +590,20 @@ class FunctionDetective(DialogueGameMaster):
         self.state.revealed_examples.append(example)
         self.set_context_for(self.guesser_player, f"{OUTPUT_TAG} {self._render_passive_example(example)}")
 
+        self.gamedata[-1]["input"] = example["args"]
         if example["kind"] == "io":
+            self.gamedata[-1]["gm_output"] = example["expected"]
+            self.gamedata[-1]["gm_output_label"] = True
+
             self._record_positive_observation(example["args"], example["expected"])
         else:
             self._record_membership_balance(example["is_member"])
             if example["is_member"]:
                 self._record_positive_observation(example["args"], example["candidate_output"])
+
+            self.gamedata[-1]["gm_output"] = example["candidate_output"]
+            self.gamedata[-1]["gm_output_label"] = example["is_member"]
+            
 
     def _seed_prompt_example(self) -> None:
         if self.mode in ONESHOT_MODES:
@@ -615,6 +645,7 @@ class FunctionDetective(DialogueGameMaster):
         args, candidate_output = parse_membership_probe(input_line[len(TEST_TAG):].strip(), self.num_params)
         try:
             actual_output = func(*args)
+            self.gamedata[-1]["gm_output"] = actual_output
         except Exception as exc:
             self.state.runtime_error_count += 1
             self.set_context_for(self.guesser_player, f"Error executing function: {exc}")
@@ -623,6 +654,9 @@ class FunctionDetective(DialogueGameMaster):
         self._record_membership_balance(is_member)
         if is_member:
             self._record_positive_observation(args, candidate_output)
+            self.gamedata[-1]["gm_output_label"] = True
+        else:
+            self.gamedata[-1]["gm_output_label"] = False
         self.set_context_for(self.guesser_player, f"{OUTPUT_TAG} {is_member}")
 
     def _handle_solve_action(self, guessed_code: str) -> None:
@@ -675,6 +709,8 @@ class FunctionDetective(DialogueGameMaster):
         self.param_names, self.param_types, self.return_type = parse_signature_with_types(self.signature)
         self.num_params = len(self.param_names)
         self.category = game_instance.get("category", "MATH")
+        self.gamedata = []
+
         prompt = self._build_initial_prompt()
         self.guesser_player = FunctionGuesser(self.player_models[0])
         self.add_player(self.guesser_player, initial_context=prompt)
@@ -705,6 +741,63 @@ class FunctionDetective(DialogueGameMaster):
 
     def _parse_response(self, player: Player, response: str) -> Tuple[str, Any]:
         response_str = str(response).strip()
+        logger.info(f"Parsing response: {response_str}")
+        #"""
+
+        #cleanup json
+        response_json_str = re.sub(r'```json(.*?)```', r'\1', response_str, flags=re.DOTALL).strip()
+        response_json_str = re.sub(r'```(.*?)```', r'\1', response_json_str, flags=re.DOTALL).strip()
+        response_json_Str = re.sub(r'```', '', response_json_str).strip()
+
+        try:
+            response_json = json.loads(response_json_Str)
+
+            input_test = response_json.get("input")
+            output_prediction = response_json.get("predicted_output")
+            #logger.info(f"Parsed JSON: input={input_test}, predicted_output={output_prediction}")
+            confidence_score = response_json.get("confidence_score")
+            current_mode = response_json.get("current_mode")
+            input_rationale = response_json.get("input_rationale", "")
+            func_hypothesis = response_json.get("hypothesis", "")
+            logger.info(f"Parsed JSON: input={input_test}, predicted_output={output_prediction}, confidence_score={confidence_score}, current_mode={current_mode}")
+            self.gamedata.append({"current_round": self.current_round, "input": input_test, "predicted_output": output_prediction, "confidence_score": confidence_score, "current_mode": current_mode, "input_rationale": input_rationale, "hypothesis": func_hypothesis})
+
+            parsed_input = input_test if type(input_test) is not str else repr(input_test)
+            if self.mode == ACTIVE_IO_MODE:
+                return "test", {"input_line": f'TEST: {parsed_input}'}
+            elif self.mode == ACTIVE_MEMBERSHIP_MODE:
+                return "test", {"input_line": f'TEST: {parsed_input}, {repr(output_prediction)}'}
+            elif self.mode in [PASSIVE_IO_ONESHOT_MODE, PASSIVE_MEMBERSHIP_ONESHOT_MODE]:
+                logger.info(f"Received hypothesis:\n{func_hypothesis}")
+                extracted_code = extract_function_code(f"```python\n{func_hypothesis}\n```")
+                if not extracted_code:
+                    logger.error("8.ParseError raised during input parsing.")
+                    raise ParseError(f"{SOLVE_TAG} must contain a markdown code block (```python ... ```).")
+
+                return "solve", extracted_code 
+            elif self.mode in [PASSIVE_IO_MODE, PASSIVE_MEMBERSHIP_MODE]:
+                return "next", None               
+
+        except json.JSONDecodeError:
+            if response_str.startswith(SOLVE_TAG):
+                lines = response_str.splitlines()
+                forbidden_tags = [TEST_TAG, NEXT_TAG] if self.mode not in ONESHOT_MODES else [TEST_TAG, NEXT_TAG]
+                if any(any(line.strip().startswith(tag) for tag in forbidden_tags) for line in lines[1:]):
+                    logger.error("ParseError in solution parsng: Only one action per turn.")
+                    raise ParseError("Only one action per turn.")
+                extracted_code = extract_function_code(response_str)
+                if not extracted_code:
+                    logger.error("ParseError in solution parsing: No code block found in the solution.")
+                    raise ParseError(f"{SOLVE_TAG} must contain a markdown code block (```python ... ```).")
+
+                return "solve", extracted_code
+            else:
+                logger.error(f"Failed to parse JSON from response: {response_json_Str}")
+                self.gamedata.append({"current_round": self.current_round, "input": "parser_error", "predicted_output": "parser_error", "confidence_score": "parser_error", "current_mode": "parser_error", "mode_rationale": "parser_error", "hypothesis": "parser_error", "gm_output": "parser_error"})
+                raise ParseError("Response is not valid JSON.")
+
+
+        """
         if response_str.startswith(SOLVE_TAG):
             lines = response_str.splitlines()
             forbidden_tags = [TEST_TAG, NEXT_TAG] if self.mode not in ONESHOT_MODES else [TEST_TAG, NEXT_TAG]
@@ -748,8 +841,9 @@ class FunctionDetective(DialogueGameMaster):
             return "test", {"input_line": input_line}
 
         raise ParseError("Invalid format for the current mode.")
-
+        """
     def _advance_game(self, player: Player, parsed_response: Tuple[str, Any]):
+        logger.info(f"Advancing game with parsed response: {parsed_response}")
         action_type, content = parsed_response
         if action_type == "next":
             self._reveal_next_passive_example()
@@ -772,6 +866,7 @@ class FunctionDetective(DialogueGameMaster):
     def _does_game_proceed(self):
         if self.current_round >= self.max_turns:
             return False
+        
         return not (self.state.aborted or self.state.failure or self.state.success)
 
     def compute_turn_score(self):
@@ -801,6 +896,7 @@ class FunctionDetective(DialogueGameMaster):
         self.log_key("max_turns", self.state.max_turns)
         self.log_key("observed_pairs", self.state.observed_pairs)
         self.log_key("revealed_examples", self.state.revealed_examples)
+        self.log_key("evaldata", self.gamedata)
         self._log_probe_summary()
 
 

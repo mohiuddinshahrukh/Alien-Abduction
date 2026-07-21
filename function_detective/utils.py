@@ -6,7 +6,11 @@ import re
 import string
 import subprocess
 from typing import Any, Callable, Dict, List, Optional, Tuple, get_args, get_origin
+import logging
 
+from tomlkit import value
+
+logger = logging.getLogger(__name__)
 
 SANDBOX_IMAGE = "functionigma-sandbox"
 _SANDBOX_STATUS_CACHE: Optional[Tuple[bool, str]] = None
@@ -351,11 +355,15 @@ def type_matches_annotation(value: Any, expected: str) -> bool:
 
 
 def parse_active_io_probe(raw: str, num_params: int) -> Tuple[Any, ...]:
+    #logger.info(f"Parsing active I/O probe: raw='{raw}', num_params={num_params}")
     payload = raw.strip()
     if num_params == 0:
         return tuple()
     tuple_text = f"({payload})" if num_params > 1 else payload
-    parsed = ast.literal_eval(tuple_text)
+    #logger.info(f"Tuple text for parsing: '{tuple_text}', {type(tuple_text)}'")
+    #logger.info(repr(tuple_text))
+    #print(ast.literal_eval(tuple_text))    
+    parsed = ast.literal_eval(str(tuple_text))
     if num_params == 1:
         return (parsed,)
     if isinstance(parsed, tuple):
@@ -371,6 +379,11 @@ def parse_membership_probe(raw: str, num_params: int) -> Tuple[List[Any], Any]:
     if not isinstance(parsed, tuple):
         raise ValueError("Membership probe must parse to a tuple.")
     if len(parsed) != num_params + 1:
+        #Check if the input is an iterable of inputs followed by a candidate output
+        if len(parsed) == 2 and isinstance(parsed[0], (list, tuple)):
+            inputs, candidate_output = parsed
+            if len(inputs) == num_params:
+                return list(inputs), candidate_output
         raise ValueError("Membership probe must contain function inputs followed by a candidate output.")
     values = list(parsed)
     return values[:-1], values[-1]
