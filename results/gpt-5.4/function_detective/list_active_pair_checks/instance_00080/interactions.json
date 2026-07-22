@@ -1,0 +1,758 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_active_pair_checks",
+    "game_id": 80,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:41:58.790440",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:41:58.790519",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,4],\"predicted_output\":7,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the common hypothesis that the function is a simple aggregate like sum; this input separates sum (7) from product (8), max (4), len (3), etc.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the sum of the integers in the list.\\\"\\\"\\\"\\n    return sum(items)\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:42:16.502786",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:42:16.502836",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,4],\"predicted_output\":8,\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether the function is product-like, including full product or maximum pairwise product, both common list-to-int tasks.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the product of all integers in the list.\\\"\\\"\\\"\\n    p = 1\\n    for x in items:\\n        p *= x\\n    return p\",\"confidence_score\":22}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:42:25.478355",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:42:25.478571",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,4],\"predicted_output\":3,\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function returns a gap/range-like quantity such as max(items)-min(items), which is a common list-to-int transformation and fits this input cleanly.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the difference between the maximum and minimum elements.\\\"\\\"\\\"\\n    return max(items) - min(items)\",\"confidence_score\":17}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:42:27.966734",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:42:27.966792",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Distinguishes max-min from length and many counting functions: for a single-element list, range is 0 while len is 1 and sum/product are 5.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the difference between the maximum and minimum elements.\\\"\\\"\\\"\\n    return max(items) - min(items)\",\"confidence_score\":41}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:42:30.760486",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:42:30.760528",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2,2,2],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether duplicates collapse output to zero as range does; helps distinguish range from functions like unique-count (1), sum of differences (0 too), or max pairwise distance by indices.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the difference between the maximum and minimum elements.\\\"\\\"\\\"\\n    return max(items) - min(items)\",\"confidence_score\":56}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:42:36.063738",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:42:36.063792",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[3,2,1],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Current hypothesis is that the function counts index pairs (i<j) with items[i] <= items[j]. This input cleanly distinguishes increasing/non-decreasing pair counts from inversion-like counts and range-like formulas.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Counts pairs of indices i<j such that items[i] <= items[j].\\\"\\\"\\\"\\n    total = 0\\n    n = len(items)\\n    for i in range(n):\\n        for j in range(i + 1, n):\\n            if items[i] <= items[j]:\\n                total += 1\\n    return total\",\"confidence_score\":48}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:42:44.226775",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:42:44.226833",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2,2,2],\"predicted_output\":3,\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function counts index pairs among equal values, e.g. number of pairs i<j with items[i] == items[j] or with items[i] <= items[j]. This is a natural alternative after range-like behavior was falsified.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of index pairs i<j whose values are equal.\\\"\\\"\\\"\\n    total = 0\\n    n = len(items)\\n    for i in range(n):\\n        for j in range(i + 1, n):\\n            if items[i] == items[j]:\\n                total += 1\\n    return total\",\"confidence_score\":24}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:42:51.846946",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:42:51.846993",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2,2,2],\"predicted_output\":2,\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function might be based on adjacent relationships, such as counting adjacent equal pairs or the number of duplicate occurrences beyond the first. This targets the previously observed contradiction on all-equal input.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of adjacent equal pairs in the list.\\\"\\\"\\\"\\n    total = 0\\n    for i in range(len(items) - 1):\\n        if items[i] == items[i + 1]:\\n            total += 1\\n    return total\",\"confidence_score\":14}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:43:33.053679",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:43:33.053760",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,3,4],\"predicted_output\":9,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the hypothesis that the function counts arithmetic subsequences of length at least 2. For [1,2,3,4], there are 6 pairs, 2 arithmetic triples ([1,2,3], [2,3,4]), and 1 arithmetic quadruple, totaling 9. Competing hypotheses like contiguous arithmetic subarrays or monotone subsequences give different values.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Counts arithmetic subsequences of length at least 2.\\\"\\\"\\\"\\n    n = len(items)\\n    total = 0\\n    for mask in range(1 << n):\\n        seq = []\\n        for i in range(n):\\n            if mask >> i & 1:\\n                seq.append(items[i])\\n        if len(seq) >= 2:\\n            d = seq[1] - seq[0]\\n            ok = True\\n            for i in range(2, len(seq)):\\n                if seq[i] - seq[i - 1] != d:\\n                    ok = False\\n                    break\\n            if ok:\\n                total += 1\\n    return total\",\"confidence_score\":62}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:44:05.538098",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:44:05.538172",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,1,2,3],\"predicted_output\":3,\"current_mode\":\"probing\",\"input_rationale\":\"Distinguishes several plausible pairwise-distinct-value hypotheses. For this input, the number of distinct absolute differences is 3 ({0,1,2}), while distinct pair sums/products are 4 and distinct gcds are 1.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of distinct absolute differences |items[i]-items[j]| over all index pairs i<j.\\\"\\\"\\\"\\n    seen = set()\\n    for i in range(len(items)):\\n        for j in range(i + 1, len(items)):\\n            seen.add(abs(items[i] - items[j]))\\n    return len(seen)\",\"confidence_score\":58}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:44:39.813648",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:44:39.813726",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,4,6],\"predicted_output\":6,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the hypothesis that the function counts contiguous subarrays with even sum. For this input, that count is 6, while several nearby alternatives such as counting even-sum subsequences give 7.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of contiguous subarrays whose sum is even.\\\"\\\"\\\"\\n    even = 1\\n    odd = 0\\n    s = 0\\n    total = 0\\n    for x in items:\\n        s += x\\n        if s % 2 == 0:\\n            total += even\\n            even += 1\\n        else:\\n            total += odd\\n            odd += 1\\n    return total\",\"confidence_score\":74}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:45:50.739122",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:45:50.739216",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,1,2],\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"This strongly tests whether the function counts distinct bitwise-OR values of contiguous subarrays of length at least 2. On this input, every such subarray has OR = 3, so the count would be 1, while many competing pair-based distinct-value hypotheses give 2 or 3.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of distinct bitwise-OR values among contiguous subarrays of length at least 2.\\\"\\\"\\\"\\n    seen = set()\\n    n = len(items)\\n    for i in range(n):\\n        cur = 0\\n        for j in range(i, n):\\n            cur |= items[j]\\n            if j > i:\\n                seen.add(cur)\\n    return len(seen)\",\"confidence_score\":63}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:46:53.090292",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:46:53.090357",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,3,7],\"predicted_output\":2,\"current_mode\":\"confirming\",\"input_rationale\":\"Tests the hypothesis that the function returns the number of distinct bitwise-OR results over all index pairs i<j. For [1,3,7], pair ORs are 3, 7, and 7, giving exactly 2 distinct values; many competing pairwise-operation hypotheses give 3 here.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of distinct values of items[i] | items[j] over all pairs with i < j.\\\"\\\"\\\"\\n    seen = set()\\n    n = len(items)\\n    for i in range(n):\\n        for j in range(i + 1, n):\\n            seen.add(items[i] | items[j])\\n    return len(seen)\",\"confidence_score\":78}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:47:50.901222",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:47:50.901318",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2,2,2],\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"Pins down the all-equal case after ruling out 0, 2, and 3. If true, the function likely counts distinct results of some pair/subarray operation; if false, hypotheses like counting geometric subsequences (which gives 4) become much stronger.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Counts geometric subsequences of length at least 2.\\\"\\\"\\\"\\n    n = len(items)\\n    total = 0\\n    for mask in range(1 << n):\\n        seq = []\\n        for i in range(n):\\n            if (mask >> i) & 1:\\n                seq.append(items[i])\\n        if len(seq) >= 2:\\n            if seq[0] == 0:\\n                ok = all(x == 0 for x in seq)\\n            else:\\n                num = seq[1]\\n                den = seq[0]\\n                ok = True\\n                prev = seq[1]\\n                for i in range(2, len(seq)):\\n                    if prev * num != seq[i] * den:\\n                        ok = False\\n                        break\\n                    prev = seq[i]\\n            if ok:\\n                total += 1\\n    return total\",\"confidence_score\":55}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T21:48:56.531741",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:48:56.531856",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef solution(items):\n    n = len(items)\n    total = n * (n - 1) // 2\n\n    right = {}\n    for x in items:\n        right[x] = right.get(x, 0) + 1\n\n    left = {}\n    triples = 0\n\n    for x in items:\n        right[x] -= 1\n        if right[x] == 0:\n            del right[x]\n\n        target = 2 * x\n        for a, cnt in left.items():\n            triples += cnt * right.get(target - a, 0)\n\n        left[x] = left.get(x, 0) + 1\n\n    return total + triples\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:48:56.992645",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:48:56.992761",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [[5, -5, 5]] | Expected: -10 | Got: 3\nInput: [[3, 2, 1]] | Expected: 3 | Got: 4\nInput: [[-1, 0, 1]] | Expected: -1 | Got: 4"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:48:56.992777",
+        "action": {
+          "type": "hidden_function",
+          "content": "def sum_smaller_of_neighbors(items: List[int]) -> int:\n    return sum(items[i] if items[i] < items[i + 1] else items[i + 1] for i in range(len(items) - 1))"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:48:56.992791",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(items):\n    n = len(items)\n    total = n * (n - 1) // 2\n\n    right = {}\n    for x in items:\n        right[x] = right.get(x, 0) + 1\n\n    left = {}\n    triples = 0\n\n    for x in items:\n        right[x] -= 1\n        if right[x] == 0:\n            del right[x]\n\n        target = 2 * x\n        for a, cnt in left.items():\n            triples += cnt * right.get(target - a, 0)\n\n        left[x] = left.get(x, 0) + 1\n\n    return total + triples"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T21:48:56.992835",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_pair_checks\nAccuracy: 0.110\nInformation requests: 14/15\nRevealed passive examples: 0\nEfficiency: 0.133\nSlack: 1\nObserved-pair consistency: 1.000\nMembership balance: 3 true / 12 false\nParse errors: 0\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.13333333333333333,
+  "efficiency_raw": 0.13333333333333333,
+  "slack": 1,
+  "accuracy": 0.11,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 14,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          0
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 3,
+      "args": [
+        [
+          1,
+          2,
+          4
+        ]
+      ],
+      "output": 3
+    },
+    {
+      "round": 4,
+      "args": [
+        [
+          5
+        ]
+      ],
+      "output": 0
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        1,
+        2,
+        4
+      ],
+      "predicted_output": 7,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "Tests the common hypothesis that the function is a simple aggregate like sum; this input separates sum (7) from product (8), max (4), len (3), etc.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the sum of the integers in the list.\"\"\"\n    return sum(items)",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        1,
+        2,
+        4
+      ],
+      "predicted_output": 8,
+      "confidence_score": 22,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether the function is product-like, including full product or maximum pairwise product, both common list-to-int tasks.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the product of all integers in the list.\"\"\"\n    p = 1\n    for x in items:\n        p *= x\n    return p",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": [
+        1,
+        2,
+        4
+      ],
+      "predicted_output": 3,
+      "confidence_score": 17,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function returns a gap/range-like quantity such as max(items)-min(items), which is a common list-to-int transformation and fits this input cleanly.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the difference between the maximum and minimum elements.\"\"\"\n    return max(items) - min(items)",
+      "gm_output": 3,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": [
+        5
+      ],
+      "predicted_output": 0,
+      "confidence_score": 41,
+      "current_mode": "probing",
+      "input_rationale": "Distinguishes max-min from length and many counting functions: for a single-element list, range is 0 while len is 1 and sum/product are 5.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the difference between the maximum and minimum elements.\"\"\"\n    return max(items) - min(items)",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        2,
+        2,
+        2
+      ],
+      "predicted_output": 0,
+      "confidence_score": 56,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether duplicates collapse output to zero as range does; helps distinguish range from functions like unique-count (1), sum of differences (0 too), or max pairwise distance by indices.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the difference between the maximum and minimum elements.\"\"\"\n    return max(items) - min(items)",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        3,
+        2,
+        1
+      ],
+      "predicted_output": 0,
+      "confidence_score": 48,
+      "current_mode": "probing",
+      "input_rationale": "Current hypothesis is that the function counts index pairs (i<j) with items[i] <= items[j]. This input cleanly distinguishes increasing/non-decreasing pair counts from inversion-like counts and range-like formulas.",
+      "hypothesis": "def solution(items):\n    \"\"\"Counts pairs of indices i<j such that items[i] <= items[j].\"\"\"\n    total = 0\n    n = len(items)\n    for i in range(n):\n        for j in range(i + 1, n):\n            if items[i] <= items[j]:\n                total += 1\n    return total",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": [
+        2,
+        2,
+        2
+      ],
+      "predicted_output": 3,
+      "confidence_score": 24,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function counts index pairs among equal values, e.g. number of pairs i<j with items[i] == items[j] or with items[i] <= items[j]. This is a natural alternative after range-like behavior was falsified.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of index pairs i<j whose values are equal.\"\"\"\n    total = 0\n    n = len(items)\n    for i in range(n):\n        for j in range(i + 1, n):\n            if items[i] == items[j]:\n                total += 1\n    return total",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        2,
+        2,
+        2
+      ],
+      "predicted_output": 2,
+      "confidence_score": 14,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function might be based on adjacent relationships, such as counting adjacent equal pairs or the number of duplicate occurrences beyond the first. This targets the previously observed contradiction on all-equal input.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of adjacent equal pairs in the list.\"\"\"\n    total = 0\n    for i in range(len(items) - 1):\n        if items[i] == items[i + 1]:\n            total += 1\n    return total",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "predicted_output": 9,
+      "confidence_score": 62,
+      "current_mode": "probing",
+      "input_rationale": "Tests the hypothesis that the function counts arithmetic subsequences of length at least 2. For [1,2,3,4], there are 6 pairs, 2 arithmetic triples ([1,2,3], [2,3,4]), and 1 arithmetic quadruple, totaling 9. Competing hypotheses like contiguous arithmetic subarrays or monotone subsequences give different values.",
+      "hypothesis": "def solution(items):\n    \"\"\"Counts arithmetic subsequences of length at least 2.\"\"\"\n    n = len(items)\n    total = 0\n    for mask in range(1 << n):\n        seq = []\n        for i in range(n):\n            if mask >> i & 1:\n                seq.append(items[i])\n        if len(seq) >= 2:\n            d = seq[1] - seq[0]\n            ok = True\n            for i in range(2, len(seq)):\n                if seq[i] - seq[i - 1] != d:\n                    ok = False\n                    break\n            if ok:\n                total += 1\n    return total",
+      "gm_output": 6,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        1,
+        1,
+        2,
+        3
+      ],
+      "predicted_output": 3,
+      "confidence_score": 58,
+      "current_mode": "probing",
+      "input_rationale": "Distinguishes several plausible pairwise-distinct-value hypotheses. For this input, the number of distinct absolute differences is 3 ({0,1,2}), while distinct pair sums/products are 4 and distinct gcds are 1.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of distinct absolute differences |items[i]-items[j]| over all index pairs i<j.\"\"\"\n    seen = set()\n    for i in range(len(items)):\n        for j in range(i + 1, len(items)):\n            seen.add(abs(items[i] - items[j]))\n    return len(seen)",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "predicted_output": 6,
+      "confidence_score": 74,
+      "current_mode": "probing",
+      "input_rationale": "Tests the hypothesis that the function counts contiguous subarrays with even sum. For this input, that count is 6, while several nearby alternatives such as counting even-sum subsequences give 7.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of contiguous subarrays whose sum is even.\"\"\"\n    even = 1\n    odd = 0\n    s = 0\n    total = 0\n    for x in items:\n        s += x\n        if s % 2 == 0:\n            total += even\n            even += 1\n        else:\n            total += odd\n            odd += 1\n    return total",
+      "gm_output": 7,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "predicted_output": 1,
+      "confidence_score": 63,
+      "current_mode": "probing",
+      "input_rationale": "This strongly tests whether the function counts distinct bitwise-OR values of contiguous subarrays of length at least 2. On this input, every such subarray has OR = 3, so the count would be 1, while many competing pair-based distinct-value hypotheses give 2 or 3.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of distinct bitwise-OR values among contiguous subarrays of length at least 2.\"\"\"\n    seen = set()\n    n = len(items)\n    for i in range(n):\n        cur = 0\n        for j in range(i, n):\n            cur |= items[j]\n            if j > i:\n                seen.add(cur)\n    return len(seen)",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 12,
+      "input": [
+        1,
+        3,
+        7
+      ],
+      "predicted_output": 2,
+      "confidence_score": 78,
+      "current_mode": "confirming",
+      "input_rationale": "Tests the hypothesis that the function returns the number of distinct bitwise-OR results over all index pairs i<j. For [1,3,7], pair ORs are 3, 7, and 7, giving exactly 2 distinct values; many competing pairwise-operation hypotheses give 3 here.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of distinct values of items[i] | items[j] over all pairs with i < j.\"\"\"\n    seen = set()\n    n = len(items)\n    for i in range(n):\n        for j in range(i + 1, n):\n            seen.add(items[i] | items[j])\n    return len(seen)",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": [
+        2,
+        2,
+        2
+      ],
+      "predicted_output": 1,
+      "confidence_score": 55,
+      "current_mode": "probing",
+      "input_rationale": "Pins down the all-equal case after ruling out 0, 2, and 3. If true, the function likely counts distinct results of some pair/subarray operation; if false, hypotheses like counting geometric subsequences (which gives 4) become much stronger.",
+      "hypothesis": "def solution(items):\n    \"\"\"Counts geometric subsequences of length at least 2.\"\"\"\n    n = len(items)\n    total = 0\n    for mask in range(1 << n):\n        seq = []\n        for i in range(n):\n            if (mask >> i) & 1:\n                seq.append(items[i])\n        if len(seq) >= 2:\n            if seq[0] == 0:\n                ok = all(x == 0 for x in seq)\n            else:\n                num = seq[1]\n                den = seq[0]\n                ok = True\n                prev = seq[1]\n                for i in range(2, len(seq)):\n                    if prev * num != seq[i] * den:\n                        ok = False\n                        break\n                    prev = seq[i]\n            if ok:\n                total += 1\n    return total",
+      "gm_output": 4,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 3,
+  "unique_input_count": 3,
+  "unique_output_count": 2,
+  "novelty_rate": 0.6666666666666666,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 0.9182958340544896,
+  "mode": "active_pair_checks",
+  "info_request_count": 14,
+  "revealed_example_count": 0,
+  "membership_true_count": 3,
+  "membership_false_count": 12,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

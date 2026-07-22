@@ -1,0 +1,850 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "numbers_passive_labeled_pairs",
+    "game_id": 21,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:08.057195",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(x: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ((2, 2), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:08.057243",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The only revealed example is input (2, 2) -> True, which strongly suggests the function checks whether the two values in the input are equal.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the two elements of the input tuple are equal.\\\"\\\"\\\"\\n\\treturn x[0] == x[1]\",\"confidence_score\":72}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:10.342523",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((1000, 1001), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:10.342578",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new example ((1000, 1001), False) matches the same pattern as the preload, reinforcing that the function returns whether the two tuple elements are equal.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the two elements of the input tuple are equal.\\\"\\\"\\\"\\n\\treturn x[0] == x[1]\",\"confidence_score\":95}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:15.335938",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-99, -92), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:15.335995",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The new example rules out simple equality and suggests the result may depend on the absolute difference between the two integers; 0, 1, and 7 are the observed differences so far, so I need another test to distinguish a few possible predicates.\",\"hypothesis\":\"unknown\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:20.000658",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-1, 7), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:20.000707",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The four examples are consistent with True exactly when the absolute difference is 0 or a prime number: 0->True, 1->False, 7->True, 8->False. I still want one more example to confirm whether this is the full rule or something more specific.\",\"hypothesis\":\"unknown\",\"confidence_score\":32}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:23.624468",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((10, 10), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:23.624525",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The examples fit a simple rule: return True when the absolute difference between the two integers is 0 or a prime number. This matches 0, 7, and rejects 1 and 8.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\ta = x[0] - x[1]\\n\\tif a < 0:\\n\\t\\ta = -a\\n\\tif a < 2:\\n\\t\\treturn a == 0\\n\\ti = 2\\n\\twhile i * i <= a:\\n\\t\\tif a % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":88}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:26.724802",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((99, 100), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:26.724893",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The latest example ((99, 100), False) matches the same rule as the prior ones: the function is True when the absolute difference is 0 or a prime number, and False otherwise.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\ta = x[0] - x[1]\\n\\tif a < 0:\\n\\t\\ta = -a\\n\\tif a == 0:\\n\\t\\treturn True\\n\\tif a < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= a:\\n\\t\\tif a % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":97}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:29.998799",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-1000, -993), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:29.998855",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The newest example ((-1000, -993), True) has absolute difference 7, which continues to match the rule that the function returns True exactly when the absolute difference is 0 or a prime number.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\ta = x[0] - x[1]\\n\\tif a < 0:\\n\\t\\ta = -a\\n\\tif a == 0:\\n\\t\\treturn True\\n\\tif a < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= a:\\n\\t\\tif a % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:32.945835",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((1, 2), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:32.945888",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The examples are consistent with the rule that the function returns True iff the absolute difference of the two integers is 0 or a prime number.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\ta = x[0] - x[1]\\n\\tif a < 0:\\n\\t\\ta = -a\\n\\tif a == 0:\\n\\t\\treturn True\\n\\tif a < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= a:\\n\\t\\tif a % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:36.451190",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((0, 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:36.451221",
+        "action": {
+          "type": "get message",
+          "content": "```python\ndef f(x):\n    \"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n    d = x[0] - x[1]\n    if d < 0:\n        d = -d\n    if d == 0:\n        return True\n    if d < 2:\n        return False\n    i = 2\n    while i * i <= d:\n        if d % i == 0:\n            return False\n        i += 1\n    return True\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:39.177059",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:39.177221",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All observed examples fit the rule: return True iff the absolute difference between the two integers is 0 or a prime number.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\td = x[0] - x[1]\\n\\tif d < 0:\\n\\t\\td = -d\\n\\tif d == 0:\\n\\t\\treturn True\\n\\tif d < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= d:\\n\\t\\tif d % i == 0:\\n\\t\\t\\treturn False\\n\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:41.786851",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-2, 6), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:41.786904",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new example ((-2, 6), False) has absolute difference 8, which matches the inferred rule that the function returns True exactly when the absolute difference is 0 or a prime number.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\td = x[0] - x[1]\\n\\tif d < 0:\\n\\t\\td = -d\\n\\tif d == 0:\\n\\t\\treturn True\\n\\tif d < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= d:\\n\\t\\tif d % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:44.297541",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-10, -3), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:44.297573",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The example ((-10, -3), True) has absolute difference 7, which is prime, matching the inferred rule that the function returns True exactly when the absolute difference is 0 or prime.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\td = x[0] - x[1]\\n\\tif d < 0:\\n\\t\\td = -d\\n\\tif d == 0:\\n\\t\\treturn True\\n\\tif d < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= d:\\n\\t\\tif d % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:47.480456",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-4, 4), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:47.480509",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The example ((-4, 4), False) has absolute difference 8, which matches the inferred rule: return True exactly when the absolute difference of the two integers is 0 or prime.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\td = x[0] - x[1]\\n\\tif d < 0:\\n\\t\\td = -d\\n\\tif d == 0:\\n\\t\\treturn True\\n\\tif d < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= d:\\n\\t\\tif d % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:50.681712",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((5, 5), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:50.681766",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The latest example ((5, 5), True) matches the inferred rule that the function returns True exactly when the absolute difference of the two integers is 0 or a prime number.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\td = x[0] - x[1]\\n\\tif d < 0:\\n\\t\\td = -d\\n\\tif d == 0:\\n\\t\\treturn True\\n\\tif d < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= d:\\n\\t\\tif d % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:08:53.481962",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((50, 51), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:53.481997",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The example ((50, 51), False) has absolute difference 1, which fits the inferred rule that the function returns True exactly when the absolute difference of the two integers is 0 or prime.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns True iff the absolute difference of the two integers is 0 or prime.\\\"\\\"\\\"\\n\\td = x[0] - x[1]\\n\\tif d < 0:\\n\\t\\td = -d\\n\\tif d == 0:\\n\\t\\treturn True\\n\\tif d < 2:\\n\\t\\treturn False\\n\\ti = 2\\n\\twhile i * i <= d:\\n\\t\\tif d % i == 0:\\n\\t\\t\\treturn False\\n\\t\\ti += 1\\n\\treturn True\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:08:53.482614",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 14,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        2
+      ],
+      "output": 2
+    },
+    {
+      "round": 2,
+      "args": [
+        -99
+      ],
+      "output": -92
+    },
+    {
+      "round": 4,
+      "args": [
+        10
+      ],
+      "output": 10
+    },
+    {
+      "round": 6,
+      "args": [
+        -1000
+      ],
+      "output": -993
+    },
+    {
+      "round": 8,
+      "args": [
+        0
+      ],
+      "output": 0
+    },
+    {
+      "round": 10,
+      "args": [
+        -10
+      ],
+      "output": -3
+    },
+    {
+      "round": 12,
+      "args": [
+        5
+      ],
+      "output": 5
+    },
+    {
+      "round": 14,
+      "args": [
+        45
+      ],
+      "output": 45
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        2
+      ],
+      "candidate_output": 2,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1000
+      ],
+      "candidate_output": 1001,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99
+      ],
+      "candidate_output": -92,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1
+      ],
+      "candidate_output": 7,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        10
+      ],
+      "candidate_output": 10,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        99
+      ],
+      "candidate_output": 100,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1000
+      ],
+      "candidate_output": -993,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1
+      ],
+      "candidate_output": 2,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2
+      ],
+      "candidate_output": 6,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10
+      ],
+      "candidate_output": -3,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -4
+      ],
+      "candidate_output": 4,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        5
+      ],
+      "candidate_output": 5,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        50
+      ],
+      "candidate_output": 51,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        45
+      ],
+      "candidate_output": 45,
+      "is_member": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 72,
+      "current_mode": "probing",
+      "input_rationale": "The only revealed example is input (2, 2) -> True, which strongly suggests the function checks whether the two values in the input are equal.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the two elements of the input tuple are equal.\"\"\"\n\treturn x[0] == x[1]",
+      "gm_output": 1001,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "The new example ((1000, 1001), False) matches the same pattern as the preload, reinforcing that the function returns whether the two tuple elements are equal.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the two elements of the input tuple are equal.\"\"\"\n\treturn x[0] == x[1]",
+      "gm_output": -92,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "The new example rules out simple equality and suggests the result may depend on the absolute difference between the two integers; 0, 1, and 7 are the observed differences so far, so I need another test to distinguish a few possible predicates.",
+      "hypothesis": "unknown",
+      "gm_output": 7,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        10
+      ],
+      "predicted_output": null,
+      "confidence_score": 32,
+      "current_mode": "probing",
+      "input_rationale": "The four examples are consistent with True exactly when the absolute difference is 0 or a prime number: 0->True, 1->False, 7->True, 8->False. I still want one more example to confirm whether this is the full rule or something more specific.",
+      "hypothesis": "unknown",
+      "gm_output": 10,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        99
+      ],
+      "predicted_output": null,
+      "confidence_score": 88,
+      "current_mode": "confirming",
+      "input_rationale": "The examples fit a simple rule: return True when the absolute difference between the two integers is 0 or a prime number. This matches 0, 7, and rejects 1 and 8.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\ta = x[0] - x[1]\n\tif a < 0:\n\t\ta = -a\n\tif a < 2:\n\t\treturn a == 0\n\ti = 2\n\twhile i * i <= a:\n\t\tif a % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": 100,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        -1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 97,
+      "current_mode": "confirming",
+      "input_rationale": "The latest example ((99, 100), False) matches the same rule as the prior ones: the function is True when the absolute difference is 0 or a prime number, and False otherwise.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\ta = x[0] - x[1]\n\tif a < 0:\n\t\ta = -a\n\tif a == 0:\n\t\treturn True\n\tif a < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= a:\n\t\tif a % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": -993,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        1
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The newest example ((-1000, -993), True) has absolute difference 7, which continues to match the rule that the function returns True exactly when the absolute difference is 0 or a prime number.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\ta = x[0] - x[1]\n\tif a < 0:\n\t\ta = -a\n\tif a == 0:\n\t\treturn True\n\tif a < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= a:\n\t\tif a % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The examples are consistent with the rule that the function returns True iff the absolute difference of the two integers is 0 or a prime number.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\ta = x[0] - x[1]\n\tif a < 0:\n\t\ta = -a\n\tif a == 0:\n\t\treturn True\n\tif a < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= a:\n\t\tif a % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 9,
+      "input": [
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "All observed examples fit the rule: return True iff the absolute difference between the two integers is 0 or a prime number.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\td = x[0] - x[1]\n\tif d < 0:\n\t\td = -d\n\tif d == 0:\n\t\treturn True\n\tif d < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= d:\n\t\tif d % i == 0:\n\t\t\treturn False\n\ti += 1\n\treturn True",
+      "gm_output": 6,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": [
+        -10
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The new example ((-2, 6), False) has absolute difference 8, which matches the inferred rule that the function returns True exactly when the absolute difference is 0 or a prime number.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\td = x[0] - x[1]\n\tif d < 0:\n\t\td = -d\n\tif d == 0:\n\t\treturn True\n\tif d < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= d:\n\t\tif d % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": -3,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 11,
+      "input": [
+        -4
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The example ((-10, -3), True) has absolute difference 7, which is prime, matching the inferred rule that the function returns True exactly when the absolute difference is 0 or prime.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\td = x[0] - x[1]\n\tif d < 0:\n\t\td = -d\n\tif d == 0:\n\t\treturn True\n\tif d < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= d:\n\t\tif d % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 12,
+      "input": [
+        5
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The example ((-4, 4), False) has absolute difference 8, which matches the inferred rule: return True exactly when the absolute difference of the two integers is 0 or prime.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\td = x[0] - x[1]\n\tif d < 0:\n\t\td = -d\n\tif d == 0:\n\t\treturn True\n\tif d < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= d:\n\t\tif d % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": 5,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 13,
+      "input": [
+        50
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The latest example ((5, 5), True) matches the inferred rule that the function returns True exactly when the absolute difference of the two integers is 0 or a prime number.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\td = x[0] - x[1]\n\tif d < 0:\n\t\td = -d\n\tif d == 0:\n\t\treturn True\n\tif d < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= d:\n\t\tif d % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": 51,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 14,
+      "input": [
+        45
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The example ((50, 51), False) has absolute difference 1, which fits the inferred rule that the function returns True exactly when the absolute difference of the two integers is 0 or prime.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns True iff the absolute difference of the two integers is 0 or prime.\"\"\"\n\td = x[0] - x[1]\n\tif d < 0:\n\t\td = -d\n\tif d == 0:\n\t\treturn True\n\tif d < 2:\n\t\treturn False\n\ti = 2\n\twhile i * i <= d:\n\t\tif d % i == 0:\n\t\t\treturn False\n\t\ti += 1\n\treturn True",
+      "gm_output": 45,
+      "gm_output_label": true
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 8,
+  "unique_output_count": 8,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 3.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 14,
+  "revealed_example_count": 15,
+  "membership_true_count": 8,
+  "membership_false_count": 7,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

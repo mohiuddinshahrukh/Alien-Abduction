@@ -1,0 +1,900 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_labeled_pairs",
+    "game_id": 225,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:12.688362",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((True, True), False), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:12.688412",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"I only have one confirmed example so far: (True, True) maps to False. That is consistent with several boolean functions, so I need more input-output confirmations before making a reliable guess.\",\"hypothesis\":\"unknown\",\"confidence_score\":8}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:19.935037",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:19.935092",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The new example says the candidate ((False, False), False) is incorrect, so the hidden function must return True on (False, False). Combined with the earlier example (True, True) -> False, the function is not a standard symmetric boolean operator like XOR/XNOR/AND/OR. I need one or two mixed-input examples to narrow it down.\",\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:22.689006",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:22.689060",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The confirmed cases match NAND exactly: (True, True) -> False, (False, False) -> True, and (True, False) -> True. The simplest consistent function is logical NAND, so I’m making the solve attempt now.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NAND of the two booleans.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:24.408132",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:24.408199",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new example ((False, True), True) is also consistent with NAND: not(False and True) = True, so the provided output False indicates the candidate is incorrect? However the earlier confirmations strongly supported NAND, and this latest pair appears to be the hidden function's actual output for (False, True) being False, which would instead suggest AND/OR-family asymmetry. I need to be careful, but I already made the best solve attempt with the strongest consistent hypothesis available.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NAND of the two booleans.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":92}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:27.524147",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:27.524201",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The accumulated examples imply the function returns True only when both inputs are False, and False otherwise. That matches logical NOR exactly: not (a or b).\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:34.294342",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:34.294375",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The full set of examples is consistent with logical NOR: only (False, False) maps to True, and all other boolean pairs map to False.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:39.442034",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:39.442087",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The latest confirmed pair (True, False) -> False is consistent with the NOR truth table, which matches all previously confirmed examples.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:46.426174",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:46.426217",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The latest pair is still consistent with the NOR truth table: only (False, False) returns True, and all other inputs return False.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:47.509535",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:47.509589",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This additional confirmation again matches NOR exactly, so the implementation is settled.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:51.255458",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:51.255522",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The latest confirmation keeps matching logical NOR: (False, False) maps to True, while every other boolean pair tested maps to False.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:54.868109",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:54.868162",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All confirmed examples are consistent with logical NOR: return True only when both inputs are False, otherwise return False.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:58.811579",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:58.811631",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All revealed examples fit the NOR truth table: the function returns True only for (False, False) and False otherwise.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:26:59.941387",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:26:59.941441",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The full set of examples matches logical NOR exactly: True only when both inputs are False, and False otherwise.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:27:03.705449",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:27:03.705507",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The confirmed truth table is consistent with logical NOR: only (False, False) returns True, and all other input pairs return False.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:27:05.513908",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:27:05.513961",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All confirmed examples fit logical NOR exactly: the function returns True only when both inputs are False, and False otherwise.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the logical NOR of the two booleans.\\\"\\\"\\\"\\n    return not (a or b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:27:05.514674",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 4,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 15,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        true,
+        true
+      ],
+      "output": false
+    },
+    {
+      "round": 2,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 4,
+      "args": [
+        true,
+        true
+      ],
+      "output": false
+    },
+    {
+      "round": 6,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 8,
+      "args": [
+        true,
+        true
+      ],
+      "output": false
+    },
+    {
+      "round": 10,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 12,
+      "args": [
+        true,
+        true
+      ],
+      "output": false
+    },
+    {
+      "round": 14,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 8,
+      "current_mode": "probing",
+      "input_rationale": "I only have one confirmed example so far: (True, True) maps to False. That is consistent with several boolean functions, so I need more input-output confirmations before making a reliable guess.",
+      "hypothesis": "unknown",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 12,
+      "current_mode": "probing",
+      "input_rationale": "The new example says the candidate ((False, False), False) is incorrect, so the hidden function must return True on (False, False). Combined with the earlier example (True, True) -> False, the function is not a standard symmetric boolean operator like XOR/XNOR/AND/OR. I need one or two mixed-input examples to narrow it down.",
+      "hypothesis": "unknown",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The confirmed cases match NAND exactly: (True, True) -> False, (False, False) -> True, and (True, False) -> True. The simplest consistent function is logical NAND, so I’m making the solve attempt now.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NAND of the two booleans.\"\"\"\n    return not (a and b)",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 92,
+      "current_mode": "confirming",
+      "input_rationale": "The new example ((False, True), True) is also consistent with NAND: not(False and True) = True, so the provided output False indicates the candidate is incorrect? However the earlier confirmations strongly supported NAND, and this latest pair appears to be the hidden function's actual output for (False, True) being False, which would instead suggest AND/OR-family asymmetry. I need to be careful, but I already made the best solve attempt with the strongest consistent hypothesis available.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NAND of the two booleans.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The accumulated examples imply the function returns True only when both inputs are False, and False otherwise. That matches logical NOR exactly: not (a or b).",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The full set of examples is consistent with logical NOR: only (False, False) maps to True, and all other boolean pairs map to False.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The latest confirmed pair (True, False) -> False is consistent with the NOR truth table, which matches all previously confirmed examples.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The latest pair is still consistent with the NOR truth table: only (False, False) returns True, and all other inputs return False.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This additional confirmation again matches NOR exactly, so the implementation is settled.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The latest confirmation keeps matching logical NOR: (False, False) maps to True, while every other boolean pair tested maps to False.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All confirmed examples are consistent with logical NOR: return True only when both inputs are False, otherwise return False.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All revealed examples fit the NOR truth table: the function returns True only for (False, False) and False otherwise.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The full set of examples matches logical NOR exactly: True only when both inputs are False, and False otherwise.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The confirmed truth table is consistent with logical NOR: only (False, False) returns True, and all other input pairs return False.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 14,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All confirmed examples fit logical NOR exactly: the function returns True only when both inputs are False, and False otherwise.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the logical NOR of the two booleans.\"\"\"\n    return not (a or b)",
+      "gm_output": true,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 2,
+  "unique_output_count": 1,
+  "novelty_rate": 0.125,
+  "input_diversity": 0.25,
+  "output_entropy_bits": 0.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 15,
+  "revealed_example_count": 16,
+  "membership_true_count": 8,
+  "membership_false_count": 8,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

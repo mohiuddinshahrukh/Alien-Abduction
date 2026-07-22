@@ -9,7 +9,7 @@ elif [ -d "venv" ]; then
   source venv/bin/activate
 fi
 
-export PYTHONPATH=.:$PYTHONPATH
+#export PYTHONPATH=.:$PYTHONPATH
 
 RESULTS_DIR="${RESULTS_DIR:-results}"
 mkdir -p logs "$RESULTS_DIR"
@@ -19,13 +19,16 @@ games=(
 )
 
 models=(
-  "gpt-4o-2024-08-06"
+  "gpt-5.4-mini"
+  "gpt-5.4"
+  "claude-opus-4-8-azure"
+  "mistral-large-3-azure"
 )
 
 for game in "${games[@]}"; do
   for model in "${models[@]}"; do
     echo "Testing ${model} on ${game}"
-    { time clem run -g "${game}" -m "${model}" -r "$RESULTS_DIR"; } 2>&1 | tee "logs/runtime.${game}.${model}.log"
+    { time clem run -g "${game}" -m "${model}" -t 1 -r "$RESULTS_DIR"; } 2>&1 | tee "logs/runtime.${game}.${model}.log"
     { time clem transcribe -g "${game}" -r "$RESULTS_DIR"; } 2>&1 | tee "logs/runtime.transcribe.${game}.${model}.log"
     { time clem score -g "${game}" -r "$RESULTS_DIR"; } 2>&1 | tee "logs/runtime.score.${game}.${model}.log"
   done

@@ -1,0 +1,649 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "string_active_pair_checks",
+    "game_id": 170,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 14,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:34:48.876183",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(text: str) -> str\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:34:48.876253",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc dEF\",\"predicted_output\":\"FEd cba\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests a very common text transform: reversing the entire string, using mixed case and a space to distinguish from word-level reversals.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Returns the input string reversed character-by-character.\\\"\\\"\\\"\\n    return text[::-1]\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:34:51.499222",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:34:51.499279",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc dEF\",\"predicted_output\":\"abc dEF\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether the function may leave general mixed-content strings unchanged; reusing same input isolates whether any transformation happens at all.\",\"hypothesis\":\"unknown\",\"confidence_score\":8}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:34:53.561553",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:34:53.561606",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"AbC xYz\",\"predicted_output\":\"aBc XyZ\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function flips the case of every alphabetic character while preserving spaces and character order.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Swaps uppercase and lowercase letters in the string.\\\"\\\"\\\"\\n    return text.swapcase()\",\"confidence_score\":24}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:34:59.051743",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:34:59.051799",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc dEF\",\"predicted_output\":\"abc def\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests simple normalization to lowercase, a common hidden-string-function behavior and one consistent with prior failures on identity/reverse.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Converts the entire string to lowercase.\\\"\\\"\\\"\\n    return text.lower()\",\"confidence_score\":20}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:35:09.141453",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:35:09.141529",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc dEF\",\"predicted_output\":\"ABC DEF\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests full uppercasing, another very common string transformation not yet eliminated.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Converts the entire string to uppercase.\\\"\\\"\\\"\\n    return text.upper()\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:35:14.737811",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:35:14.737841",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"hELLO wORLD\",\"predicted_output\":\"Hello World\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests title-casing of each word, a common text normalization distinct from lower/upper/swapcase/capitalize.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Converts the string to title case, capitalizing each word.\\\"\\\"\\\"\\n    return text.title()\",\"confidence_score\":17}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:35:24.395463",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:35:24.395520",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc dEF\",\"predicted_output\":\"Abc def\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests Python-style capitalize(): uppercase first character and lowercase the rest. This remains a very common transformation not yet eliminated by prior probes.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Capitalizes the first character and lowercases the remainder of the string.\\\"\\\"\\\"\\n    return text.capitalize()\",\"confidence_score\":16}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:35:42.203894",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:35:42.203970",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc dEF\",\"predicted_output\":\"cba FEd\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function reverses characters within each whitespace-separated word while preserving word order and original character cases.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Reverses each word in the string while preserving spaces between words.\\\"\\\"\\\"\\n    return ' '.join(word[::-1] for word in text.split(' '))\",\"confidence_score\":14}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:35:48.135320",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:35:48.135370",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc dEF\",\"predicted_output\":\"dEF abc\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function reverses the order of whitespace-separated words while leaving each word itself unchanged.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Reverses the order of whitespace-separated words in the string.\\\"\\\"\\\"\\n    return ' '.join(text.split()[::-1])\",\"confidence_score\":15}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:36:06.878847",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:36:06.878891",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"hELLO wORLD\",\"predicted_output\":\"HeLlO WoRlD\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests the common 'weird case' transformation that alternates uppercase/lowercase letters within each word, restarting after spaces.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Alternates character case within each word, starting with uppercase on each word.\\\"\\\"\\\"\\n    out = []\\n    i = 0\\n    for ch in text:\\n        if ch == ' ':\\n            out.append(ch)\\n            i = 0\\n        else:\\n            out.append(ch.upper() if i % 2 == 0 else ch.lower())\\n            i += 1\\n    return ''.join(out)\",\"confidence_score\":28}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:36:28.718477",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:36:28.718518",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"123! ?\",\"predicted_output\":\"123! ?\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether the function leaves non-alphabetic characters untouched. A True would suggest a letter-focused transformation; a False would indicate it also changes punctuation/order/spacing.\",\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:37:04.092916",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:04.092969",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"a b c\",\"predicted_output\":\"abc\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests a high-probability transformation still consistent with all prior results: removing spaces entirely while leaving other characters in order.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Removes all spaces from the input string.\\\"\\\"\\\"\\n    return text.replace(' ', '')\",\"confidence_score\":21}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:37:08.123569",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:08.123634",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"\\\"a\\\\tb c\\\"\",\"predicted_output\":\"a\\tbc\",\"current_mode\":\"confirming\",\"input_rationale\":\"Distinguishes removing literal space characters only from removing all whitespace; this uses both a tab and a space.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Removes all space characters from the string.\\\"\\\"\\\"\\n    return text.replace(' ', '')\",\"confidence_score\":78}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:37:13.979682",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:13.979735",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef solution(text):\n    return text.replace(' ', '')\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:14.421482",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:14.421606",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: ['123'] | Expected:  | Got: 123\nInput: ['a-b'] | Expected: ab | Got: a-b\nInput: ['h6H4lDJfvEN'] | Expected: hHlDJfvEN | Got: h6H4lDJfvEN"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:14.421624",
+        "action": {
+          "type": "hidden_function",
+          "content": "def letters_only(text: str) -> str:\n    return ''.join(ch for ch in text if ch.isalpha())"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:14.421638",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(text):\n    return text.replace(' ', '')"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:37:14.421682",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_pair_checks\nAccuracy: 0.430\nInformation requests: 13/15\nRevealed passive examples: 0\nEfficiency: 0.200\nSlack: 2\nObserved-pair consistency: 1.000\nMembership balance: 2 true / 12 false\nParse errors: 0\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.2,
+  "efficiency_raw": 0.2,
+  "slack": 2,
+  "accuracy": 0.43,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 13,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        " "
+      ],
+      "output": ""
+    },
+    {
+      "round": 12,
+      "args": [
+        "a b c"
+      ],
+      "output": "abc"
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "abc dEF",
+      "predicted_output": "FEd cba",
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "Tests a very common text transform: reversing the entire string, using mixed case and a space to distinguish from word-level reversals.",
+      "hypothesis": "def solution(text):\n    \"\"\"Returns the input string reversed character-by-character.\"\"\"\n    return text[::-1]",
+      "gm_output": "abcdEF",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": "abc dEF",
+      "predicted_output": "abc dEF",
+      "confidence_score": 8,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether the function may leave general mixed-content strings unchanged; reusing same input isolates whether any transformation happens at all.",
+      "hypothesis": "unknown",
+      "gm_output": "abcdEF",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": "AbC xYz",
+      "predicted_output": "aBc XyZ",
+      "confidence_score": 24,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function flips the case of every alphabetic character while preserving spaces and character order.",
+      "hypothesis": "def solution(text):\n    \"\"\"Swaps uppercase and lowercase letters in the string.\"\"\"\n    return text.swapcase()",
+      "gm_output": "AbCxYz",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": "abc dEF",
+      "predicted_output": "abc def",
+      "confidence_score": 20,
+      "current_mode": "probing",
+      "input_rationale": "Tests simple normalization to lowercase, a common hidden-string-function behavior and one consistent with prior failures on identity/reverse.",
+      "hypothesis": "def solution(text):\n    \"\"\"Converts the entire string to lowercase.\"\"\"\n    return text.lower()",
+      "gm_output": "abcdEF",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": "abc dEF",
+      "predicted_output": "ABC DEF",
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "Tests full uppercasing, another very common string transformation not yet eliminated.",
+      "hypothesis": "def solution(text):\n    \"\"\"Converts the entire string to uppercase.\"\"\"\n    return text.upper()",
+      "gm_output": "abcdEF",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": "hELLO wORLD",
+      "predicted_output": "Hello World",
+      "confidence_score": 17,
+      "current_mode": "probing",
+      "input_rationale": "Tests title-casing of each word, a common text normalization distinct from lower/upper/swapcase/capitalize.",
+      "hypothesis": "def solution(text):\n    \"\"\"Converts the string to title case, capitalizing each word.\"\"\"\n    return text.title()",
+      "gm_output": "hELLOwORLD",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": "abc dEF",
+      "predicted_output": "Abc def",
+      "confidence_score": 16,
+      "current_mode": "probing",
+      "input_rationale": "Tests Python-style capitalize(): uppercase first character and lowercase the rest. This remains a very common transformation not yet eliminated by prior probes.",
+      "hypothesis": "def solution(text):\n    \"\"\"Capitalizes the first character and lowercases the remainder of the string.\"\"\"\n    return text.capitalize()",
+      "gm_output": "abcdEF",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": "abc dEF",
+      "predicted_output": "cba FEd",
+      "confidence_score": 14,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function reverses characters within each whitespace-separated word while preserving word order and original character cases.",
+      "hypothesis": "def solution(text):\n    \"\"\"Reverses each word in the string while preserving spaces between words.\"\"\"\n    return ' '.join(word[::-1] for word in text.split(' '))",
+      "gm_output": "abcdEF",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": "abc dEF",
+      "predicted_output": "dEF abc",
+      "confidence_score": 15,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function reverses the order of whitespace-separated words while leaving each word itself unchanged.",
+      "hypothesis": "def solution(text):\n    \"\"\"Reverses the order of whitespace-separated words in the string.\"\"\"\n    return ' '.join(text.split()[::-1])",
+      "gm_output": "abcdEF",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": "hELLO wORLD",
+      "predicted_output": "HeLlO WoRlD",
+      "confidence_score": 28,
+      "current_mode": "probing",
+      "input_rationale": "Tests the common 'weird case' transformation that alternates uppercase/lowercase letters within each word, restarting after spaces.",
+      "hypothesis": "def solution(text):\n    \"\"\"Alternates character case within each word, starting with uppercase on each word.\"\"\"\n    out = []\n    i = 0\n    for ch in text:\n        if ch == ' ':\n            out.append(ch)\n            i = 0\n        else:\n            out.append(ch.upper() if i % 2 == 0 else ch.lower())\n            i += 1\n    return ''.join(out)",
+      "gm_output": "hELLOwORLD",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": "123! ?",
+      "predicted_output": "123! ?",
+      "confidence_score": 12,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether the function leaves non-alphabetic characters untouched. A True would suggest a letter-focused transformation; a False would indicate it also changes punctuation/order/spacing.",
+      "hypothesis": "unknown",
+      "gm_output": "",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": "a b c",
+      "predicted_output": "abc",
+      "confidence_score": 21,
+      "current_mode": "probing",
+      "input_rationale": "Tests a high-probability transformation still consistent with all prior results: removing spaces entirely while leaving other characters in order.",
+      "hypothesis": "def solution(text):\n    \"\"\"Removes all spaces from the input string.\"\"\"\n    return text.replace(' ', '')",
+      "gm_output": "abc",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": "\"a\\tb c\"",
+      "predicted_output": "a\tbc",
+      "confidence_score": 78,
+      "current_mode": "confirming",
+      "input_rationale": "Distinguishes removing literal space characters only from removing all whitespace; this uses both a tab and a space.",
+      "hypothesis": "def solution(text):\n    \"\"\"Removes all space characters from the string.\"\"\"\n    return text.replace(' ', '')",
+      "gm_output": "atbc",
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 2,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.0,
+  "mode": "active_pair_checks",
+  "info_request_count": 13,
+  "revealed_example_count": 0,
+  "membership_true_count": 2,
+  "membership_false_count": 12,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

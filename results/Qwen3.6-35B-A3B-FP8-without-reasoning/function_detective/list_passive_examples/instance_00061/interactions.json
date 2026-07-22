@@ -1,0 +1,828 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_passive_examples",
+    "game_id": 61,
+    "results_folder": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+        "backend": "openai_compatible",
+        "context_size": "262k",
+        "languages": [
+          "en",
+          "zh"
+        ],
+        "license": {},
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "extra_body": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          }
+        },
+        "model_id": "Qwen/Qwen3.6-35B-A3B-FP8",
+        "open_weight": true,
+        "parameters": "35B",
+        "release_date": "2026-04-28"
+      },
+      "gen_args": {
+        "temperature": 0.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:08.068818",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nI control which valid input-output examples you see. You can request them one at a time.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ([3, 2, 1], 3)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:08.068842",
+        "action": {
+          "type": "get message",
+          "content": "{'current_mode': 'probing', 'input_rationale': 'I have one example: ([3, 2, 1], 3). This could be the maximum, the length, the sum, or something else. I need more examples to distinguish between these possibilities. Let me request another example with a different structure.', 'hypothesis': 'unknown', 'confidence_score': 10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:08.938361",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:08.938388",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"I have one example: ([3, 2, 1], 3). This could be the maximum, the length, the sum, or something else. I need more examples to distinguish between these possibilities. Let me request another example with a different structure.\", \"hypothesis\": \"unknown\", \"confidence_score\": 10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:11.095287",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([-1, 0, 1], -1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:11.095377",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"Example 1: ([3, 2, 1], 3) -> max is 3. Example 2: ([-1, 0, 1], -1) -> max is 1, min is -1. Since the output is -1, it's not the maximum. It could be the minimum. Let's check if it's the minimum. For [3, 2, 1], min is 1, but output is 3. So it's not the minimum either. It's not the length (3 for both, but let's check another). It's not the sum (6 and 0). Let's try an example with a single element or different values to distinguish between max, min, first, last, etc. Wait, for [3, 2, 1], output 3. For [-1, 0, 1], output -1. This looks like it might be the first element? [3, 2, 1] -> 3. [-1, 0, 1] -> -1. Let's verify with another example.\", \"hypothesis\": \"unknown\", \"confidence_score\": 50}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:12.501184",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:12.501252",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"Example 1: ([3, 2, 1], 3) -> first element is 3. Example 2: ([-1, 0, 1], -1) -> first element is -1. Example 3: ([], 0) -> empty list returns 0. This strongly suggests the function returns the first element of the list, or 0 if the list is empty. Let's verify with one more example to be sure it's not something like 'max of first half' or similar. But first element is the simplest explanation. Let's try a list where first element is not the max/min.\", \"hypothesis\": \"unknown\", \"confidence_score\": 80}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:13.998529",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([1, 1], 1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:13.998549",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"confirming\", \"input_rationale\": \"The pattern is consistent: returns the first element of the list, or 0 if the list is empty. Example 1: [3, 2, 1] -> 3 (first). Example 2: [-1, 0, 1] -> -1 (first). Example 3: [] -> 0 (empty). Example 4: [1, 1] -> 1 (first). This is a very strong match. I am confident this is the correct implementation.\", \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the first element of the list, or 0 if the list is empty.\\\"\\\"\\\"\\n    return items[0] if items else 0\", \"confidence_score\": 95}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:16.685918",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([2, 1], 1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:16.685952",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"My previous hypothesis (return first element) failed for ([2, 1], 1). The first element is 2, but the output is 1. Let's re-evaluate. Examples so far: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1). It's not the first element. It's not the last element (last of [3,2,1] is 1, not 3). It's not the max (max of [-1,0,1] is 1, not -1). It's not the min (min of [3,2,1] is 1, not 3). It's not the sum. Let's look at the values again. [3,2,1] -> 3. [-1,0,1] -> -1. [] -> 0. [1,1] -> 1. [2,1] -> 1. Maybe it's the element at index 0 if the list is sorted? No. Maybe it's related to the length? No. Let's try to get more examples to distinguish between possibilities like 'max if positive else min' or something more complex.\", \"hypothesis\": \"unknown\",",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:18.671778",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:18.671802",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"My previous hypothesis (return first element) failed for ([2, 1], 1). The first element is 2, but the output is 1. Let's re-evaluate. Examples so far: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1). It's not the first element. It's not the last element (last of [3,2,1] is 1, not 3). It's not the max (max of [-1,0,1] is 1, not -1). It's not the min (min of [3,2,1] is 1, not 3). It's not the sum. Let's try an example with a single element to see if it returns that element or 0.\", \"hypothesis\": \"unknown\", \"confidence_score\": 40}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:21.219020",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([0], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:21.219045",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"Let's re-examine the examples: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1), ([0], 0). The output for [3, 2, 1] is 3. For [-1, 0, 1] it is -1. For [2, 1] it is 1. For [1, 1] it is 1. For [0] it is 0. For [] it is 0. This looks like it might be the maximum value if the list is sorted in descending order? No. Let's look at the indices. [3, 2, 1] -> index 0 is 3. [-1, 0, 1] -> index 0 is -1. [2, 1] -> index 1 is 1? No, index 0 is 2. Wait, [2, 1] output is 1. That's the last element. But [3, 2, 1] output is 3, which is the first. [-1, 0, 1] output is -1, which is the first. [1, 1] output is 1,",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:22.362920",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:22.362931",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"I need more data to distinguish between potential patterns. The previous hypothesis of 'first element' failed on [2, 1] -> 1. Let's try a list with distinct elements where the first element is not the max or min, to see if it picks a specific value like the median or something else. Or perhaps it's related to the sum modulo something? Let's try a list with 4 elements.\", \"hypothesis\": \"unknown\", \"confidence_score\": 30}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:25.020978",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([5, -5, 5], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:25.021004",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"Let's re-evaluate all examples: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1), ([0], 0), ([5, -5, 5], 0). The output for [5, -5, 5] is 0. This is the sum of the list (5 + -5 + 5 = 5? No, 5). Wait, 5-5+5=5. Output is 0. So it's not the sum. Is it the median? [3,2,1] sorted is [1,2,3], median 2. Output 3. No. Is it the mode? [1,1] mode 1. [5,-5,5] mode 5. Output 0. No. Let's look at indices again. [3,2,1] -> 3 (index 0). [-1,0,1] -> -1 (index 0). [2,1] -> 1 (index 1). [1,1] -> 1 (index 0 or 1). [0] -> 0 (index 0). [5,-5,5] -> 0",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:27.448789",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:27.448838",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"I need to clarify the pattern. The output for [5, -5, 5] is 0. This is interesting. Let's look at the sum: 5 + (-5) + 5 = 5. Not 0. Let's look at the product: 5 * -5 * 5 = -125. Not 0. Let's look at the XOR sum: 5 ^ -5 ^ 5. In Python, integers are arbitrary precision, but let's assume standard bitwise. 5 is 101, -5 is ...111011. This is getting complex. Let's try a simpler hypothesis. Maybe it's the element at index `len(items) % 2`? [3,2,1] len 3, index 1 -> 2. Output 3. No. Maybe it's the maximum of the absolute values? [3,2,1] -> 3. [-1,0,1] -> 1. Output -1. No. Let's try to get an example with a single positive number to confirm if it returns that number.\", \"hypothesis\": \"unknown\", \"confidence_score\": 20}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:30.240354",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([1, 2, 3], 3)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:30.240383",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"Let's re-examine all examples: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1), ([0], 0), ([5, -5, 5], 0), ([1, 2, 3], 3). The output for [1, 2, 3] is 3. This is the last element. But for [3, 2, 1], the last element is 1, but output is 3. So it's not always the last. For [-1, 0, 1], last is 1, output -1. For [2, 1], last is 1, output 1. For [1, 1], last is 1, output 1. For [0], last is 0, output 0. For [5, -5, 5], last is 5, output 0. For [], output 0. It seems like it might be the first element if the list is sorted descending, and the last if sorted ascending? [3,2,1] is descending, output 3 (first). [1,2,3] is ascending, output 3 (last). [-1",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:32.856746",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:32.856772",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"Let's re-examine all examples: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1), ([0], 0), ([5, -5, 5], 0), ([1, 2, 3], 3). The output for [1, 2, 3] is 3. This is the last element. But for [3, 2, 1], the last element is 1, but output is 3. So it's not always the last. For [-1, 0, 1], last is 1, output -1. For [2, 1], last is 1, output 1. For [1, 1], last is 1, output 1. For [0], last is 0, output 0. For [5, -5, 5], last is 5, output 0. For [], output 0. It seems like it might be the first element if the list is sorted descending, and the last if sorted ascending? [3,2,1] is descending, output 3 (first). [1,2,3] is ascending, output 3 (last). [-1",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:35.550060",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:35.550095",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"I need to test a specific hypothesis: does the function return the element at index 0 if the list is sorted in descending order, and the element at index -1 if sorted in ascending order? Or perhaps it returns the maximum if the first element is greater than the last, and the minimum if the first is less than the last? Let's check: [3,2,1]: first(3) > last(1) -> max(3). Correct. [1,2,3]: first(1) < last(3) -> min(1)? No, output is 3. So that's not it. What if it returns the first element if first > last, and the last element if first < last? [3,2,1]: 3>1 -> 3. Correct. [1,2,3]: 1<3 -> 3. Correct. [-1,0,1]: -1<1 -> 1? No, output is -1. So that fails. Let's try: if first > last, return first. If first < last, return first? No. Let's look at [-1, 0, 1] -> -1. First is -1, last is 1. First < Last. Output is First. [3, 2, 1] -> 3. First 3, Last",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:32:38.366513",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:38.366578",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\": \"probing\", \"input_rationale\": \"Let's look at the examples again: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1), ([0], 0), ([5, -5, 5], 0), ([1, 2, 3], 3). Hypothesis: If the list is sorted in descending order, return the first element. If sorted in ascending order, return the last element. If not sorted, return 0? [3,2,1] is descending -> 3. Correct. [1,2,3] is ascending -> 3. Correct. [-1,0,1] is ascending -> 1? No, output is -1. So that fails. What if it returns the first element if the list is descending, and the first element if the list is ascending? [-1,0,1] first is -1. Correct. [1,2,3] first is 1. Output is 3. Fails. What if it returns the element at index 0 if the list is descending, and the element at index -1 if ascending? [-1,0,1] ascending -> last is 1. Output -1. Fails. Let's try: return",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:32:38.367211",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 8,
+  "runtime_error_count": 0,
+  "turns_used": 7,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "output": 3
+    },
+    {
+      "round": 1,
+      "args": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "output": -1
+    },
+    {
+      "round": 2,
+      "args": [
+        []
+      ],
+      "output": 0
+    },
+    {
+      "round": 3,
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "output": 1
+    },
+    {
+      "round": 4,
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "output": 1
+    },
+    {
+      "round": 5,
+      "args": [
+        [
+          0
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 6,
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 7,
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "output": 3
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "io",
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "expected": -1
+    },
+    {
+      "kind": "io",
+      "args": [
+        []
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          0
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": 3
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "I have one example: ([3, 2, 1], 3). This could be the maximum, the length, the sum, or something else. I need more examples to distinguish between these possibilities. Let me request another example with a different structure.",
+      "hypothesis": "unknown",
+      "gm_output": -1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        []
+      ],
+      "predicted_output": null,
+      "confidence_score": 50,
+      "current_mode": "probing",
+      "input_rationale": "Example 1: ([3, 2, 1], 3) -> max is 3. Example 2: ([-1, 0, 1], -1) -> max is 1, min is -1. Since the output is -1, it's not the maximum. It could be the minimum. Let's check if it's the minimum. For [3, 2, 1], min is 1, but output is 3. So it's not the minimum either. It's not the length (3 for both, but let's check another). It's not the sum (6 and 0). Let's try an example with a single element or different values to distinguish between max, min, first, last, etc. Wait, for [3, 2, 1], output 3. For [-1, 0, 1], output -1. This looks like it might be the first element? [3, 2, 1] -> 3. [-1, 0, 1] -> -1. Let's verify with another example.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": [
+        [
+          1,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "probing",
+      "input_rationale": "Example 1: ([3, 2, 1], 3) -> first element is 3. Example 2: ([-1, 0, 1], -1) -> first element is -1. Example 3: ([], 0) -> empty list returns 0. This strongly suggests the function returns the first element of the list, or 0 if the list is empty. Let's verify with one more example to be sure it's not something like 'max of first half' or similar. But first element is the simplest explanation. Let's try a list where first element is not the max/min.",
+      "hypothesis": "unknown",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        [
+          2,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "The pattern is consistent: returns the first element of the list, or 0 if the list is empty. Example 1: [3, 2, 1] -> 3 (first). Example 2: [-1, 0, 1] -> -1 (first). Example 3: [] -> 0 (empty). Example 4: [1, 1] -> 1 (first). This is a very strong match. I am confident this is the correct implementation.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the first element of the list, or 0 if the list is empty.\"\"\"\n    return items[0] if items else 0",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": [
+        [
+          0
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 40,
+      "current_mode": "probing",
+      "input_rationale": "My previous hypothesis (return first element) failed for ([2, 1], 1). The first element is 2, but the output is 1. Let's re-evaluate. Examples so far: ([3, 2, 1], 3), ([-1, 0, 1], -1), ([], 0), ([1, 1], 1), ([2, 1], 1). It's not the first element. It's not the last element (last of [3,2,1] is 1, not 3). It's not the max (max of [-1,0,1] is 1, not -1). It's not the min (min of [3,2,1] is 1, not 3). It's not the sum. Let's try an example with a single element to see if it returns that element or 0.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 8,
+      "input": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 30,
+      "current_mode": "probing",
+      "input_rationale": "I need more data to distinguish between potential patterns. The previous hypothesis of 'first element' failed on [2, 1] -> 1. Let's try a list with distinct elements where the first element is not the max or min, to see if it picks a specific value like the median or something else. Or perhaps it's related to the sum modulo something? Let's try a list with 4 elements.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 10,
+      "input": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 20,
+      "current_mode": "probing",
+      "input_rationale": "I need to clarify the pattern. The output for [5, -5, 5] is 0. This is interesting. Let's look at the sum: 5 + (-5) + 5 = 5. Not 0. Let's look at the product: 5 * -5 * 5 = -125. Not 0. Let's look at the XOR sum: 5 ^ -5 ^ 5. In Python, integers are arbitrary precision, but let's assume standard bitwise. 5 is 101, -5 is ...111011. This is getting complex. Let's try a simpler hypothesis. Maybe it's the element at index `len(items) % 2`? [3,2,1] len 3, index 1 -> 2. Output 3. No. Maybe it's the maximum of the absolute values? [3,2,1] -> 3. [-1,0,1] -> 1. Output -1. No. Let's try to get an example with a single positive number to confirm if it returns that number.",
+      "hypothesis": "unknown",
+      "gm_output": 3,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 11,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 12,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 14,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 8,
+  "unique_output_count": 4,
+  "novelty_rate": 0.5,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.9056390622295665,
+  "mode": "passive_examples",
+  "info_request_count": 7,
+  "revealed_example_count": 8,
+  "membership_true_count": 0,
+  "membership_false_count": 0,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+  ]
+}

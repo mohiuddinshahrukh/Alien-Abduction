@@ -1,0 +1,900 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_labeled_pairs",
+    "game_id": 207,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:44.070838",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((False, True), True), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:44.070890",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Only one example is available: ((False, True), True) -> True. This is insufficient to distinguish between many boolean functions, so I need more input-output pairs before making a reliable guess.\",\"hypothesis\":\"unknown\",\"confidence_score\":5}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:46.866321",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:46.866374",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The new example suggests the function maps (False, True) to True and (True, True) to False, but that still fits several common boolean functions. I need at least one more distinct case to disambiguate.\",\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:49.039301",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:49.039356",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The observed outputs match NAND so far: False,False -> True; False,True -> True; True,True -> False. The remaining unseen case would be True,False, which NAND would also map to True. Best current hypothesis is that the function returns not (a and b).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":96}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:52.660047",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:52.660103",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The four observed cases now fully match NAND: only (True, True) yields False; all other boolean pairs yield True. The latest revealed pair ((True, False), False) was marked incorrect, which is also consistent with NAND because the correct output there is True.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:55.323925",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:55.324014",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The latest confirmation reinforces the NAND pattern: (False, True) -> True as expected. Together with the prior confirmed examples, the function is consistently not (a and b).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:56.627209",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:56.627262",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This also matches the NAND hypothesis: (True, True) should return False. The full set of examples is now consistent with not (a and b).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:57.923924",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:57.923979",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This matches NAND as well: (False, False) -> True. No contradictions have appeared across all four input combinations.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:59.244361",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:59.244410",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This example is still consistent with the NAND hypothesis: for (True, False), the correct output should be True, so the shown False indicates the candidate is incorrect. Nothing new contradicts not (a and b).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:25:01.082437",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:01.082496",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All revealed cases are consistent with NAND, and the latest pair again confirms (False, True) -> True. The best implementation remains not (a and b).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:25:02.672416",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:02.672468",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This continues to match the NAND truth table exactly. Since all four input combinations have now been effectively covered, the function is confidently identified.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:25:04.301944",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:04.301963",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This final repeated example is still perfectly consistent with NAND: (False, False) -> True. The inferred function remains not (a and b).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:25:05.634638",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:05.634704",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This repeated negative example remains consistent with NAND, where (True, False) should be True. No evidence has contradicted the current hypothesis.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:25:07.162948",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:07.162967",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The examples are fully aligned with the NAND truth table. At this point the implementation is certain.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:25:09.533410",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:09.533473",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This repeated example is again consistent with NAND, reinforcing the identified truth table. The function is not (a and b).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:25:10.674052",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:10.674108",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The full set of seen pairs remains exactly NAND. There is no ambiguity left.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the NAND of the two boolean inputs.\\\"\\\"\\\"\\n    return not (a and b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:25:10.674874",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 4,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 15,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 2,
+      "args": [
+        false,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 4,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 6,
+      "args": [
+        false,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 8,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 10,
+      "args": [
+        false,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 12,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 14,
+      "args": [
+        false,
+        false
+      ],
+      "output": false
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 5,
+      "current_mode": "probing",
+      "input_rationale": "Only one example is available: ((False, True), True) -> True. This is insufficient to distinguish between many boolean functions, so I need more input-output pairs before making a reliable guess.",
+      "hypothesis": "unknown",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 12,
+      "current_mode": "probing",
+      "input_rationale": "The new example suggests the function maps (False, True) to True and (True, True) to False, but that still fits several common boolean functions. I need at least one more distinct case to disambiguate.",
+      "hypothesis": "unknown",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 96,
+      "current_mode": "confirming",
+      "input_rationale": "The observed outputs match NAND so far: False,False -> True; False,True -> True; True,True -> False. The remaining unseen case would be True,False, which NAND would also map to True. Best current hypothesis is that the function returns not (a and b).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The four observed cases now fully match NAND: only (True, True) yields False; all other boolean pairs yield True. The latest revealed pair ((True, False), False) was marked incorrect, which is also consistent with NAND because the correct output there is True.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The latest confirmation reinforces the NAND pattern: (False, True) -> True as expected. Together with the prior confirmed examples, the function is consistently not (a and b).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This also matches the NAND hypothesis: (True, True) should return False. The full set of examples is now consistent with not (a and b).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This matches NAND as well: (False, False) -> True. No contradictions have appeared across all four input combinations.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This example is still consistent with the NAND hypothesis: for (True, False), the correct output should be True, so the shown False indicates the candidate is incorrect. Nothing new contradicts not (a and b).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All revealed cases are consistent with NAND, and the latest pair again confirms (False, True) -> True. The best implementation remains not (a and b).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This continues to match the NAND truth table exactly. Since all four input combinations have now been effectively covered, the function is confidently identified.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This final repeated example is still perfectly consistent with NAND: (False, False) -> True. The inferred function remains not (a and b).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This repeated negative example remains consistent with NAND, where (True, False) should be True. No evidence has contradicted the current hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The examples are fully aligned with the NAND truth table. At this point the implementation is certain.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This repeated example is again consistent with NAND, reinforcing the identified truth table. The function is not (a and b).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 14,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The full set of seen pairs remains exactly NAND. There is no ambiguity left.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the NAND of the two boolean inputs.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 0.25,
+  "input_diversity": 0.25,
+  "output_entropy_bits": 1.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 15,
+  "revealed_example_count": 16,
+  "membership_true_count": 8,
+  "membership_false_count": 8,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

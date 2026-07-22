@@ -1,0 +1,752 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_active_pair_checks",
+    "game_id": 74,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:29:44.853199",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:29:44.853234",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Checks the simplest edge case; many list aggregations return 0 on empty input, and some functions may special-case it.\",\"hypothesis\":\"unknown\",\"confidence_score\":5}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:29:47.003834",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:29:47.003861",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1],\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the simplest non-empty list to see whether the function behaves like sum, length, max, or another basic aggregation.\",\"hypothesis\":\"unknown\",\"confidence_score\":8}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:29:50.111215",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:29:50.111244",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2],\"predicted_output\":true,\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function might simply be checking emptiness or another property that depends only on list length; two elements help distinguish from single-element behavior.\",\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:29:52.851449",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:29:52.851502",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2,2],\"predicted_output\":true,\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the hidden function is checking a property like 'all elements are equal' or another condition that should hold for a constant two-element list.\",\"hypothesis\":\"unknown\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:30:03.030781",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:30:03.030816",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[0],\"predicted_output\":false,\"current_mode\":\"confirming\",\"input_rationale\":\"Checks the simplest non-empty case under the hypothesis that the function returns whether the list is empty.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns True if the list is empty, otherwise False.\\\"\\\"\\\"\\n    return len(items) == 0\",\"confidence_score\":88}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:30:11.141322",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:30:11.141360",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[0,2],\"predicted_output\":true,\"current_mode\":\"probing\",\"input_rationale\":\"This distinguishes between two leading hypotheses: `sum(items) == len(items)` would be True here, while `all(x == 1 for x in items)` would be False.\",\"hypothesis\":\"unknown\",\"confidence_score\":30}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:30:15.493957",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:30:15.493979",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,3],\"predicted_output\":false,\"current_mode\":\"probing\",\"input_rationale\":\"This distinguishes the strongest remaining hypotheses: 'all items are 1' predicts False, while 'all items are odd' predicts True.\",\"hypothesis\":\"unknown\",\"confidence_score\":45}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:30:26.788015",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:30:26.788088",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[0,2,4],\"predicted_output\":true,\"current_mode\":\"probing\",\"input_rationale\":\"This distinguishes whether the function is checking an exact even-index pattern `items[i] == 2*i` or also requires an even-length list.\",\"hypothesis\":\"unknown\",\"confidence_score\":52}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:30:34.915251",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:30:34.915292",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2,0],\"predicted_output\":false,\"current_mode\":\"probing\",\"input_rationale\":\"This distinguishes whether the function checks exact order `[0,2]` or just the presence of 0 and 2 in any order.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns True only for the empty list or the exact list [0, 2].\\\"\\\"\\\"\\n    return items == [] or items == [0, 2]\",\"confidence_score\":82}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:30:58.983668",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:30:58.983800",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[3,1],\"predicted_output\":true,\"current_mode\":\"confirming\",\"input_rationale\":\"Tests the arithmetic-progression hypothesis on a decreasing-by-2 pair that is not involved in any prior examples.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns True for the empty list, the single-item list [0], or a list forming an arithmetic progression with step +2 or -2, excluding step 0.\\\"\\\"\\\"\\n    if not items:\\n        return True\\n    if items == [0]:\\n        return True\\n    if len(items) < 2:\\n        return False\\n    d = items[1] - items[0]\\n    if abs(d) != 2:\\n        return False\\n    for i in range(1, len(items)):\\n        if items[i] - items[i-1] != d:\\n            return False\\n    return items[0] != 0\",\"confidence_score\":67}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:31:09.522356",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:31:09.522382",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2],\"predicted_output\":true,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the singleton edge case that distinguishes a likely `sum(items) > 0` condition from a special-case acceptance of only `[1]` among singletons.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns True when the list is non-empty, has adjacent differences of 2 throughout, and has positive sum.\\\"\\\"\\\"\\n    if not items:\\n        return True\\n    if sum(items) <= 0:\\n        return False\\n    for i in range(1, len(items)):\\n        if items[i] - items[i-1] != 2:\\n            return False\\n    return True\",\"confidence_score\":74}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:31:31.047204",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:31:31.047264",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5,3,1],\"predicted_output\":true,\"current_mode\":\"confirming\",\"input_rationale\":\"Checks whether the odd-number branch is exactly a descending-by-2 sequence ending at 1, which matches the observed true case [3,1].\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns True for the empty list, for [0], for even sequences 0,2,4,..., and for odd sequences n,n-2,...,1 with n>=3.\\\"\\\"\\\"\\n    if not items:\\n        return True\\n    if items == [0]:\\n        return True\\n\\n    # Even ascending sequence starting at 0: [0, 2, 4, ...]\\n    if items[0] == 0:\\n        for i in range(1, len(items)):\\n            if items[i] - items[i - 1] != 2:\\n                break\\n        else:\\n            return True\\n\\n    # Odd descending sequence ending at 1: [2k+1, 2k-1, ..., 1], length at least 2\\n    if len(items) >= 2 and items[-1] == 1:\\n        for i in range(1, len(items)):\\n            if items[i - 1] - items[i] != 2:\\n                break\\n        else:\\n            return True\\n\\n    return False\",\"confidence_score\":81}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:31:56.871682",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:31:56.871747",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,5],\"predicted_output\":true,\"current_mode\":\"probing\",\"input_rationale\":\"This distinguishes between a parity-based rule for two-element lists and a stricter difference-of-2 rule; both would still fit all current examples, but they disagree here.\",\"hypothesis\":\"unknown\",\"confidence_score\":58}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:33:00.812308",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:33:00.812337",
+        "action": {
+          "type": "get message",
+          "content": "```python\ndef solution(items):\n    \"\"\"Returns True for empty list, [1], [0, 2], or any 2-item odd descending pair with step 2.\"\"\"\n    if not items:\n        return True\n    if items == [1]:\n        return True\n    if len(items) == 2:\n        a, b = items\n        if a == 0 and b == 2:\n            return True\n        if a % 2 == 1 and b > 0 and b % 2 == 1 and a - b == 2:\n            return True\n    return False\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:34:03.241024",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:34:03.241102",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef solution(items):\n    \"\"\"Returns True for the empty list, any odd singleton, or a 2-item list where even numbers increase by 2 and odd numbers decrease by 2.\"\"\"\n    if not items:\n        return True\n    if len(items) == 1:\n        return items[0] % 2 == 1\n    if len(items) == 2:\n        a, b = items\n        if a % 2 == 0 and b == a + 2:\n            return True\n        if a % 2 == 1 and b == a - 2:\n            return True\n    return False\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:34:04.035602",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:34:04.035779",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [[5, -5, 5]] | Expected: 2 | Got: False\nInput: [[]] | Expected: 0 | Got: True\nInput: [[0, 0]] | Expected: 1 | Got: False"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:34:04.035802",
+        "action": {
+          "type": "hidden_function",
+          "content": "def count_adjacent_opposite_pairs(items: List[int]) -> int:\n    return sum(1 for i in range(len(items) - 1) if items[i] == -items[i + 1])"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:34:04.035816",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(items):\n    \"\"\"Returns True for the empty list, any odd singleton, or a 2-item list where even numbers increase by 2 and odd numbers decrease by 2.\"\"\"\n    if not items:\n        return True\n    if len(items) == 1:\n        return items[0] % 2 == 1\n    if len(items) == 2:\n        a, b = items\n        if a % 2 == 0 and b == a + 2:\n            return True\n        if a % 2 == 1 and b == a - 2:\n            return True\n    return False"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:34:04.035879",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_pair_checks\nAccuracy: 0.700\nInformation requests: 13/15\nRevealed passive examples: 0\nEfficiency: 0.200\nSlack: 2\nObserved-pair consistency: 0.600\nMembership balance: 5 true / 9 false\nParse errors: 1\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.2,
+  "efficiency_raw": 0.2,
+  "slack": 2,
+  "accuracy": 0.7,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 13,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "output": 2
+    },
+    {
+      "round": 1,
+      "args": [
+        []
+      ],
+      "output": 0
+    },
+    {
+      "round": 5,
+      "args": [
+        [
+          0
+        ]
+      ],
+      "output": false
+    },
+    {
+      "round": 7,
+      "args": [
+        [
+          1,
+          3
+        ]
+      ],
+      "output": false
+    },
+    {
+      "round": 9,
+      "args": [
+        [
+          2,
+          0
+        ]
+      ],
+      "output": false
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [],
+      "predicted_output": 0,
+      "confidence_score": 5,
+      "current_mode": "probing",
+      "input_rationale": "Checks the simplest edge case; many list aggregations return 0 on empty input, and some functions may special-case it.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 1,
+      "input": [
+        1
+      ],
+      "predicted_output": 1,
+      "confidence_score": 8,
+      "current_mode": "probing",
+      "input_rationale": "Tests the simplest non-empty list to see whether the function behaves like sum, length, max, or another basic aggregation.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": [
+        1,
+        2
+      ],
+      "predicted_output": true,
+      "confidence_score": 12,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function might simply be checking emptiness or another property that depends only on list length; two elements help distinguish from single-element behavior.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        2,
+        2
+      ],
+      "predicted_output": true,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the hidden function is checking a property like 'all elements are equal' or another condition that should hold for a constant two-element list.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": [
+        0
+      ],
+      "predicted_output": false,
+      "confidence_score": 88,
+      "current_mode": "confirming",
+      "input_rationale": "Checks the simplest non-empty case under the hypothesis that the function returns whether the list is empty.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns True if the list is empty, otherwise False.\"\"\"\n    return len(items) == 0",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": [
+        0,
+        2
+      ],
+      "predicted_output": true,
+      "confidence_score": 30,
+      "current_mode": "probing",
+      "input_rationale": "This distinguishes between two leading hypotheses: `sum(items) == len(items)` would be True here, while `all(x == 1 for x in items)` would be False.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": [
+        1,
+        3
+      ],
+      "predicted_output": false,
+      "confidence_score": 45,
+      "current_mode": "probing",
+      "input_rationale": "This distinguishes the strongest remaining hypotheses: 'all items are 1' predicts False, while 'all items are odd' predicts True.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": [
+        0,
+        2,
+        4
+      ],
+      "predicted_output": true,
+      "confidence_score": 52,
+      "current_mode": "probing",
+      "input_rationale": "This distinguishes whether the function is checking an exact even-index pattern `items[i] == 2*i` or also requires an even-length list.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": [
+        2,
+        0
+      ],
+      "predicted_output": false,
+      "confidence_score": 82,
+      "current_mode": "probing",
+      "input_rationale": "This distinguishes whether the function checks exact order `[0,2]` or just the presence of 0 and 2 in any order.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns True only for the empty list or the exact list [0, 2].\"\"\"\n    return items == [] or items == [0, 2]",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": [
+        3,
+        1
+      ],
+      "predicted_output": true,
+      "confidence_score": 67,
+      "current_mode": "confirming",
+      "input_rationale": "Tests the arithmetic-progression hypothesis on a decreasing-by-2 pair that is not involved in any prior examples.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns True for the empty list, the single-item list [0], or a list forming an arithmetic progression with step +2 or -2, excluding step 0.\"\"\"\n    if not items:\n        return True\n    if items == [0]:\n        return True\n    if len(items) < 2:\n        return False\n    d = items[1] - items[0]\n    if abs(d) != 2:\n        return False\n    for i in range(1, len(items)):\n        if items[i] - items[i-1] != d:\n            return False\n    return items[0] != 0",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": [
+        2
+      ],
+      "predicted_output": true,
+      "confidence_score": 74,
+      "current_mode": "probing",
+      "input_rationale": "Tests the singleton edge case that distinguishes a likely `sum(items) > 0` condition from a special-case acceptance of only `[1]` among singletons.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns True when the list is non-empty, has adjacent differences of 2 throughout, and has positive sum.\"\"\"\n    if not items:\n        return True\n    if sum(items) <= 0:\n        return False\n    for i in range(1, len(items)):\n        if items[i] - items[i-1] != 2:\n            return False\n    return True",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        5,
+        3,
+        1
+      ],
+      "predicted_output": true,
+      "confidence_score": 81,
+      "current_mode": "confirming",
+      "input_rationale": "Checks whether the odd-number branch is exactly a descending-by-2 sequence ending at 1, which matches the observed true case [3,1].",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns True for the empty list, for [0], for even sequences 0,2,4,..., and for odd sequences n,n-2,...,1 with n>=3.\"\"\"\n    if not items:\n        return True\n    if items == [0]:\n        return True\n\n    # Even ascending sequence starting at 0: [0, 2, 4, ...]\n    if items[0] == 0:\n        for i in range(1, len(items)):\n            if items[i] - items[i - 1] != 2:\n                break\n        else:\n            return True\n\n    # Odd descending sequence ending at 1: [2k+1, 2k-1, ..., 1], length at least 2\n    if len(items) >= 2 and items[-1] == 1:\n        for i in range(1, len(items)):\n            if items[i - 1] - items[i] != 2:\n                break\n        else:\n            return True\n\n    return False",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 12,
+      "input": [
+        1,
+        5
+      ],
+      "predicted_output": true,
+      "confidence_score": 58,
+      "current_mode": "probing",
+      "input_rationale": "This distinguishes between a parity-based rule for two-element lists and a stricter difference-of-2 rule; both would still fit all current examples, but they disagree here.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 5,
+  "unique_input_count": 5,
+  "unique_output_count": 3,
+  "novelty_rate": 0.6,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.3709505944546687,
+  "mode": "active_pair_checks",
+  "info_request_count": 13,
+  "revealed_example_count": 0,
+  "membership_true_count": 5,
+  "membership_false_count": 9,
+  "internal_consistency_score": 0.6,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 2,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1
+  ]
+}

@@ -1,0 +1,783 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_labeled_pairs",
+    "game_id": 213,
+    "results_folder": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+    "clem_version": "3.7.2",
+    "round_count": 13,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+        "backend": "openai_compatible",
+        "context_size": "262k",
+        "languages": [
+          "en",
+          "zh"
+        ],
+        "license": {},
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "extra_body": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          }
+        },
+        "model_id": "Qwen/Qwen3.6-35B-A3B-FP8",
+        "open_weight": true,
+        "parameters": "35B",
+        "release_date": "2026-04-28"
+      },
+      "gen_args": {
+        "temperature": 0.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:42.769060",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((False, True), True), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:42.769109",
+        "action": {
+          "type": "get message",
+          "content": "{'current_mode': 'probing', 'input_rationale': 'I have one preloaded example: f(False, True) = True. This is consistent with several boolean functions such as OR, XOR, or A AND NOT B. I need more data points to distinguish between these. I will probe with (True, False) to see if the function is symmetric or not.', 'hypothesis': 'unknown', 'confidence_score': 10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:43.592630",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:43.592661",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have one preloaded example: f(False, True) = True. This is consistent with several boolean functions such as OR, XOR, or A AND NOT B. I need more data points to distinguish between these. I will probe with (True, False) to see if the function is symmetric or not.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 10\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:44.517559",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:44.517589",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have two data points now: f(False, True) = True and f(False, False) = False. This suggests the function might depend on the second argument being True when the first is False. Let's test (True, True) and (True, False) to distinguish between OR, XOR, and other possibilities. I'll probe (True, True) next.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 20\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:45.705000",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:45.705022",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have three data points: f(False, True) = True, f(False, False) = False, f(True, False) = True. This eliminates OR (since f(False, False) is False) and AND (since f(False, True) is True). It is consistent with XOR, but I need to check f(True, True). If f(True, True) is False, it's XOR. If it's True, it might be something else like A OR (NOT B) or similar. I will probe (True, True) next.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 30\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:46.740830",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:46.740882",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:47.784732",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:47.784766",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:48.837752",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:48.837784",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:49.904889",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:49.904942",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:50.979288",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:50.979345",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:52.062171",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:52.062211",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:53.158400",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:53.158439",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:54.472487",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:54.472523",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.\",\n  \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the XOR of a and b.\\\"\\\"\\\"\\n    return a ^ b\",\n  \"confidence_score\": 100\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T17:52:54.954899",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:54.954934",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:55.492734",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:55.492856",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [True, True] | Expected: True | Got: False"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:55.492877",
+        "action": {
+          "type": "hidden_function",
+          "content": "def a_or_b_via_if(a: bool, b: bool) -> bool:\n    if a:\n        return True\n    if b:\n        return True\n    return False"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:55.492892",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T17:52:55.492938",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.750\nInformation requests: 11/15\nRevealed passive examples: 12\nEfficiency: 0.333\nSlack: 4\nObserved-pair consistency: 1.000\nMembership balance: 6 true / 6 false\nParse errors: 1\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.3333333333333333,
+  "efficiency_raw": 0.3333333333333333,
+  "slack": 4,
+  "accuracy": 0.75,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 4,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 11,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 2,
+      "args": [
+        true,
+        false
+      ],
+      "output": true
+    },
+    {
+      "round": 4,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 6,
+      "args": [
+        true,
+        false
+      ],
+      "output": true
+    },
+    {
+      "round": 8,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 10,
+      "args": [
+        true,
+        false
+      ],
+      "output": true
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": false,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "I have one preloaded example: f(False, True) = True. This is consistent with several boolean functions such as OR, XOR, or A AND NOT B. I need more data points to distinguish between these. I will probe with (True, False) to see if the function is symmetric or not.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 20,
+      "current_mode": "probing",
+      "input_rationale": "I have two data points now: f(False, True) = True and f(False, False) = False. This suggests the function might depend on the second argument being True when the first is False. Let's test (True, True) and (True, False) to distinguish between OR, XOR, and other possibilities. I'll probe (True, True) next.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 30,
+      "current_mode": "probing",
+      "input_rationale": "I have three data points: f(False, True) = True, f(False, False) = False, f(True, False) = True. This eliminates OR (since f(False, False) is False) and AND (since f(False, True) is True). It is consistent with XOR, but I need to check f(True, True). If f(True, True) is False, it's XOR. If it's True, it might be something else like A OR (NOT B) or similar. I will probe (True, True) next.",
+      "hypothesis": "unknown",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 11,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "I have all four input-output pairs: f(False, False) = False, f(False, True) = True, f(True, False) = True, f(True, True) = False. This perfectly matches the XOR (exclusive OR) operation. I am confident in this hypothesis.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the XOR of a and b.\"\"\"\n    return a ^ b",
+      "gm_output": false,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 6,
+  "unique_input_count": 2,
+  "unique_output_count": 1,
+  "novelty_rate": 0.16666666666666666,
+  "input_diversity": 0.3333333333333333,
+  "output_entropy_bits": 0.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 11,
+  "revealed_example_count": 12,
+  "membership_true_count": 6,
+  "membership_false_count": 6,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

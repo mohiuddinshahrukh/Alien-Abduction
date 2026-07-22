@@ -1,0 +1,887 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 279,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:20.235593",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((1, -10), 11), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:20.235634",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The single example matches the absolute difference: abs(1 - (-10)) = 11. I need another pair to confirm whether order matters or if it's something like distance between integers.\",\"hypothesis\":\"unknown\",\"confidence_score\":34}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:46.096159",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((0, 1000), 999), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:46.096240",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The confirmed example and the rejected candidate are both consistent with several simple integer formulas, especially abs(a-b) and abs(a)+abs(b). I need one more test case, ideally with same-sign inputs, to distinguish them.\",\"hypothesis\":\"unknown\",\"confidence_score\":30}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:51.275662",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1000, 2), 1002), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:51.275717",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The pairs fit the sum of absolute values: abs(1)+abs(-10)=11 and abs(1000)+abs(2)=1002. The rejected 999 for (0,1000) also matches this, since the correct value would be 1000, not 999.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":97}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:54.103964",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1000, -99), 1100), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:54.104019",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This rejected candidate is consistent with the current hypothesis: abs(-1000) + abs(-99) = 1099, so 1100 is not correct.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:56.161385",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1, 1000), 1001), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:56.161426",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This is consistent with the same rule: abs(-1) + abs(1000) = 1001.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:58.348537",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-99, 0), 98), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:58.348592",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected value matches the hypothesis too, since abs(-99) + abs(0) = 99, not 98.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:00.721591",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((0, 1), 1), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:00.721639",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This final check is also consistent: abs(0) + abs(1) = 1.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:03.182265",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((10, -1000), 1011), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:03.182313",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected candidate is consistent with the current hypothesis because abs(10) + abs(-1000) = 1010, so 1011 is incorrect.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:05.144621",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((0, 0), 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:05.144690",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Zero case also fits: abs(0) + abs(0) = 0.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:08.478934",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1, -99), 102), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:08.478974",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected candidate is consistent with the hypothesis: abs(-1) + abs(-99) = 100, not 102.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:13.858123",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-2, -99), 101), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:13.858169",
+        "action": {
+          "type": "get message",
+          "content": "```python\ndef f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:16.608899",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:16.608955",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The examples consistently match the sum of absolute values, including the latest confirmed case: abs(-2) + abs(-99) = 101.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:19.271619",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((10, 1), 13), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:19.271672",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This rejected candidate still fits the same rule, since abs(10) + abs(1) = 11, not 13.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:21.490383",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-10, 99), 109), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:21.490438",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This confirmed case matches the same hypothesis: abs(-10) + abs(99) = 109.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:50:24.845013",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((10, -1), 13), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:24.845066",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This rejected pair is also consistent with the same rule, since abs(10) + abs(-1) = 11, not 13.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the two integers.\\\"\\\"\\\"\\n    return abs(a) + abs(b)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:50:24.845835",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 14,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        1,
+        -10
+      ],
+      "output": 11
+    },
+    {
+      "round": 2,
+      "args": [
+        1000,
+        2
+      ],
+      "output": 1002
+    },
+    {
+      "round": 4,
+      "args": [
+        -1,
+        1000
+      ],
+      "output": 1001
+    },
+    {
+      "round": 6,
+      "args": [
+        0,
+        1
+      ],
+      "output": 1
+    },
+    {
+      "round": 8,
+      "args": [
+        0,
+        0
+      ],
+      "output": 0
+    },
+    {
+      "round": 10,
+      "args": [
+        -2,
+        -99
+      ],
+      "output": 101
+    },
+    {
+      "round": 12,
+      "args": [
+        -10,
+        99
+      ],
+      "output": 109
+    },
+    {
+      "round": 14,
+      "args": [
+        99,
+        99
+      ],
+      "output": 198
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        1,
+        -10
+      ],
+      "candidate_output": 11,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0,
+        1000
+      ],
+      "candidate_output": 999,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1000,
+        2
+      ],
+      "candidate_output": 1002,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1000,
+        -99
+      ],
+      "candidate_output": 1100,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1,
+        1000
+      ],
+      "candidate_output": 1001,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99,
+        0
+      ],
+      "candidate_output": 98,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0,
+        1
+      ],
+      "candidate_output": 1,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        10,
+        -1000
+      ],
+      "candidate_output": 1011,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0,
+        0
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1,
+        -99
+      ],
+      "candidate_output": 102,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        -99
+      ],
+      "candidate_output": 101,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        10,
+        1
+      ],
+      "candidate_output": 13,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        99
+      ],
+      "candidate_output": 109,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        10,
+        -1
+      ],
+      "candidate_output": 13,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        99,
+        99
+      ],
+      "candidate_output": 198,
+      "is_member": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        0,
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 34,
+      "current_mode": "probing",
+      "input_rationale": "The single example matches the absolute difference: abs(1 - (-10)) = 11. I need another pair to confirm whether order matters or if it's something like distance between integers.",
+      "hypothesis": "unknown",
+      "gm_output": 999,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        1000,
+        2
+      ],
+      "predicted_output": null,
+      "confidence_score": 30,
+      "current_mode": "probing",
+      "input_rationale": "The confirmed example and the rejected candidate are both consistent with several simple integer formulas, especially abs(a-b) and abs(a)+abs(b). I need one more test case, ideally with same-sign inputs, to distinguish them.",
+      "hypothesis": "unknown",
+      "gm_output": 1002,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        -1000,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 97,
+      "current_mode": "confirming",
+      "input_rationale": "The pairs fit the sum of absolute values: abs(1)+abs(-10)=11 and abs(1000)+abs(2)=1002. The rejected 999 for (0,1000) also matches this, since the correct value would be 1000, not 999.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 1100,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        -1,
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "This rejected candidate is consistent with the current hypothesis: abs(-1000) + abs(-99) = 1099, so 1100 is not correct.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 1001,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        -99,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "This is consistent with the same rule: abs(-1) + abs(1000) = 1001.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 98,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        0,
+        1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected value matches the hypothesis too, since abs(-99) + abs(0) = 99, not 98.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        10,
+        -1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This final check is also consistent: abs(0) + abs(1) = 1.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 1011,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        0,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected candidate is consistent with the current hypothesis because abs(10) + abs(-1000) = 1010, so 1011 is incorrect.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        -1,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "Zero case also fits: abs(0) + abs(0) = 0.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 102,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        -2,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected candidate is consistent with the hypothesis: abs(-1) + abs(-99) = 100, not 102.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 101,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 11,
+      "input": [
+        10,
+        1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The examples consistently match the sum of absolute values, including the latest confirmed case: abs(-2) + abs(-99) = 101.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 13,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 12,
+      "input": [
+        -10,
+        99
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This rejected candidate still fits the same rule, since abs(10) + abs(1) = 11, not 13.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 109,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 13,
+      "input": [
+        10,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This confirmed case matches the same hypothesis: abs(-10) + abs(99) = 109.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 13,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 14,
+      "input": [
+        99,
+        99
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This rejected pair is also consistent with the same rule, since abs(10) + abs(-1) = 11, not 13.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the two integers.\"\"\"\n    return abs(a) + abs(b)",
+      "gm_output": 198,
+      "gm_output_label": true
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 8,
+  "unique_output_count": 8,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 3.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 14,
+  "revealed_example_count": 15,
+  "membership_true_count": 8,
+  "membership_false_count": 7,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1
+  ]
+}

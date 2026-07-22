@@ -1,0 +1,809 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 297,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 13,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:01:44.337447",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((1, 10), 3), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:01:44.337510",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Test whether the function is symmetric in its arguments by checking the swapped version of the known example.\",\"candidate_io_pair\":{\"input\":[10,1],\"output\":3},\"hypothesis\":\"unknown\",\"confidence_score\":8}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:01:54.441813",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-10, 1), 14), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:01:54.441868",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Check a simple equal-arguments case to distinguish bitwise/counting-style rules from arithmetic ones.\",\"candidate_io_pair\":{\"input\":[1,1],\"output\":0},\"hypothesis\":\"unknown\",\"confidence_score\":10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:02:06.013639",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((10, -99), 4), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:02:06.013690",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Current best hypothesis is that the function returns the number of 1-bits in abs(a) XOR abs(b); the known examples fit this exactly, and the negative example is consistent.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the popcount of abs(a) XOR abs(b).\\\"\\\"\\\"\\n    x = abs(a) ^ abs(b)\\n    return x.bit_count()\",\"confidence_score\":72}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:02:14.718640",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-99, 0), -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:02:14.718693",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Probe a case that sharply distinguishes XOR-popcount from arithmetic/digit-based rules: if the guess is right, identical inputs should give 0.\",\"candidate_io_pair\":{\"input\":[10,10],\"output\":0},\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns the number of 1-bits in abs(a) XOR abs(b).\\\"\\\"\\\"\\n    return (abs(a) ^ abs(b)).bit_count()\",\"confidence_score\":78}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:03:07.145006",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1000, 0), 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:03:07.145086",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"don't know\",\"input_rationale\":\"Current evidence supports multiple hypotheses, especially sum of digit counts of abs(a), abs(b) with a zero special-case, versus digit counts of gcd/lcm/product-related values. Need another revealed pair to separate them.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Tentative: returns 0 if either input is 0, otherwise the total decimal digit count of abs(a) and abs(b).\\\"\\\"\\\"\\n    if a == 0 or b == 0:\\n        return 0\\n    return len(str(abs(a))) + len(str(abs(b)))\",\"confidence_score\":31}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:03:35.024295",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-2, -1), 12), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:03:35.024348",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Best hypothesis: count nonnegative perfect squares in the half-open interval [min(a,b), max(a,b)). A same-endpoint case should return 0 under this rule.\",\"candidate_io_pair\":{\"input\":[16,16],\"output\":0},\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns how many perfect squares lie in [min(a,b), max(a,b)).\\\"\\\"\\\"\\n    lo = a if a < b else b\\n    hi = b if a < b else a\\n    if hi <= 0:\\n        return 0\\n    if lo < 0:\\n        lo = 0\\n    s = int(lo ** 0.5)\\n    while s * s < lo:\\n        s += 1\\n    t = int((hi - 1) ** 0.5)\\n    while (t + 1) * (t + 1) < hi:\\n        t += 1\\n    while t * t >= hi:\\n        t -= 1\\n    return 0 if t < s else t - s + 1\",\"confidence_score\":88}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:04:06.086544",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((99, 0), 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:04:06.086602",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Need more revealed examples to distinguish a simple decimal-digit-count rule with a zero special-case from several other hypotheses that still fit all known true pairs.\",\"hypothesis\":\"unknown\",\"confidence_score\":24}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:05:22.082424",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1000, -99), 7), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:05:22.082477",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The strongest clue is that cases with b = 0 return 0, which naturally suggests b is acting like a denominator. Current best guess: reduce a/b to lowest terms, then return the total number of decimal digits in numerator and denominator, ignoring signs; if b is 0, return 0.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns 0 if b is 0; otherwise reduces a/b and returns the total digit count of the reduced numerator and denominator, ignoring signs.\\\"\\\"\\\"\\n    if b == 0:\\n        return 0\\n    x = abs(a)\\n    y = abs(b)\\n    while y:\\n        x, y = y, x % y\\n    g = x\\n    return len(str(abs(a) // g)) + len(str(abs(b) // g))\",\"confidence_score\":47}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:07:53.378747",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-99, 2), 5), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:07:53.378796",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The current evidence is highly ambiguous; another revealed example is needed to separate string-length-style rules, prime-sum-gated rules, and interval-counting rules.\",\"hypothesis\":\"unknown\",\"confidence_score\":22}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:09:05.627754",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1000, -2), 12), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:09:05.627830",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Current best guess is that the function returns 0 when b is 0, otherwise the character length of a/b rounded to one decimal place (e.g. 1/10 -> '0.1' -> 3). One more revealed pair could strengthen or weaken this before solving.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns 0 if b is 0; otherwise returns the length of the decimal string for a/b rounded to one decimal place.\\\"\\\"\\\"\\n    if b == 0:\\n        return 0\\n    return len(str(round(a / b, 1)))\",\"confidence_score\":54}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:10:39.788075",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1000, 10), 4), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:10:39.788135",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"A decisive check for the strongest remaining hypothesis: whether the function measures the display length of division to one decimal place, treating division by 1 as an integer with no decimal point.\",\"candidate_io_pair\":{\"input\":[10,1],\"output\":2},\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Tentative: returns 0 if b is 0; otherwise returns the character length of a/b shown to one decimal place, with a trailing zero removed, and with exact division by ±1 shown without a decimal point.\\\"\\\"\\\"\\n    if b == 0:\\n        return 0\\n    s = str(round(a / b, 1)).rstrip('0')\\n    if abs(b) == 1 and s.endswith('.'):\\n        s = s[:-1]\\n    return len(s)\",\"confidence_score\":58}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:11:19.386400",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-10, 0), -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:11:19.386475",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Current best hypothesis is that the function returns 0 when b is 0; otherwise it computes a/b rounded to one decimal place, converts that to a string, strips only trailing zero characters, and returns the resulting string length.\",\"hypothesis\":\"def f(a, b):\\n    \\\"\\\"\\\"Returns 0 if b is 0; otherwise returns the length of a/b rounded to 1 decimal place after stripping trailing zeros from the decimal string.\\\"\\\"\\\"\\n    if b == 0:\\n        return 0\\n    n = abs(a)\\n    d = abs(b)\\n    q10, r = divmod(n * 10, d)\\n    twice = r * 2\\n    if twice > d or (twice == d and q10 % 2 == 1):\\n        q10 += 1\\n    s = ('-' if a * b < 0 and q10 != 0 else '') + str(q10 // 10) + '.' + str(q10 % 10)\\n    return len(s.rstrip('0'))\",\"confidence_score\":74}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T04:15:33.758804",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((2, -1), 5), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:15:33.758856",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef f(a, b):\n    \"\"\"Return the length of a/b rounded to 1 significant digit, shown as fixed decimal for |x|<1 and as dE+e for |x|>=1; return 0 if b==0.\"\"\"\n    if b == 0:\n        return 0\n\n    if a == 0:\n        return 1\n\n    neg = (a < 0) ^ (b < 0)\n    n = abs(a)\n    d = abs(b)\n\n    # Find decimal exponent e so that 10**e <= n/d < 10**(e+1)\n    nd = len(str(n))\n    dd = len(str(d))\n    e = nd - dd\n    if e >= 0:\n        p = 10 ** e\n        if n < d * p:\n            e -= 1\n    else:\n        p = 10 ** (-e)\n        if n * p < d:\n            e -= 1\n\n    # Round n/d to 1 significant digit: digit * 10**e\n    if e >= 0:\n        scale = 10 ** e\n        q, r = divmod(n, d * scale)\n        if r * 2 >= d * scale:\n            q += 1\n    else:\n        scale = 10 ** (-e)\n        q, r = divmod(n * scale, d)\n        if r * 2 >= d:\n            q += 1\n\n    if q == 10:\n        q = 1\n        e += 1\n\n    if e < 0:\n        k = -e\n        s = (\"-\" if neg else \"\") + \"0.\" + (\"0\" * (k - 1)) + str(q)\n    else:\n        s = (\"-\" if neg else \"\") + str(q) + \"E+\" + str(e)\n\n    return len(s)\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:15:34.210106",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:15:34.210229",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [1, 10] | Expected: 3 | Got: __ERROR__\nInput: [-10, 1] | Expected: 4 | Got: __ERROR__\nInput: [10, -99] | Expected: 4 | Got: __ERROR__"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:15:34.210244",
+        "action": {
+          "type": "hidden_function",
+          "content": "def product_mod_seven(a: int, b: int) -> int:\n    return (a * b) % 7"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:15:34.210261",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a, b):\n    \"\"\"Return the length of a/b rounded to 1 significant digit, shown as fixed decimal for |x|<1 and as dE+e for |x|>=1; return 0 if b==0.\"\"\"\n    if b == 0:\n        return 0\n\n    if a == 0:\n        return 1\n\n    neg = (a < 0) ^ (b < 0)\n    n = abs(a)\n    d = abs(b)\n\n    # Find decimal exponent e so that 10**e <= n/d < 10**(e+1)\n    nd = len(str(n))\n    dd = len(str(d))\n    e = nd - dd\n    if e >= 0:\n        p = 10 ** e\n        if n < d * p:\n            e -= 1\n    else:\n        p = 10 ** (-e)\n        if n * p < d:\n            e -= 1\n\n    # Round n/d to 1 significant digit: digit * 10**e\n    if e >= 0:\n        scale = 10 ** e\n        q, r = divmod(n, d * scale)\n        if r * 2 >= d * scale:\n            q += 1\n    else:\n        scale = 10 ** (-e)\n        q, r = divmod(n * scale, d)\n        if r * 2 >= d:\n            q += 1\n\n    if q == 10:\n        q = 1\n        e += 1\n\n    if e < 0:\n        k = -e\n        s = (\"-\" if neg else \"\") + \"0.\" + (\"0\" * (k - 1)) + str(q)\n    else:\n        s = (\"-\" if neg else \"\") + str(q) + \"E+\" + str(e)\n\n    return len(s)"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T04:15:34.210307",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.100\nInformation requests: 12/15\nRevealed passive examples: 13\nEfficiency: 0.267\nSlack: 3\nObserved-pair consistency: 0.286\nMembership balance: 7 true / 6 false\nParse errors: 0\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.26666666666666666,
+  "efficiency_raw": 0.26666666666666666,
+  "slack": 3,
+  "accuracy": 0.1,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 12,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        1,
+        10
+      ],
+      "output": 3
+    },
+    {
+      "round": 2,
+      "args": [
+        10,
+        -99
+      ],
+      "output": 4
+    },
+    {
+      "round": 4,
+      "args": [
+        -1000,
+        0
+      ],
+      "output": 0
+    },
+    {
+      "round": 6,
+      "args": [
+        99,
+        0
+      ],
+      "output": 0
+    },
+    {
+      "round": 8,
+      "args": [
+        -99,
+        2
+      ],
+      "output": 5
+    },
+    {
+      "round": 10,
+      "args": [
+        1000,
+        10
+      ],
+      "output": 4
+    },
+    {
+      "round": 12,
+      "args": [
+        2,
+        -1
+      ],
+      "output": 5
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        1,
+        10
+      ],
+      "candidate_output": 3,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        1
+      ],
+      "candidate_output": 14,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        10,
+        -99
+      ],
+      "candidate_output": 4,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99,
+        0
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1000,
+        0
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        -1
+      ],
+      "candidate_output": 12,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        99,
+        0
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1000,
+        -99
+      ],
+      "candidate_output": 7,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99,
+        2
+      ],
+      "candidate_output": 5,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1000,
+        -2
+      ],
+      "candidate_output": 12,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1000,
+        10
+      ],
+      "candidate_output": 4,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        0
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        2,
+        -1
+      ],
+      "candidate_output": 5,
+      "is_member": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        -10,
+        1
+      ],
+      "predicted_output": null,
+      "confidence_score": 8,
+      "current_mode": "probing",
+      "input_rationale": "Test whether the function is symmetric in its arguments by checking the swapped version of the known example.",
+      "hypothesis": "unknown",
+      "gm_output": 14,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        10,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "Check a simple equal-arguments case to distinguish bitwise/counting-style rules from arithmetic ones.",
+      "hypothesis": "unknown",
+      "gm_output": 4,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        -99,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 72,
+      "current_mode": "confirming",
+      "input_rationale": "Current best hypothesis is that the function returns the number of 1-bits in abs(a) XOR abs(b); the known examples fit this exactly, and the negative example is consistent.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the popcount of abs(a) XOR abs(b).\"\"\"\n    x = abs(a) ^ abs(b)\n    return x.bit_count()",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        -1000,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 78,
+      "current_mode": "confirming",
+      "input_rationale": "Probe a case that sharply distinguishes XOR-popcount from arithmetic/digit-based rules: if the guess is right, identical inputs should give 0.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns the number of 1-bits in abs(a) XOR abs(b).\"\"\"\n    return (abs(a) ^ abs(b)).bit_count()",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        -2,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 31,
+      "current_mode": "don't know",
+      "input_rationale": "Current evidence supports multiple hypotheses, especially sum of digit counts of abs(a), abs(b) with a zero special-case, versus digit counts of gcd/lcm/product-related values. Need another revealed pair to separate them.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Tentative: returns 0 if either input is 0, otherwise the total decimal digit count of abs(a) and abs(b).\"\"\"\n    if a == 0 or b == 0:\n        return 0\n    return len(str(abs(a))) + len(str(abs(b)))",
+      "gm_output": 12,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        99,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 88,
+      "current_mode": "confirming",
+      "input_rationale": "Best hypothesis: count nonnegative perfect squares in the half-open interval [min(a,b), max(a,b)). A same-endpoint case should return 0 under this rule.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns how many perfect squares lie in [min(a,b), max(a,b)).\"\"\"\n    lo = a if a < b else b\n    hi = b if a < b else a\n    if hi <= 0:\n        return 0\n    if lo < 0:\n        lo = 0\n    s = int(lo ** 0.5)\n    while s * s < lo:\n        s += 1\n    t = int((hi - 1) ** 0.5)\n    while (t + 1) * (t + 1) < hi:\n        t += 1\n    while t * t >= hi:\n        t -= 1\n    return 0 if t < s else t - s + 1",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        -1000,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 24,
+      "current_mode": "probing",
+      "input_rationale": "Need more revealed examples to distinguish a simple decimal-digit-count rule with a zero special-case from several other hypotheses that still fit all known true pairs.",
+      "hypothesis": "unknown",
+      "gm_output": 7,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        -99,
+        2
+      ],
+      "predicted_output": null,
+      "confidence_score": 47,
+      "current_mode": "confirming",
+      "input_rationale": "The strongest clue is that cases with b = 0 return 0, which naturally suggests b is acting like a denominator. Current best guess: reduce a/b to lowest terms, then return the total number of decimal digits in numerator and denominator, ignoring signs; if b is 0, return 0.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns 0 if b is 0; otherwise reduces a/b and returns the total digit count of the reduced numerator and denominator, ignoring signs.\"\"\"\n    if b == 0:\n        return 0\n    x = abs(a)\n    y = abs(b)\n    while y:\n        x, y = y, x % y\n    g = x\n    return len(str(abs(a) // g)) + len(str(abs(b) // g))",
+      "gm_output": 5,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        1000,
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 22,
+      "current_mode": "probing",
+      "input_rationale": "The current evidence is highly ambiguous; another revealed example is needed to separate string-length-style rules, prime-sum-gated rules, and interval-counting rules.",
+      "hypothesis": "unknown",
+      "gm_output": 12,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        1000,
+        10
+      ],
+      "predicted_output": null,
+      "confidence_score": 54,
+      "current_mode": "confirming",
+      "input_rationale": "Current best guess is that the function returns 0 when b is 0, otherwise the character length of a/b rounded to one decimal place (e.g. 1/10 -> '0.1' -> 3). One more revealed pair could strengthen or weaken this before solving.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns 0 if b is 0; otherwise returns the length of the decimal string for a/b rounded to one decimal place.\"\"\"\n    if b == 0:\n        return 0\n    return len(str(round(a / b, 1)))",
+      "gm_output": 4,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        -10,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 58,
+      "current_mode": "probing",
+      "input_rationale": "A decisive check for the strongest remaining hypothesis: whether the function measures the display length of division to one decimal place, treating division by 1 as an integer with no decimal point.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Tentative: returns 0 if b is 0; otherwise returns the character length of a/b shown to one decimal place, with a trailing zero removed, and with exact division by ±1 shown without a decimal point.\"\"\"\n    if b == 0:\n        return 0\n    s = str(round(a / b, 1)).rstrip('0')\n    if abs(b) == 1 and s.endswith('.'):\n        s = s[:-1]\n    return len(s)",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        2,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 74,
+      "current_mode": "confirming",
+      "input_rationale": "Current best hypothesis is that the function returns 0 when b is 0; otherwise it computes a/b rounded to one decimal place, converts that to a string, strips only trailing zero characters, and returns the resulting string length.",
+      "hypothesis": "def f(a, b):\n    \"\"\"Returns 0 if b is 0; otherwise returns the length of a/b rounded to 1 decimal place after stripping trailing zeros from the decimal string.\"\"\"\n    if b == 0:\n        return 0\n    n = abs(a)\n    d = abs(b)\n    q10, r = divmod(n * 10, d)\n    twice = r * 2\n    if twice > d or (twice == d and q10 % 2 == 1):\n        q10 += 1\n    s = ('-' if a * b < 0 and q10 != 0 else '') + str(q10 // 10) + '.' + str(q10 % 10)\n    return len(s.rstrip('0'))",
+      "gm_output": 5,
+      "gm_output_label": true
+    }
+  ],
+  "probe_count": 7,
+  "unique_input_count": 7,
+  "unique_output_count": 4,
+  "novelty_rate": 0.5714285714285714,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.9502120649147465,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 12,
+  "revealed_example_count": 13,
+  "membership_true_count": 7,
+  "membership_false_count": 6,
+  "internal_consistency_score": 0.2857142857142857,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 5,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

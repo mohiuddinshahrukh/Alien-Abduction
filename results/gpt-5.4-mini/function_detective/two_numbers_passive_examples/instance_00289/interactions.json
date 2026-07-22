@@ -1,0 +1,714 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_examples",
+    "game_id": 289,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 11,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:20:51.830503",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI control which valid input-output examples you see. You can request them one at a time.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ((-99, 10), 723)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:20:51.830559",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"I only have one example, which is insufficient to identify the rule. I need a few more input-output pairs to infer the hidden function reliably.\",\"hypothesis\":\"unknown\",\"confidence_score\":5}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:20:54.317099",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-1, -99), -399)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:20:54.317124",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"With only two examples, there are many possible integer formulas. I need at least one more pair to distinguish among linear and non-linear candidates.\",\"hypothesis\":\"unknown\",\"confidence_score\":8}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:20:58.431777",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-99, -2), -501)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:20:58.431829",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The three examples fit a simple affine function exactly. Solving the linear system gives f(a,b)=102a+102b+9801, which matches all observed outputs.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n\\t\\\"\\\"\\\"Returns 102 times the sum of the inputs plus 9801.\\\"\\\"\\\"\\n\\treturn 102 * (a + b) + 9801\",\"confidence_score\":97}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:21:00.657281",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-99, 2), -93)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:21:00.657336",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new example also matches the same affine rule, strengthening the hypothesis that the function is 102*(a+b)+9801.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n\\t\\\"\\\"\\\"Returns 102 times the sum of the inputs plus 9801.\\\"\\\"\\\"\\n\\treturn 102 * (a + b) + 9801\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:21:03.859391",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-10, -1), -43)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:21:03.859449",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The new example breaks the current affine hypothesis, so the function is likely piecewise. I need one more pair, preferably with neither input equal to -99, to identify the rule.\",\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:21:22.418271",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-1, -1000), -4003)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:21:22.418327",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The examples suggest a piecewise linear rule: if either argument is -99, the other argument is scaled by 102 and -99 contributes 3; otherwise the result is 4 times the smaller input plus 3 times the larger input. This matches all provided cases.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n\\t\\\"\\\"\\\"Computes a piecewise linear combination of the two integers.\\\"\\\"\\\"\\n\\tif a == -99 or b == -99:\\n\\t\\tother = b if a == -99 else a\\n\\t\\treturn 102 * other - 297\\n\\treturn 4 * min(a, b) + 3 * max(a, b)\",\"confidence_score\":95}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:21:28.642721",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((1, 99), 201)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:21:28.642806",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The examples with -99 reveal one special-case branch, but the general rule is still ambiguous. The new positive-positive example suggests the non-special branch may depend on the signs of the inputs, so I need one more mixed-sign example to pin it down.\",\"hypothesis\":\"unknown\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:21:43.795602",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-1000, 2), -994)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:21:43.795653",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"I need one more simple non-special case to determine whether the function depends on ordering, magnitude, or sign. A small positive-positive pair like (2,1) should distinguish the remaining candidates.\",\"hypothesis\":\"unknown\",\"confidence_score\":20}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:22:05.385265",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((2, -99), -93)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:05.385332",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The examples are consistent with a piecewise rule: a special case for any input equal to -99, otherwise coefficients depend on the sign pattern of the pair. This matches all seen outputs.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n\\t\\\"\\\"\\\"Computes a piecewise linear combination of the two integers.\\\"\\\"\\\"\\n\\tif a == -99 or b == -99:\\n\\t\\tother = b if a == -99 else a\\n\\t\\treturn 102 * other - 297\\n\\n\\tlo = a if a <= b else b\\n\\thi = b if a <= b else a\\n\\n\\tif a < 0 and b < 0:\\n\\t\\treturn 4 * lo + 3 * hi\\n\\tif a >= 0 and b >= 0:\\n\\t\\treturn 3 * lo + 2 * hi\\n\\treturn lo + 3 * hi\",\"confidence_score\":84}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:22:35.809699",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-99, -99), -10395)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:35.809746",
+        "action": {
+          "type": "get message",
+          "content": "```python\ndef f(a: int, b: int) -> int:\n    \"\"\"Computes a piecewise linear combination of the two integers.\"\"\"\n    if a == -99 or b == -99:\n        other = b if a == -99 else a\n        return 102 * other - 297\n\n    lo = a if a <= b else b\n    hi = b if a <= b else a\n\n    if hi < 0:\n        return 4 * lo + 3 * hi\n    if lo >= 0:\n        return 3 * lo + 2 * hi\n    return lo + 3 * hi\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:22:44.649210",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:44.649296",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef f(a: int, b: int) -> int:\n    \"\"\"Returns a piecewise linear combination of the two integers.\"\"\"\n    if a == -99 or b == -99:\n        return 102 * (a + b) + 9801\n\n    lo = a if a <= b else b\n    hi = b if a <= b else a\n\n    if hi < 0:\n        return 4 * lo + 3 * hi\n    if lo >= 0:\n        return 3 * lo + 2 * hi\n    return lo + 3 * hi\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:45.202684",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:45.202821",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [-1, 99] | Expected: 393 | Got: 296\nInput: [2, 0] | Expected: 6 | Got: 4\nInput: [1, -10] | Expected: -17 | Got: -7"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:45.202847",
+        "action": {
+          "type": "hidden_function",
+          "content": "def triple_sum_minus_product(a: int, b: int) -> int:\n    return 3 * (a + b) - a * b"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:45.202863",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a: int, b: int) -> int:\n    \"\"\"Returns a piecewise linear combination of the two integers.\"\"\"\n    if a == -99 or b == -99:\n        return 102 * (a + b) + 9801\n\n    lo = a if a <= b else b\n    hi = b if a <= b else a\n\n    if hi < 0:\n        return 4 * lo + 3 * hi\n    if lo >= 0:\n        return 3 * lo + 2 * hi\n    return lo + 3 * hi"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:22:45.202919",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_examples\nAccuracy: 0.360\nInformation requests: 9/15\nRevealed passive examples: 10\nEfficiency: 0.467\nSlack: 6\nObserved-pair consistency: 1.000\nParse errors: 1\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.4666666666666667,
+  "efficiency_raw": 0.4666666666666667,
+  "slack": 6,
+  "accuracy": 0.36,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 9,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        -99,
+        10
+      ],
+      "output": 723
+    },
+    {
+      "round": 1,
+      "args": [
+        -1,
+        -99
+      ],
+      "output": -399
+    },
+    {
+      "round": 2,
+      "args": [
+        -99,
+        -2
+      ],
+      "output": -501
+    },
+    {
+      "round": 3,
+      "args": [
+        -99,
+        2
+      ],
+      "output": -93
+    },
+    {
+      "round": 4,
+      "args": [
+        -10,
+        -1
+      ],
+      "output": -43
+    },
+    {
+      "round": 5,
+      "args": [
+        -1,
+        -1000
+      ],
+      "output": -4003
+    },
+    {
+      "round": 6,
+      "args": [
+        1,
+        99
+      ],
+      "output": 201
+    },
+    {
+      "round": 7,
+      "args": [
+        -1000,
+        2
+      ],
+      "output": -994
+    },
+    {
+      "round": 8,
+      "args": [
+        2,
+        -99
+      ],
+      "output": -93
+    },
+    {
+      "round": 9,
+      "args": [
+        -99,
+        -99
+      ],
+      "output": -10395
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "io",
+      "args": [
+        -99,
+        10
+      ],
+      "expected": 723
+    },
+    {
+      "kind": "io",
+      "args": [
+        -1,
+        -99
+      ],
+      "expected": -399
+    },
+    {
+      "kind": "io",
+      "args": [
+        -99,
+        -2
+      ],
+      "expected": -501
+    },
+    {
+      "kind": "io",
+      "args": [
+        -99,
+        2
+      ],
+      "expected": -93
+    },
+    {
+      "kind": "io",
+      "args": [
+        -10,
+        -1
+      ],
+      "expected": -43
+    },
+    {
+      "kind": "io",
+      "args": [
+        -1,
+        -1000
+      ],
+      "expected": -4003
+    },
+    {
+      "kind": "io",
+      "args": [
+        1,
+        99
+      ],
+      "expected": 201
+    },
+    {
+      "kind": "io",
+      "args": [
+        -1000,
+        2
+      ],
+      "expected": -994
+    },
+    {
+      "kind": "io",
+      "args": [
+        2,
+        -99
+      ],
+      "expected": -93
+    },
+    {
+      "kind": "io",
+      "args": [
+        -99,
+        -99
+      ],
+      "expected": -10395
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        -1,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 5,
+      "current_mode": "probing",
+      "input_rationale": "I only have one example, which is insufficient to identify the rule. I need a few more input-output pairs to infer the hidden function reliably.",
+      "hypothesis": "unknown",
+      "gm_output": -399,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 1,
+      "input": [
+        -99,
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 8,
+      "current_mode": "probing",
+      "input_rationale": "With only two examples, there are many possible integer formulas. I need at least one more pair to distinguish among linear and non-linear candidates.",
+      "hypothesis": "unknown",
+      "gm_output": -501,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        -99,
+        2
+      ],
+      "predicted_output": null,
+      "confidence_score": 97,
+      "current_mode": "confirming",
+      "input_rationale": "The three examples fit a simple affine function exactly. Solving the linear system gives f(a,b)=102a+102b+9801, which matches all observed outputs.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n\t\"\"\"Returns 102 times the sum of the inputs plus 9801.\"\"\"\n\treturn 102 * (a + b) + 9801",
+      "gm_output": -93,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": [
+        -10,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The new example also matches the same affine rule, strengthening the hypothesis that the function is 102*(a+b)+9801.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n\t\"\"\"Returns 102 times the sum of the inputs plus 9801.\"\"\"\n\treturn 102 * (a + b) + 9801",
+      "gm_output": -43,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        -1,
+        -1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 12,
+      "current_mode": "probing",
+      "input_rationale": "The new example breaks the current affine hypothesis, so the function is likely piecewise. I need one more pair, preferably with neither input equal to -99, to identify the rule.",
+      "hypothesis": "unknown",
+      "gm_output": -4003,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": [
+        1,
+        99
+      ],
+      "predicted_output": null,
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "The examples suggest a piecewise linear rule: if either argument is -99, the other argument is scaled by 102 and -99 contributes 3; otherwise the result is 4 times the smaller input plus 3 times the larger input. This matches all provided cases.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n\t\"\"\"Computes a piecewise linear combination of the two integers.\"\"\"\n\tif a == -99 or b == -99:\n\t\tother = b if a == -99 else a\n\t\treturn 102 * other - 297\n\treturn 4 * min(a, b) + 3 * max(a, b)",
+      "gm_output": 201,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        -1000,
+        2
+      ],
+      "predicted_output": null,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "The examples with -99 reveal one special-case branch, but the general rule is still ambiguous. The new positive-positive example suggests the non-special branch may depend on the signs of the inputs, so I need one more mixed-sign example to pin it down.",
+      "hypothesis": "unknown",
+      "gm_output": -994,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": [
+        2,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 20,
+      "current_mode": "probing",
+      "input_rationale": "I need one more simple non-special case to determine whether the function depends on ordering, magnitude, or sign. A small positive-positive pair like (2,1) should distinguish the remaining candidates.",
+      "hypothesis": "unknown",
+      "gm_output": -93,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        -99,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 84,
+      "current_mode": "confirming",
+      "input_rationale": "The examples are consistent with a piecewise rule: a special case for any input equal to -99, otherwise coefficients depend on the sign pattern of the pair. This matches all seen outputs.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n\t\"\"\"Computes a piecewise linear combination of the two integers.\"\"\"\n\tif a == -99 or b == -99:\n\t\tother = b if a == -99 else a\n\t\treturn 102 * other - 297\n\n\tlo = a if a <= b else b\n\thi = b if a <= b else a\n\n\tif a < 0 and b < 0:\n\t\treturn 4 * lo + 3 * hi\n\tif a >= 0 and b >= 0:\n\t\treturn 3 * lo + 2 * hi\n\treturn lo + 3 * hi",
+      "gm_output": -10395,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 10,
+  "unique_input_count": 10,
+  "unique_output_count": 9,
+  "novelty_rate": 0.9,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 3.121928094887362,
+  "mode": "passive_examples",
+  "info_request_count": 9,
+  "revealed_example_count": 10,
+  "membership_true_count": 0,
+  "membership_false_count": 0,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1
+  ]
+}

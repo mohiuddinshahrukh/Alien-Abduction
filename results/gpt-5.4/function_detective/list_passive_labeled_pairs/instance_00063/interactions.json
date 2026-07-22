@@ -1,0 +1,737 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_passive_labeled_pairs",
+    "game_id": 63,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 11,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:49:35.312880",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (([3, 2, 1], 3), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:49:35.312936",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Test whether the function returns the length of the list, the maximum value, or the number of elements greater than 0; these all fit the preloaded example [3,2,1] -> 3.\",\"candidate_input\":[1],\"candidate_output\":1,\"hypothesis\":\"unknown\",\"confidence_score\":12}\n{\"current_mode\":\"probing\",\"input_rationale\":\"Test whether the function returns the length of the list, the maximum value, or the number of elements greater than 0; these all fit the preloaded example [3,2,1] -> 3.\",\"candidate_input\":[1],\"candidate_output\":1,\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:49:39.834527",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:49:39.834583",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The only confirmed example is [3, 2, 1] -> 3, which is consistent with many possibilities (length, max, sortedness-related values, etc.). I need an additional distinguishing example before committing to code.\",\"hypothesis\":\"unknown\",\"confidence_score\":10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:49:47.702235",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([-1, 0, 1], 0), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:49:47.702277",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The false result on [-1, 0, 1] -> 0 rules out simple sum and inversion-count ideas. A strong next discriminator is a list where length, max, first element, and distinct-count differ. [5, 4, 4] is useful because length=3, max=5, first=5, distinct=2.\",\"hypothesis\":\"unknown\",\"confidence_score\":14}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:50:04.711012",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([], 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:50:04.711078",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Current evidence fits several simple list-to-int functions, but a particularly plausible one is returning the maximum element, with 0 for the empty list: max([3,2,1]) = 3, max([]) handled as 0, and max([-1,0,1]) = 1 so the proposed output 0 is indeed false.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the maximum value in the list, or 0 if the list is empty.\\\"\\\"\\\"\\n    return 0 if not items else max(items)\",\"confidence_score\":42}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:50:13.978406",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([1, 1], 11), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:50:13.978447",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Two simple hypotheses still fit all confirmed data: returning len(items) or returning max(items) with 0 for empty. A decisive test would use a nonempty list where length and maximum differ, such as [5, 4, 4] or [2].\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the number of elements in the list.\\\"\\\"\\\"\\n    return len(items)\",\"confidence_score\":46}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:50:54.421973",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([2, 1], 1), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:50:54.422055",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The confirmed outputs suggest the function may count certain satisfying pairs in the list. A useful discriminator is a short list with duplicates and mixed signs: under one strong hypothesis (count pairs of unequal elements), [1, -1, 1] gives 2, while many other pair-based rules give 1 or 3.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the number of index pairs (i, j) with i < j and items[i] != items[j].\\\"\\\"\\\"\\n    c = 0\\n    n = len(items)\\n    for i in range(n):\\n        for j in range(i + 1, n):\\n            if items[i] != items[j]:\\n                c += 1\\n    return c\",\"confidence_score\":33}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:51:44.922873",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([0], 10), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:51:44.922924",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"A strong possibility is that the function returns the total number of index pairs i<j, i.e. n*(n-1)//2, which matches [3,2,1]->3, [2,1]->1, and []->0, and also explains why [-1,0,1]->0 is false. The main competing value-based hypothesis is counting unequal pairs, so a duplicate-containing length-3 case would distinguish them.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the number of index pairs (i, j) with i < j.\\\"\\\"\\\"\\n    n = len(items)\\n    return n * (n - 1) // 2\",\"confidence_score\":38}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:52:06.516908",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([5, -5, 5], 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:52:06.516956",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"A strong hypothesis is that the function sums pairwise order signs over all index pairs i<j: +1 if items[i] > items[j], -1 if items[i] < items[j], 0 if equal. This matches all confirmations so far, including [5,-5,5] -> 0. A mixed-order case like [1, 3, 2] would distinguish this from simpler monotonicity-based rules.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the sum over all index pairs of the sign of items[i] - items[j].\\\"\\\"\\\"\\n    total = 0\\n    n = len(items)\\n    for i in range(n):\\n        for j in range(i + 1, n):\\n            if items[i] > items[j]:\\n                total += 1\\n            elif items[i] < items[j]:\\n                total -= 1\\n    return total\",\"confidence_score\":72}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:52:14.839373",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([1, 2, 3], 5), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:52:14.839430",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The best-fitting hypothesis is the sum over all pairs i<j of sign(items[i]-items[j]). A minimally sized mixed-order example like [1, 3, 2] is highly discriminative: this hypothesis gives -1, while inversion count gives 1 and pair-count gives 3.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the sum over all index pairs i<j of the sign of items[i] - items[j].\\\"\\\"\\\"\\n    total = 0\\n    n = len(items)\\n    for i in range(n):\\n        for j in range(i + 1, n):\\n            if items[i] > items[j]:\\n                total += 1\\n            elif items[i] < items[j]:\\n                total -= 1\\n    return total\",\"confidence_score\":79}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:53:09.353790",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([-2, 1, 1, 33, 0], 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:53:09.353929",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"A strong new hypothesis is: count index pairs (i, j) with i < j such that abs(items[i] - items[j]) == j - i. This matches all confirmed examples. A very discriminating check is [1, 3, 2], which should give 1 under this rule.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Counts pairs of indices whose value difference equals their index distance.\\\"\\\"\\\"\\n    d1 = {}\\n    d2 = {}\\n    total = 0\\n    for i, x in enumerate(items):\\n        a = x - i\\n        b = x + i\\n        total += d1.get(a, 0) + d2.get(b, 0)\\n        d1[a] = d1.get(a, 0) + 1\\n        d2[b] = d2.get(b, 0) + 1\\n    return total\",\"confidence_score\":91}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:53:17.070418",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([-10], 10), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:53:17.070476",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef f(items):\n    \"\"\"Count pairs (i, j) with i < j and abs(items[i] - items[j]) == j - i.\"\"\"\n    total = 0\n    seen_minus = {}\n    seen_plus = {}\n    for i, x in enumerate(items):\n        a = x - i\n        b = x + i\n        total += seen_minus.get(a, 0)\n        total += seen_plus.get(b, 0)\n        seen_minus[a] = seen_minus.get(a, 0) + 1\n        seen_plus[b] = seen_plus.get(b, 0) + 1\n    return total\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:53:17.613606",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:53:17.613796",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [[-1, 0, 1]] | Expected: -1 | Got: 3\nInput: [[1, 1]] | Expected: 1 | Got: 0\nInput: [[-27, -2, -2, -2, 2]] | Expected: -33 | Got: 0"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:53:17.613816",
+        "action": {
+          "type": "hidden_function",
+          "content": "def sum_excluding_max(items: List[int]) -> int:\n    return sum(items) - max(items) if items else 0"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:53:17.613830",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(items):\n    \"\"\"Count pairs (i, j) with i < j and abs(items[i] - items[j]) == j - i.\"\"\"\n    total = 0\n    seen_minus = {}\n    seen_plus = {}\n    for i, x in enumerate(items):\n        a = x - i\n        b = x + i\n        total += seen_minus.get(a, 0)\n        total += seen_plus.get(b, 0)\n        seen_minus[a] = seen_minus.get(a, 0) + 1\n        seen_plus[b] = seen_plus.get(b, 0) + 1\n    return total"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:53:17.613875",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.210\nInformation requests: 9/15\nRevealed passive examples: 10\nEfficiency: 0.467\nSlack: 6\nObserved-pair consistency: 1.000\nMembership balance: 5 true / 5 false\nParse errors: 1\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.4666666666666667,
+  "efficiency_raw": 0.4666666666666667,
+  "slack": 6,
+  "accuracy": 0.21,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 9,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "output": 3
+    },
+    {
+      "round": 2,
+      "args": [
+        []
+      ],
+      "output": 0
+    },
+    {
+      "round": 4,
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "output": 1
+    },
+    {
+      "round": 6,
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 8,
+      "args": [
+        [
+          -2,
+          1,
+          1,
+          33,
+          0
+        ]
+      ],
+      "output": 0
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "candidate_output": 3,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "candidate_output": 0,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        []
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "candidate_output": 11,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "candidate_output": 1,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          0
+        ]
+      ],
+      "candidate_output": 10,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "candidate_output": 5,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          -2,
+          1,
+          1,
+          33,
+          0
+        ]
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          -10
+        ]
+      ],
+      "candidate_output": 10,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "The only confirmed example is [3, 2, 1] -> 3, which is consistent with many possibilities (length, max, sortedness-related values, etc.). I need an additional distinguishing example before committing to code.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": [
+        []
+      ],
+      "predicted_output": null,
+      "confidence_score": 14,
+      "current_mode": "probing",
+      "input_rationale": "The false result on [-1, 0, 1] -> 0 rules out simple sum and inversion-count ideas. A strong next discriminator is a list where length, max, first element, and distinct-count differ. [5, 4, 4] is useful because length=3, max=5, first=5, distinct=2.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": [
+        [
+          1,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 42,
+      "current_mode": "confirming",
+      "input_rationale": "Current evidence fits several simple list-to-int functions, but a particularly plausible one is returning the maximum element, with 0 for the empty list: max([3,2,1]) = 3, max([]) handled as 0, and max([-1,0,1]) = 1 so the proposed output 0 is indeed false.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the maximum value in the list, or 0 if the list is empty.\"\"\"\n    return 0 if not items else max(items)",
+      "gm_output": 11,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": [
+        [
+          2,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 46,
+      "current_mode": "probing",
+      "input_rationale": "Two simple hypotheses still fit all confirmed data: returning len(items) or returning max(items) with 0 for empty. A decisive test would use a nonempty list where length and maximum differ, such as [5, 4, 4] or [2].",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the number of elements in the list.\"\"\"\n    return len(items)",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": [
+        [
+          0
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 33,
+      "current_mode": "probing",
+      "input_rationale": "The confirmed outputs suggest the function may count certain satisfying pairs in the list. A useful discriminator is a short list with duplicates and mixed signs: under one strong hypothesis (count pairs of unequal elements), [1, -1, 1] gives 2, while many other pair-based rules give 1 or 3.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the number of index pairs (i, j) with i < j and items[i] != items[j].\"\"\"\n    c = 0\n    n = len(items)\n    for i in range(n):\n        for j in range(i + 1, n):\n            if items[i] != items[j]:\n                c += 1\n    return c",
+      "gm_output": 10,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 38,
+      "current_mode": "confirming",
+      "input_rationale": "A strong possibility is that the function returns the total number of index pairs i<j, i.e. n*(n-1)//2, which matches [3,2,1]->3, [2,1]->1, and []->0, and also explains why [-1,0,1]->0 is false. The main competing value-based hypothesis is counting unequal pairs, so a duplicate-containing length-3 case would distinguish them.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the number of index pairs (i, j) with i < j.\"\"\"\n    n = len(items)\n    return n * (n - 1) // 2",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 72,
+      "current_mode": "confirming",
+      "input_rationale": "A strong hypothesis is that the function sums pairwise order signs over all index pairs i<j: +1 if items[i] > items[j], -1 if items[i] < items[j], 0 if equal. This matches all confirmations so far, including [5,-5,5] -> 0. A mixed-order case like [1, 3, 2] would distinguish this from simpler monotonicity-based rules.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the sum over all index pairs of the sign of items[i] - items[j].\"\"\"\n    total = 0\n    n = len(items)\n    for i in range(n):\n        for j in range(i + 1, n):\n            if items[i] > items[j]:\n                total += 1\n            elif items[i] < items[j]:\n                total -= 1\n    return total",
+      "gm_output": 5,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": [
+        [
+          -2,
+          1,
+          1,
+          33,
+          0
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 79,
+      "current_mode": "confirming",
+      "input_rationale": "The best-fitting hypothesis is the sum over all pairs i<j of sign(items[i]-items[j]). A minimally sized mixed-order example like [1, 3, 2] is highly discriminative: this hypothesis gives -1, while inversion count gives 1 and pair-count gives 3.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the sum over all index pairs i<j of the sign of items[i] - items[j].\"\"\"\n    total = 0\n    n = len(items)\n    for i in range(n):\n        for j in range(i + 1, n):\n            if items[i] > items[j]:\n                total += 1\n            elif items[i] < items[j]:\n                total -= 1\n    return total",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": [
+        [
+          -10
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 91,
+      "current_mode": "confirming",
+      "input_rationale": "A strong new hypothesis is: count index pairs (i, j) with i < j such that abs(items[i] - items[j]) == j - i. This matches all confirmed examples. A very discriminating check is [1, 3, 2], which should give 1 under this rule.",
+      "hypothesis": "def f(items):\n    \"\"\"Counts pairs of indices whose value difference equals their index distance.\"\"\"\n    d1 = {}\n    d2 = {}\n    total = 0\n    for i, x in enumerate(items):\n        a = x - i\n        b = x + i\n        total += d1.get(a, 0) + d2.get(b, 0)\n        d1[a] = d1.get(a, 0) + 1\n        d2[b] = d2.get(b, 0) + 1\n    return total",
+      "gm_output": 10,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 5,
+  "unique_input_count": 5,
+  "unique_output_count": 3,
+  "novelty_rate": 0.6,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.3709505944546687,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 9,
+  "revealed_example_count": 10,
+  "membership_true_count": 5,
+  "membership_false_count": 5,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

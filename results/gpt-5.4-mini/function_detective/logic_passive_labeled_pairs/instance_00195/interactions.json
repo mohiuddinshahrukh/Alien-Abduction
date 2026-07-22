@@ -1,0 +1,900 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_labeled_pairs",
+    "game_id": 195,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:54.992891",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((True, True), True), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:54.992946",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"I only have one confirmed example so far, and (True, True) -> True is consistent with several boolean functions. I need more input-output pairs to distinguish the function.\",\"hypothesis\":\"unknown\",\"confidence_score\":7}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:59.702475",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:59.702530",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The new revealed pair indicates that the candidate ((True, False), True) is incorrect, so f(True, False) is not True. Combined with the confirmed example f(True, True)=True, this still leaves multiple possibilities. I need more cases to narrow it down.\",\"hypothesis\":\"unknown\",\"confidence_score\":14}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:02.777790",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:02.777831",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The observed pairs match logical implication: True->True is True, True->False is False, and False->True is True. That leaves False->False as True under implication, so the best hypothesis is a direct implication function.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the logical implication a -> b.\\\"\\\"\\\"\\n\\treturn (not a) or b\",\"confidence_score\":97}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:04.828329",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:04.828394",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The four revealed cases match simply returning the second boolean: True->True, True->False, False->True, False->False. This is consistent with all examples and is the most likely exact function.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:07.568158",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:07.568214",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The confirmed examples are all exactly consistent with returning the second boolean argument: (True, True)->True, (True, False)->False, (False, True)->True, (False, False)->False.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:08.649662",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:08.649719",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This matches the current hypothesis exactly: when the second argument is False, the result is False.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:09.795795",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:09.795851",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This also matches returning the second argument: (False, True) -> True.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:10.910717",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:10.910780",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This matches returning the second argument as well: (False, False) -> False.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:13.022827",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:13.022850",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All confirmed examples match returning the second boolean argument, and the repeated checks are consistent with that hypothesis.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:14.776089",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:14.776145",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This continues to match the same hypothesis exactly: the function returns the second boolean argument.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:16.640139",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:16.640187",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All provided examples are consistent with the function returning the second boolean argument, and no counterexample has appeared.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:18.585107",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:18.585161",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This additional check is still consistent with the same hypothesis: the function returns the second boolean argument.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:20.367404",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:20.367435",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The full set of observed examples remains exactly consistent with returning the second boolean argument, with no contradictions.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:22.847531",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:22.847584",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All observed examples are consistent with the function returning the second boolean argument, and no counterexample has appeared.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:24:24.347153",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:24.347204",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All revealed examples are consistent with the function returning the second boolean argument, and there are no contradictory cases.\",\"hypothesis\":\"def f(a, b):\\n\\t\\\"\\\"\\\"Returns the second boolean argument.\\\"\\\"\\\"\\n\\treturn b\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:24:24.347888",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 4,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 15,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 2,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 4,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 6,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 8,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 10,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 12,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 14,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 7,
+      "current_mode": "probing",
+      "input_rationale": "I only have one confirmed example so far, and (True, True) -> True is consistent with several boolean functions. I need more input-output pairs to distinguish the function.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 14,
+      "current_mode": "probing",
+      "input_rationale": "The new revealed pair indicates that the candidate ((True, False), True) is incorrect, so f(True, False) is not True. Combined with the confirmed example f(True, True)=True, this still leaves multiple possibilities. I need more cases to narrow it down.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 97,
+      "current_mode": "confirming",
+      "input_rationale": "The observed pairs match logical implication: True->True is True, True->False is False, and False->True is True. That leaves False->False as True under implication, so the best hypothesis is a direct implication function.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the logical implication a -> b.\"\"\"\n\treturn (not a) or b",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The four revealed cases match simply returning the second boolean: True->True, True->False, False->True, False->False. This is consistent with all examples and is the most likely exact function.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The confirmed examples are all exactly consistent with returning the second boolean argument: (True, True)->True, (True, False)->False, (False, True)->True, (False, False)->False.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "This matches the current hypothesis exactly: when the second argument is False, the result is False.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "This also matches returning the second argument: (False, True) -> True.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "This matches returning the second argument as well: (False, False) -> False.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "All confirmed examples match returning the second boolean argument, and the repeated checks are consistent with that hypothesis.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "This continues to match the same hypothesis exactly: the function returns the second boolean argument.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "All provided examples are consistent with the function returning the second boolean argument, and no counterexample has appeared.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "This additional check is still consistent with the same hypothesis: the function returns the second boolean argument.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The full set of observed examples remains exactly consistent with returning the second boolean argument, with no contradictions.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "All observed examples are consistent with the function returning the second boolean argument, and no counterexample has appeared.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 14,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "All revealed examples are consistent with the function returning the second boolean argument, and there are no contradictory cases.",
+      "hypothesis": "def f(a, b):\n\t\"\"\"Returns the second boolean argument.\"\"\"\n\treturn b",
+      "gm_output": false,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 2,
+  "unique_output_count": 1,
+  "novelty_rate": 0.125,
+  "input_diversity": 0.25,
+  "output_entropy_bits": 0.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 15,
+  "revealed_example_count": 16,
+  "membership_true_count": 8,
+  "membership_false_count": 8,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

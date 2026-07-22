@@ -1,0 +1,900 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_labeled_pairs",
+    "game_id": 189,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:25.401305",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((True, False), False), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:25.401331",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Only one example is available so far: (True, False) maps to False. That is consistent with several boolean functions, so I need more samples before committing.\",\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:29.188644",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:29.188697",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"We now have two labeled examples: f(True, False)=False and f(True, True)=False. That still leaves many possibilities, so I need at least one more input-output check before committing.\",\"hypothesis\":\"unknown\",\"confidence_score\":16}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:32.070428",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:32.070481",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The observed mapping matches boolean implication: True -> False is False, True -> True is False, and False -> True is True. So the function is likely (not a) or b.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns logical implication: True unless a is True and b is False.\\\"\\\"\\\"\\n    return (not a) or b\",\"confidence_score\":97}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:34.166474",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:34.166523",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new example rules out implication. The full pattern is now: output is True only when a is False and b is True, which is logical AND of (not a) and b.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:35.820630",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:35.820668",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This confirms the previously inferred rule: only (False, True) yields True; all other pairs yield False.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:36.944188",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:36.944222",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Confirmed again: (True, True) maps to False, consistent with returning True only for (False, True).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:37.986890",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:37.986922",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This matches the inferred rule exactly.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:39.965460",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:39.965510",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This also matches the inferred rule: True only for (False, True).\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:42.801100",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:42.801148",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The accumulated examples are fully consistent with the function returning True only for (False, True). I’m committing to that implementation now.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:44.184334",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:44.184363",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This remains consistent with the committed hypothesis. Final answer unchanged.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:45.661379",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:45.661433",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This example matches the committed hypothesis exactly. The function is logical conjunction of not a and b.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:47.322511",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:47.322568",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"No new information; this continues to match the inferred rule (not a) and b.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:48.581470",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:48.581525",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Still consistent with the hypothesis. Returning final implementation unchanged.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:51.053058",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:51.053148",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This example is consistent with the inferred rule. The function returns True only when a is False and b is True.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:23:52.332917",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:52.332968",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Matches the hypothesis exactly; final answer remains unchanged.\",\"hypothesis\":\"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when a is False and b is True.\\\"\\\"\\\"\\n    return (not a) and b\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:23:52.333553",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 4,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 15,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 2,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 4,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 6,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 8,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 10,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 12,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 14,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 12,
+      "current_mode": "probing",
+      "input_rationale": "Only one example is available so far: (True, False) maps to False. That is consistent with several boolean functions, so I need more samples before committing.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 16,
+      "current_mode": "probing",
+      "input_rationale": "We now have two labeled examples: f(True, False)=False and f(True, True)=False. That still leaves many possibilities, so I need at least one more input-output check before committing.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 97,
+      "current_mode": "confirming",
+      "input_rationale": "The observed mapping matches boolean implication: True -> False is False, True -> True is False, and False -> True is True. So the function is likely (not a) or b.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns logical implication: True unless a is True and b is False.\"\"\"\n    return (not a) or b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The new example rules out implication. The full pattern is now: output is True only when a is False and b is True, which is logical AND of (not a) and b.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This confirms the previously inferred rule: only (False, True) yields True; all other pairs yield False.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "Confirmed again: (True, True) maps to False, consistent with returning True only for (False, True).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This matches the inferred rule exactly.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This also matches the inferred rule: True only for (False, True).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The accumulated examples are fully consistent with the function returning True only for (False, True). I’m committing to that implementation now.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This remains consistent with the committed hypothesis. Final answer unchanged.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This example matches the committed hypothesis exactly. The function is logical conjunction of not a and b.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "No new information; this continues to match the inferred rule (not a) and b.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "Still consistent with the hypothesis. Returning final implementation unchanged.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This example is consistent with the inferred rule. The function returns True only when a is False and b is True.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 14,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "Matches the hypothesis exactly; final answer remains unchanged.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when a is False and b is True.\"\"\"\n    return (not a) and b",
+      "gm_output": true,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 0.25,
+  "input_diversity": 0.25,
+  "output_entropy_bits": 1.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 15,
+  "revealed_example_count": 16,
+  "membership_true_count": 8,
+  "membership_false_count": 8,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

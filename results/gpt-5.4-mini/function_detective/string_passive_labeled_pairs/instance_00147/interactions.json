@@ -1,0 +1,713 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "string_passive_labeled_pairs",
+    "game_id": 147,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 12,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:29.780312",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(text: str) -> str\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (('   ', '         '), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:29.780366",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"don't know\",\"input_rationale\":\"The only confirmed example maps three spaces to nine spaces, which is consistent with repeating the whole string once per character, i.e. multiplying the string by its length.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string len(text) times.\\\"\\\"\\\"\\n    return text * len(text)\",\"confidence_score\":34}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:34.247896",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('aA', 'aAaAaA_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:34.247982",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The only confirmed mapping is a 3-character string of spaces to 9 spaces, which is consistent with repeating the whole string len(text) times, but I need more examples to confirm whether that is the rule.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string len(text) times.\\\"\\\"\\\"\\n    return text * len(text)\",\"confidence_score\":34}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:35.739626",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('123', '123123123'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:35.739672",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The confirmed examples fit string repetition by the string length: '   ' -> '         ' and '123' -> '123123123'.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string len(text) times.\\\"\\\"\\\"\\n    return text * len(text)\",\"confidence_score\":98}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:36.873713",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('a', 'aaa_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:36.873768",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The examples consistently show the input string repeated exactly len(text) times, and the negative examples rule out alternative outputs.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string len(text) times.\\\"\\\"\\\"\\n    return text * len(text)\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:40.554519",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('ab', 'ababab'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:40.554539",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"Confirmed on multiple examples: output is the input string repeated exactly len(text) times, including spaces and mixed characters.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string len(text) times.\\\"\\\"\\\"\\n    return text * len(text)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:42.044602",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('a-b', 'a-ba-ba-b_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:42.044653",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The verified positives and negatives all match the rule that the string is repeated exactly len(text) times.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string len(text) times.\\\"\\\"\\\"\\n    return text * len(text)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:44.142529",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((' ', '   '), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:44.142583",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"This new positive example also fits the same rule: one space repeated once gives one space, but since the preloaded positive was three spaces to nine spaces, the pattern remains repeating the whole string len(text) times.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string len(text) times.\\\"\\\"\\\"\\n    return text * len(text)\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:49.379770",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('aba', 'abaabaaba_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:49.379809",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The confirmed examples fit repeating the input string exactly 3 times: spaces, digits, and mixed-length strings all match this pattern, while the '_alt' candidates are rejected.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string exactly three times.\\\"\\\"\\\"\\n    return text * 3\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:52.388505",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('', ''), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:52.388540",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The empty-string example is consistent with repeating the input exactly three times, and the earlier confirmed positives match that rule for non-empty strings as well.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string exactly three times.\\\"\\\"\\\"\\n    return text * 3\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:55.503990",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('hello', 'hellohellohello_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:55.504060",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"solving\",\"input_rationale\":\"The confirmed positives show the output is the input string repeated exactly three times, including the empty string and single-space case; the negatives are just off by an '_alt' suffix.\",\"hypothesis\":\"def f(text):\\n    \\\"\\\"\\\"Repeats the input string exactly three times.\\\"\\\"\\\"\\n    return text * 3\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:56:58.914541",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('hello world', 'hello worldhello worldhello world'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:56:58.914589",
+        "action": {
+          "type": "get message",
+          "content": "```python\ndef f(text):\n    \"\"\"Repeats the input string exactly three times.\"\"\"\n    return text * 3\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:57:00.470852",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:57:00.470903",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(text):\n    \"\"\"Repeats the input string exactly three times.\"\"\"\n    return text * 3\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:57:00.927686",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: WIN"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:57:00.927906",
+        "action": {
+          "type": "solution_feedback",
+          "content": "That is correct!"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:57:00.927953",
+        "action": {
+          "type": "hidden_function",
+          "content": "def repeat_three_times(text: str) -> str:\n    return text * 3"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:57:00.927990",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(text):\n    \"\"\"Repeats the input string exactly three times.\"\"\"\n    return text * 3"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:57:00.928076",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 1.000\nInformation requests: 10/15\nRevealed passive examples: 11\nEfficiency: 0.400\nSlack: 5\nObserved-pair consistency: 1.000\nMembership balance: 6 true / 5 false\nParse errors: 1\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": false,
+  "Success": true,
+  "efficiency": 0.4,
+  "efficiency_raw": 0.4,
+  "slack": 5,
+  "accuracy": 1.0,
+  "binary_accuracy": 1.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 10,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        "   "
+      ],
+      "output": "         "
+    },
+    {
+      "round": 2,
+      "args": [
+        "123"
+      ],
+      "output": "123123123"
+    },
+    {
+      "round": 4,
+      "args": [
+        "ab"
+      ],
+      "output": "ababab"
+    },
+    {
+      "round": 6,
+      "args": [
+        " "
+      ],
+      "output": "   "
+    },
+    {
+      "round": 8,
+      "args": [
+        ""
+      ],
+      "output": ""
+    },
+    {
+      "round": 10,
+      "args": [
+        "hello world"
+      ],
+      "output": "hello worldhello worldhello world"
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        "   "
+      ],
+      "candidate_output": "         ",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "aA"
+      ],
+      "candidate_output": "aAaAaA_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "123"
+      ],
+      "candidate_output": "123123123",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "a"
+      ],
+      "candidate_output": "aaa_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "ab"
+      ],
+      "candidate_output": "ababab",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "a-b"
+      ],
+      "candidate_output": "a-ba-ba-b_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        " "
+      ],
+      "candidate_output": "   ",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "aba"
+      ],
+      "candidate_output": "abaabaaba_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        ""
+      ],
+      "candidate_output": "",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "hello"
+      ],
+      "candidate_output": "hellohellohello_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "hello world"
+      ],
+      "candidate_output": "hello worldhello worldhello world",
+      "is_member": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        "aA"
+      ],
+      "predicted_output": null,
+      "confidence_score": 34,
+      "current_mode": "don't know",
+      "input_rationale": "The only confirmed example maps three spaces to nine spaces, which is consistent with repeating the whole string once per character, i.e. multiplying the string by its length.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string len(text) times.\"\"\"\n    return text * len(text)",
+      "gm_output": "aAaAaA_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        "123"
+      ],
+      "predicted_output": null,
+      "confidence_score": 34,
+      "current_mode": "probing",
+      "input_rationale": "The only confirmed mapping is a 3-character string of spaces to 9 spaces, which is consistent with repeating the whole string len(text) times, but I need more examples to confirm whether that is the rule.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string len(text) times.\"\"\"\n    return text * len(text)",
+      "gm_output": "123123123",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        "a"
+      ],
+      "predicted_output": null,
+      "confidence_score": 98,
+      "current_mode": "confirming",
+      "input_rationale": "The confirmed examples fit string repetition by the string length: '   ' -> '         ' and '123' -> '123123123'.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string len(text) times.\"\"\"\n    return text * len(text)",
+      "gm_output": "aaa_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        "ab"
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The examples consistently show the input string repeated exactly len(text) times, and the negative examples rule out alternative outputs.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string len(text) times.\"\"\"\n    return text * len(text)",
+      "gm_output": "ababab",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        "a-b"
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "Confirmed on multiple examples: output is the input string repeated exactly len(text) times, including spaces and mixed characters.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string len(text) times.\"\"\"\n    return text * len(text)",
+      "gm_output": "a-ba-ba-b_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        " "
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The verified positives and negatives all match the rule that the string is repeated exactly len(text) times.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string len(text) times.\"\"\"\n    return text * len(text)",
+      "gm_output": "   ",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        "aba"
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "This new positive example also fits the same rule: one space repeated once gives one space, but since the preloaded positive was three spaces to nine spaces, the pattern remains repeating the whole string len(text) times.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string len(text) times.\"\"\"\n    return text * len(text)",
+      "gm_output": "abaabaaba_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        ""
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The confirmed examples fit repeating the input string exactly 3 times: spaces, digits, and mixed-length strings all match this pattern, while the '_alt' candidates are rejected.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string exactly three times.\"\"\"\n    return text * 3",
+      "gm_output": "",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        "hello"
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The empty-string example is consistent with repeating the input exactly three times, and the earlier confirmed positives match that rule for non-empty strings as well.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string exactly three times.\"\"\"\n    return text * 3",
+      "gm_output": "hellohellohello_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        "hello world"
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "solving",
+      "input_rationale": "The confirmed positives show the output is the input string repeated exactly three times, including the empty string and single-space case; the negatives are just off by an '_alt' suffix.",
+      "hypothesis": "def f(text):\n    \"\"\"Repeats the input string exactly three times.\"\"\"\n    return text * 3",
+      "gm_output": "hello worldhello worldhello world",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 6,
+  "unique_input_count": 6,
+  "unique_output_count": 6,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 2.584962500721156,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 10,
+  "revealed_example_count": 11,
+  "membership_true_count": 6,
+  "membership_false_count": 5,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1
+  ]
+}

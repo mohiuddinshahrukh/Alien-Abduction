@@ -1,0 +1,672 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_active_pair_checks",
+    "game_id": 116,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 13,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:01:01.048598",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:01:01.048677",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2,-1,3,0],\"predicted_output\":4,\"current_mode\":\"probing\",\"input_rationale\":\"Start by testing the common hypothesis that the function returns the sum; this input separates sum from max/min/len/product/counts.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the sum of the integers in the list.\\\"\\\"\\\"\\n    total = 0\\n    for x in items:\\n        total += x\\n    return total\",\"confidence_score\":22}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:01:09.757427",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:01:09.757485",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,3],\"predicted_output\":3,\"current_mode\":\"probing\",\"input_rationale\":\"Test a high-frequency alternative: returning the maximum element. This also overlaps with len([1,2,3]) and last element, so a True would sharply narrow possibilities.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the maximum integer in the list.\\\"\\\"\\\"\\n    m = items[0]\\n    for x in items:\\n        if x > m:\\n            m = x\\n    return m\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:01:19.009833",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:01:19.009925",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,3],\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"Check whether the function is the minimum element, one of the most common List[int] -> int tasks and directly compatible with the previous input.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the minimum integer in the list.\\\"\\\"\\\"\\n    m = items[0]\\n    for x in items:\\n        if x < m:\\n            m = x\\n    return m\",\"confidence_score\":16}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:01:28.815232",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:01:28.815283",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5],\"predicted_output\":5,\"current_mode\":\"probing\",\"input_rationale\":\"Singleton lists are highly informative: many aggregate functions collapse to the element itself (sum/max/min/product/first/last), while counts/range-like functions usually do not.\",\"hypothesis\":\"unknown\",\"confidence_score\":10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:01:45.578654",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:01:45.578776",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,2,3],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Many list-to-int tasks that depend on disorder or differences return 0 on a strictly increasing sorted list; singleton behavior also often becomes 0 in such tasks.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of adjacent decreases in the list.\\\"\\\"\\\"\\n    count = 0\\n    i = 1\\n    while i < len(items):\\n        if items[i] < items[i-1]:\\n            count += 1\\n        i += 1\\n    return count\",\"confidence_score\":14}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:01:54.762213",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:01:54.762263",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[0,2,-3],\"predicted_output\":2,\"current_mode\":\"probing\",\"input_rationale\":\"Probe a counting-style function with a mixed-sign, zero-containing list. Output 2 matches several common targets like count of even numbers, while differing from len, sum, positives, max, min, and range.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of even integers in the list.\\\"\\\"\\\"\\n    count = 0\\n    for x in items:\\n        if x % 2 == 0:\\n            count += 1\\n    return count\",\"confidence_score\":17}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:02:03.896819",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:02:03.896865",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"A large class of list-to-int functions return 0 on a singleton list: range, inversion count, adjacent-difference counts, duplicate counts, pairwise computations, etc. This cleanly splits many possibilities.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the range of the list (max minus min).\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    lo = hi = items[0]\\n    for x in items:\\n        if x < lo:\\n            lo = x\\n        if x > hi:\\n            hi = x\\n    return hi - lo\",\"confidence_score\":20}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:02:10.563205",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:02:10.563291",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5],\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"Singleton output 1 would support very common behaviors like length, count of positive/odd elements, or index-like results, while ruling out many aggregate numeric transforms.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the length of the list.\\\"\\\"\\\"\\n    return len(items)\",\"confidence_score\":21}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:02:15.750314",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:02:15.750356",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[0],\"predicted_output\":1,\"current_mode\":\"confirming\",\"input_rationale\":\"Test the current leading hypothesis of length against counting-based alternatives. A singleton zero gives 1 for length/distinct/nonnegative/even, but 0 for positive/odd/sum-like behaviors.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the length of the list.\\\"\\\"\\\"\\n    return len(items)\",\"confidence_score\":38}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:02:42.285426",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:02:42.285516",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"This sharply distinguishes prime-counting behavior from many other singleton-property/counting functions: 1 is odd, positive, and nonzero, but not prime.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of prime numbers in the list.\\\"\\\"\\\"\\n    count = 0\\n    for x in items:\\n        if x >= 2:\\n            prime = True\\n            d = 2\\n            while d * d <= x:\\n                if x % d == 0:\\n                    prime = False\\n                    break\\n                d += 1\\n            if prime:\\n                count += 1\\n    return count\",\"confidence_score\":31}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:09.065623",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:09.065715",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[2],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"A singleton even positive cleanly distinguishes odd-based counts from positive/nonzero-based counts. It is especially useful because [5] gave 1 while [0] did not.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of odd integers in the list.\\\"\\\"\\\"\\n    count = 0\\n    for x in items:\\n        if x % 2 != 0:\\n            count += 1\\n    return count\",\"confidence_score\":36}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:19.244270",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:19.244316",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[-1],\"predicted_output\":1,\"current_mode\":\"confirming\",\"input_rationale\":\"Distinguish counting odd integers from counting only positive odd integers or other positivity-based predicates. Negative odd should still count if the rule is parity-based.\",\"hypothesis\":\"def solution(items):\\n    \\\"\\\"\\\"Returns the number of odd integers in the list.\\\"\\\"\\\"\\n    count = 0\\n    for x in items:\\n        if x % 2 != 0:\\n            count += 1\\n    return count\",\"confidence_score\":63}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:22.503649",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:22.503689",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef solution(items):\n    count = 0\n    for x in items:\n        if x % 2 != 0:\n            count += 1\n    return count\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:22.978032",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: WIN"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:22.978145",
+        "action": {
+          "type": "solution_feedback",
+          "content": "That is correct!"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:22.978163",
+        "action": {
+          "type": "hidden_function",
+          "content": "def count_odd_values(items: List[int]) -> int:\n    return sum(1 for x in items if x % 2 != 0)"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:22.978177",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(items):\n    count = 0\n    for x in items:\n        if x % 2 != 0:\n            count += 1\n    return count"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:22.978220",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_pair_checks\nAccuracy: 1.000\nInformation requests: 12/15\nRevealed passive examples: 0\nEfficiency: 0.267\nSlack: 3\nObserved-pair consistency: 1.000\nMembership balance: 4 true / 9 false\nParse errors: 0\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": false,
+  "Success": true,
+  "efficiency": 0.26666666666666666,
+  "efficiency_raw": 0.26666666666666666,
+  "slack": 3,
+  "accuracy": 1.0,
+  "binary_accuracy": 1.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 12,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "output": 3
+    },
+    {
+      "round": 8,
+      "args": [
+        [
+          5
+        ]
+      ],
+      "output": 1
+    },
+    {
+      "round": 11,
+      "args": [
+        [
+          2
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 12,
+      "args": [
+        [
+          -1
+        ]
+      ],
+      "output": 1
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        2,
+        -1,
+        3,
+        0
+      ],
+      "predicted_output": 4,
+      "confidence_score": 22,
+      "current_mode": "probing",
+      "input_rationale": "Start by testing the common hypothesis that the function returns the sum; this input separates sum from max/min/len/product/counts.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the sum of the integers in the list.\"\"\"\n    total = 0\n    for x in items:\n        total += x\n    return total",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "predicted_output": 3,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "Test a high-frequency alternative: returning the maximum element. This also overlaps with len([1,2,3]) and last element, so a True would sharply narrow possibilities.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the maximum integer in the list.\"\"\"\n    m = items[0]\n    for x in items:\n        if x > m:\n            m = x\n    return m",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "predicted_output": 1,
+      "confidence_score": 16,
+      "current_mode": "probing",
+      "input_rationale": "Check whether the function is the minimum element, one of the most common List[int] -> int tasks and directly compatible with the previous input.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the minimum integer in the list.\"\"\"\n    m = items[0]\n    for x in items:\n        if x < m:\n            m = x\n    return m",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        5
+      ],
+      "predicted_output": 5,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "Singleton lists are highly informative: many aggregate functions collapse to the element itself (sum/max/min/product/first/last), while counts/range-like functions usually do not.",
+      "hypothesis": "unknown",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "predicted_output": 0,
+      "confidence_score": 14,
+      "current_mode": "probing",
+      "input_rationale": "Many list-to-int tasks that depend on disorder or differences return 0 on a strictly increasing sorted list; singleton behavior also often becomes 0 in such tasks.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of adjacent decreases in the list.\"\"\"\n    count = 0\n    i = 1\n    while i < len(items):\n        if items[i] < items[i-1]:\n            count += 1\n        i += 1\n    return count",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        0,
+        2,
+        -3
+      ],
+      "predicted_output": 2,
+      "confidence_score": 17,
+      "current_mode": "probing",
+      "input_rationale": "Probe a counting-style function with a mixed-sign, zero-containing list. Output 2 matches several common targets like count of even numbers, while differing from len, sum, positives, max, min, and range.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of even integers in the list.\"\"\"\n    count = 0\n    for x in items:\n        if x % 2 == 0:\n            count += 1\n    return count",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": [
+        5
+      ],
+      "predicted_output": 0,
+      "confidence_score": 20,
+      "current_mode": "probing",
+      "input_rationale": "A large class of list-to-int functions return 0 on a singleton list: range, inversion count, adjacent-difference counts, duplicate counts, pairwise computations, etc. This cleanly splits many possibilities.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the range of the list (max minus min).\"\"\"\n    if not items:\n        return 0\n    lo = hi = items[0]\n    for x in items:\n        if x < lo:\n            lo = x\n        if x > hi:\n            hi = x\n    return hi - lo",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        5
+      ],
+      "predicted_output": 1,
+      "confidence_score": 21,
+      "current_mode": "probing",
+      "input_rationale": "Singleton output 1 would support very common behaviors like length, count of positive/odd elements, or index-like results, while ruling out many aggregate numeric transforms.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the length of the list.\"\"\"\n    return len(items)",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        0
+      ],
+      "predicted_output": 1,
+      "confidence_score": 38,
+      "current_mode": "confirming",
+      "input_rationale": "Test the current leading hypothesis of length against counting-based alternatives. A singleton zero gives 1 for length/distinct/nonnegative/even, but 0 for positive/odd/sum-like behaviors.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the length of the list.\"\"\"\n    return len(items)",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        1
+      ],
+      "predicted_output": 0,
+      "confidence_score": 31,
+      "current_mode": "probing",
+      "input_rationale": "This sharply distinguishes prime-counting behavior from many other singleton-property/counting functions: 1 is odd, positive, and nonzero, but not prime.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of prime numbers in the list.\"\"\"\n    count = 0\n    for x in items:\n        if x >= 2:\n            prime = True\n            d = 2\n            while d * d <= x:\n                if x % d == 0:\n                    prime = False\n                    break\n                d += 1\n            if prime:\n                count += 1\n    return count",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": [
+        2
+      ],
+      "predicted_output": 0,
+      "confidence_score": 36,
+      "current_mode": "probing",
+      "input_rationale": "A singleton even positive cleanly distinguishes odd-based counts from positive/nonzero-based counts. It is especially useful because [5] gave 1 while [0] did not.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of odd integers in the list.\"\"\"\n    count = 0\n    for x in items:\n        if x % 2 != 0:\n            count += 1\n    return count",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 11,
+      "input": [
+        -1
+      ],
+      "predicted_output": 1,
+      "confidence_score": 63,
+      "current_mode": "confirming",
+      "input_rationale": "Distinguish counting odd integers from counting only positive odd integers or other positivity-based predicates. Negative odd should still count if the rule is parity-based.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the number of odd integers in the list.\"\"\"\n    count = 0\n    for x in items:\n        if x % 2 != 0:\n            count += 1\n    return count",
+      "gm_output": 1,
+      "gm_output_label": true
+    }
+  ],
+  "probe_count": 4,
+  "unique_input_count": 4,
+  "unique_output_count": 3,
+  "novelty_rate": 0.75,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.5,
+  "mode": "active_pair_checks",
+  "info_request_count": 12,
+  "revealed_example_count": 0,
+  "membership_true_count": 4,
+  "membership_false_count": 9,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

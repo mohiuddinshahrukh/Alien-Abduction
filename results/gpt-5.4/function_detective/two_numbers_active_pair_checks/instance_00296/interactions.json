@@ -1,0 +1,698 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_active_pair_checks",
+    "game_id": 296,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 14,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:51:01.029656",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>, <value2>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:51:01.029710",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[6,4],\"predicted_output\":10,\"current_mode\":\"probing\",\"input_rationale\":\"Test the common hypothesis that the function returns the sum of the two integers; (6,4) makes addition distinct from many other simple arithmetic/bitwise functions.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns the sum of the two integers.\\\"\\\"\\\"\\n    return a + b\",\"confidence_score\":22}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:51:16.245774",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:51:16.245826",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[8,3],\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"Directly tests a gcd-like hypothesis with an input where gcd is distinctive from many common arithmetic and bitwise operations.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns the greatest common divisor of a and b.\\\"\\\"\\\"\\n    x, y = a, b\\n    while y:\\n        x, y = y, x % y\\n    return x if x >= 0 else -x\",\"confidence_score\":26}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:51:55.484344",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:51:55.484416",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5,3],\"predicted_output\":5,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the common max(a, b) hypothesis on an input where max is distinct from sum, product, bitwise ops, gcd/lcm, and differences.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns the larger of the two integers.\\\"\\\"\\\"\\n    return a if a >= b else b\",\"confidence_score\":24}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:52:05.971661",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:52:05.971717",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[4,7],\"predicted_output\":28,\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function is multiplication, a very common binary integer function and distinct here from most other simple operations.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns the product of the two integers.\\\"\\\"\\\"\\n    return a * b\",\"confidence_score\":23}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:52:14.389265",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:52:14.389332",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[0,5],\"predicted_output\":5,\"current_mode\":\"probing\",\"input_rationale\":\"A strong discriminator: many common functions (sum, max, xor, subtraction as a+b? absolute difference?, gcd) would return 5 here. A false answer rules out several families at once.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns a value equal to one operand when the other is zero, such as sum/max/xor/gcd.\\\"\\\"\\\"\\n    return a + b\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:52:26.830954",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:52:26.831007",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[0,5],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"The earlier test established the output is not 5 for (0,5). Testing 0 on the same input sharply distinguishes many common functions: product, min, lcm, bitwise and, exponentiation, modulo, floor division, etc. all give 0 here.\",\"hypothesis\":\"unknown\",\"confidence_score\":15}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:52:34.195385",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:52:34.195441",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5,0],\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"Tests asymmetry and zero-handling. If true, it strongly points toward exponentiation (a**b with b=0). If false, it rules out that major candidate while also distinguishing from product/min/and/lcm (0) and shifts (5).\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns a raised to the power b.\\\"\\\"\\\"\\n    return a ** b\",\"confidence_score\":21}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:52:40.498673",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:52:40.498729",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[5,0],\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Since (0,5)=0 is confirmed and (5,0)!=1, this checks whether the function also returns 0 when the second argument is zero, which would fit symmetric candidates like multiplication, min, gcd/lcm-with-zero, bitwise and, etc., and rule out asymmetric cases like shifts/right-zero behavior.\",\"hypothesis\":\"unknown\",\"confidence_score\":17}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:52:45.096524",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:52:45.096576",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[6,3],\"predicted_output\":2,\"current_mode\":\"probing\",\"input_rationale\":\"Among remaining plausible zero-preserving candidates, this distinguishes bitwise AND (2) from min (3), lcm (6), multiplication (18), and many others.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns the bitwise AND of the two integers.\\\"\\\"\\\"\\n    return a & b\",\"confidence_score\":28}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:52:50.991810",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:52:50.991836",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[9,4],\"predicted_output\":4,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the simple and still-consistent min(a, b) hypothesis against other zero-preserving candidates like gcd (1), xor-like ideas (13), abs difference (5), and various arithmetic operations.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns the smaller of the two integers.\\\"\\\"\\\"\\n    return a if a <= b else b\",\"confidence_score\":36}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:53:07.542679",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:53:07.542730",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[1,1],\"predicted_output\":0,\"current_mode\":\"confirming\",\"input_rationale\":\"This sharply distinguishes modulo-with-zero-handling from several remaining zero-preserving alternatives. For a%b it is 0; for common-set-bit counts or min-like behavior it would be 1.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns a % b, except returns 0 when b is 0.\\\"\\\"\\\"\\n    return 0 if b == 0 else a % b\",\"confidence_score\":64}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:53:30.296780",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:53:30.296797",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[14,13],\"predicted_output\":2,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the hypothesis that the function returns the number of positions where both integers have a 1 bit: 14 & 13 = 12 (1100), whose popcount is 2. This distinguishes it from boolean-overlap (1), bit_length of overlap (4), gcd/common-divisor based ideas (1), and many digit-based functions.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns the number of set bits in the bitwise AND of a and b.\\\"\\\"\\\"\\n    n = a & b\\n    count = 0\\n    while n:\\n        count += n & 1\\n        n >>= 1\\n    return count\",\"confidence_score\":58}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:54:17.731207",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:54:17.731275",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":[12,12],\"predicted_output\":1,\"current_mode\":\"confirming\",\"input_rationale\":\"So far all unequal tested pairs are consistent with output 0, while the only equal pair (1,1) is nonzero. Using a multi-digit equal pair cleanly tests whether the function is simply an equality indicator, since many alternative 'equal-related' or digit-based functions would return 2, 12, 24, 144, etc. instead of 1.\",\"hypothesis\":\"def solution(a, b):\\n    \\\"\\\"\\\"Returns 1 if the two integers are equal, otherwise 0.\\\"\\\"\\\"\\n    return 1 if a == b else 0\",\"confidence_score\":55}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T02:55:20.412751",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:55:20.412826",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef solution(a, b):\n    \"\"\"Returns the value if the two integers are equal, otherwise 0.\"\"\"\n    return a if a == b else 0\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:55:20.984649",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:55:20.984779",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [1, 10] | Expected: 3 | Got: 0\nInput: [-10, 1] | Expected: 4 | Got: 0\nInput: [10, -99] | Expected: 4 | Got: 0"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:55:20.984795",
+        "action": {
+          "type": "hidden_function",
+          "content": "def product_mod_seven(a: int, b: int) -> int:\n    return (a * b) % 7"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:55:20.984809",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(a, b):\n    \"\"\"Returns the value if the two integers are equal, otherwise 0.\"\"\"\n    return a if a == b else 0"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T02:55:20.984855",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_pair_checks\nAccuracy: 0.200\nInformation requests: 13/15\nRevealed passive examples: 0\nEfficiency: 0.200\nSlack: 2\nObserved-pair consistency: 0.667\nMembership balance: 3 true / 11 false\nParse errors: 0\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.2,
+  "efficiency_raw": 0.2,
+  "slack": 2,
+  "accuracy": 0.2,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 13,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        1,
+        10
+      ],
+      "output": 3
+    },
+    {
+      "round": 6,
+      "args": [
+        0,
+        5
+      ],
+      "output": 0
+    },
+    {
+      "round": 8,
+      "args": [
+        5,
+        0
+      ],
+      "output": 0
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        6,
+        4
+      ],
+      "predicted_output": 10,
+      "confidence_score": 22,
+      "current_mode": "probing",
+      "input_rationale": "Test the common hypothesis that the function returns the sum of the two integers; (6,4) makes addition distinct from many other simple arithmetic/bitwise functions.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the sum of the two integers.\"\"\"\n    return a + b",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        8,
+        3
+      ],
+      "predicted_output": 1,
+      "confidence_score": 26,
+      "current_mode": "probing",
+      "input_rationale": "Directly tests a gcd-like hypothesis with an input where gcd is distinctive from many common arithmetic and bitwise operations.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the greatest common divisor of a and b.\"\"\"\n    x, y = a, b\n    while y:\n        x, y = y, x % y\n    return x if x >= 0 else -x",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": [
+        5,
+        3
+      ],
+      "predicted_output": 5,
+      "confidence_score": 24,
+      "current_mode": "probing",
+      "input_rationale": "Tests the common max(a, b) hypothesis on an input where max is distinct from sum, product, bitwise ops, gcd/lcm, and differences.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the larger of the two integers.\"\"\"\n    return a if a >= b else b",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        4,
+        7
+      ],
+      "predicted_output": 28,
+      "confidence_score": 23,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function is multiplication, a very common binary integer function and distinct here from most other simple operations.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the product of the two integers.\"\"\"\n    return a * b",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": [
+        0,
+        5
+      ],
+      "predicted_output": 5,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "A strong discriminator: many common functions (sum, max, xor, subtraction as a+b? absolute difference?, gcd) would return 5 here. A false answer rules out several families at once.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns a value equal to one operand when the other is zero, such as sum/max/xor/gcd.\"\"\"\n    return a + b",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        0,
+        5
+      ],
+      "predicted_output": 0,
+      "confidence_score": 15,
+      "current_mode": "probing",
+      "input_rationale": "The earlier test established the output is not 5 for (0,5). Testing 0 on the same input sharply distinguishes many common functions: product, min, lcm, bitwise and, exponentiation, modulo, floor division, etc. all give 0 here.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        5,
+        0
+      ],
+      "predicted_output": 1,
+      "confidence_score": 21,
+      "current_mode": "probing",
+      "input_rationale": "Tests asymmetry and zero-handling. If true, it strongly points toward exponentiation (a**b with b=0). If false, it rules out that major candidate while also distinguishing from product/min/and/lcm (0) and shifts (5).",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns a raised to the power b.\"\"\"\n    return a ** b",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        5,
+        0
+      ],
+      "predicted_output": 0,
+      "confidence_score": 17,
+      "current_mode": "probing",
+      "input_rationale": "Since (0,5)=0 is confirmed and (5,0)!=1, this checks whether the function also returns 0 when the second argument is zero, which would fit symmetric candidates like multiplication, min, gcd/lcm-with-zero, bitwise and, etc., and rule out asymmetric cases like shifts/right-zero behavior.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        6,
+        3
+      ],
+      "predicted_output": 2,
+      "confidence_score": 28,
+      "current_mode": "probing",
+      "input_rationale": "Among remaining plausible zero-preserving candidates, this distinguishes bitwise AND (2) from min (3), lcm (6), multiplication (18), and many others.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the bitwise AND of the two integers.\"\"\"\n    return a & b",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        9,
+        4
+      ],
+      "predicted_output": 4,
+      "confidence_score": 36,
+      "current_mode": "probing",
+      "input_rationale": "Tests the simple and still-consistent min(a, b) hypothesis against other zero-preserving candidates like gcd (1), xor-like ideas (13), abs difference (5), and various arithmetic operations.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the smaller of the two integers.\"\"\"\n    return a if a <= b else b",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": [
+        1,
+        1
+      ],
+      "predicted_output": 0,
+      "confidence_score": 64,
+      "current_mode": "confirming",
+      "input_rationale": "This sharply distinguishes modulo-with-zero-handling from several remaining zero-preserving alternatives. For a%b it is 0; for common-set-bit counts or min-like behavior it would be 1.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns a % b, except returns 0 when b is 0.\"\"\"\n    return 0 if b == 0 else a % b",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        14,
+        13
+      ],
+      "predicted_output": 2,
+      "confidence_score": 58,
+      "current_mode": "probing",
+      "input_rationale": "Tests the hypothesis that the function returns the number of positions where both integers have a 1 bit: 14 & 13 = 12 (1100), whose popcount is 2. This distinguishes it from boolean-overlap (1), bit_length of overlap (4), gcd/common-divisor based ideas (1), and many digit-based functions.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the number of set bits in the bitwise AND of a and b.\"\"\"\n    n = a & b\n    count = 0\n    while n:\n        count += n & 1\n        n >>= 1\n    return count",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 12,
+      "input": [
+        12,
+        12
+      ],
+      "predicted_output": 1,
+      "confidence_score": 55,
+      "current_mode": "confirming",
+      "input_rationale": "So far all unequal tested pairs are consistent with output 0, while the only equal pair (1,1) is nonzero. Using a multi-digit equal pair cleanly tests whether the function is simply an equality indicator, since many alternative 'equal-related' or digit-based functions would return 2, 12, 24, 144, etc. instead of 1.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns 1 if the two integers are equal, otherwise 0.\"\"\"\n    return 1 if a == b else 0",
+      "gm_output": 4,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 3,
+  "unique_input_count": 3,
+  "unique_output_count": 2,
+  "novelty_rate": 0.6666666666666666,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 0.9182958340544896,
+  "mode": "active_pair_checks",
+  "info_request_count": 13,
+  "revealed_example_count": 0,
+  "membership_true_count": 3,
+  "membership_false_count": 11,
+  "internal_consistency_score": 0.6666666666666666,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 1,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

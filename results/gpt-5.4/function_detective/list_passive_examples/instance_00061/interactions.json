@@ -1,0 +1,847 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_passive_examples",
+    "game_id": 61,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 12,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:27.420731",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nI control which valid input-output examples you see. You can request them one at a time.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ([3, 2, 1], 3)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:27.420762",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Need distinguish between length-based, max/min, inversion count, sortedness, etc. Empty and single-element cases are very informative for list functions.\",\"hypothesis\":\"unknown\",\"confidence_score\":6}\n{\"current_mode\":\"probing\",\"input_rationale\":\"Please provide the output for the input []. This helps distinguish many list-to-int behaviors such as length-based results, extrema, inversion counts, and sortedness-related functions.\",\"hypothesis\":\"unknown\",\"confidence_score\":6}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:29.481868",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:29.481947",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Please provide the output for input []. Empty input is highly discriminative among candidate behaviors like length, inversion count, extrema, and sortedness metrics.\",\"hypothesis\":\"unknown\",\"confidence_score\":6}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:33.022749",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([-1, 0, 1], -1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:33.022800",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Current simple hypothesis is 'return the first element', which fits both seen examples. To test that against order-sensitive alternatives, please provide the output for input [1, 3, 2].\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the first element of the list.\\\"\\\"\\\"\\n    return items[0]\",\"confidence_score\":22}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:38.323848",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:38.323904",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The outputs seen are consistent with returning the first list element, with 0 for an empty list. Please provide the output for [1, 3, 2] to confirm this order-sensitive hypothesis.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the first element of the list, or 0 if the list is empty.\\\"\\\"\\\"\\n    return items[0] if items else 0\",\"confidence_score\":88}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:03:42.556782",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([1, 1], 1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:03:42.556838",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"All observed outputs match 'return the first element, or 0 for empty'. One more discriminating test with a non-monotonic list would confirm this over alternatives tied to sortedness or extrema. Please provide the output for [2, 5, 1].\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the first element of the list, or 0 if the list is empty.\\\"\\\"\\\"\\n    return items[0] if items else 0\",\"confidence_score\":93}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:04:03.024820",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([2, 1], 1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:04:03.024874",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"A non-monotonic list will distinguish whether the function returns an inversion count for unsorted inputs, or only does something special for monotone inputs. Please provide the output for [2, 3, 1].\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the first element if the list is nondecreasing; otherwise returns the inversion count; returns 0 for empty.\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    ok = True\\n    for i in range(len(items) - 1):\\n        if items[i] > items[i + 1]:\\n            ok = False\\n            break\\n    if ok:\\n        return items[0]\\n    ans = 0\\n    for i in range(len(items)):\\n        for j in range(i + 1, len(items)):\\n            if items[i] > items[j]:\\n                ans += 1\\n    return ans\",\"confidence_score\":52}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:04:44.457539",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([0], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:04:44.457625",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Two leading candidates remain: returning inversion count on unsorted lists vs returning sum of descent positions (major index), while sorted/nondecreasing lists return the first/min element. The input [3, 1, 2] cleanly separates these: inversion count would be 2, major-index-style would be 1.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns the first element for a nondecreasing list; otherwise returns the inversion count; returns 0 for an empty list.\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    nondecreasing = True\\n    for i in range(len(items) - 1):\\n        if items[i] > items[i + 1]:\\n            nondecreasing = False\\n            break\\n    if nondecreasing:\\n        return items[0]\\n    ans = 0\\n    for i in range(len(items)):\\n        for j in range(i + 1, len(items)):\\n            if items[i] > items[j]:\\n                ans += 1\\n    return ans\",\"confidence_score\":57}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:06:10.362298",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([5, -5, 5], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:06:10.362377",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"A strong candidate is: return n*(n-1)//2 when the list is nonincreasing; return the first element when it is nondecreasing; otherwise return 0. The input [2, 2, 1] separates this from inversion-count or descent-position hypotheses.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns n*(n-1)//2 if items are nonincreasing, the first element if items are nondecreasing, else 0.\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    nondec = True\\n    noninc = True\\n    for i in range(len(items) - 1):\\n        if items[i] > items[i + 1]:\\n            nondec = False\\n        if items[i] < items[i + 1]:\\n            noninc = False\\n    if noninc:\\n        n = len(items)\\n        return n * (n - 1) // 2\\n    if nondec:\\n        return items[0]\\n    return 0\",\"confidence_score\":71}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:07:31.124371",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([1, 2, 3], 3)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:07:31.124452",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The current examples suggest the output may depend strongly on short monotone lists. The 2-element increasing case is especially informative and should sharply narrow the rule. Please provide the output for [1, 2].\",\"hypothesis\":\"unknown\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:08:37.877248",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([-2, 1, 1, 33, 0], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:08:37.877313",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Most examples suggest the function may return 0 for non-monotone lists, while monotone lists follow one of a few remaining rules. The constant list [2, 2, 2] cleanly separates key candidates like n*(n-1)//2, endpoint-based rules, and min*max.\",\"hypothesis\":\"def f(items):\\n    \\\"\\\"\\\"Returns 0 for non-monotone lists; for monotone lists, possibly a value determined by endpoints or length.\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    nondec = all(items[i] <= items[i+1] for i in range(len(items)-1))\\n    noninc = all(items[i] >= items[i+1] for i in range(len(items)-1))\\n    if not (nondec or noninc):\\n        return 0\\n    return len(items) * (len(items) - 1) // 2\",\"confidence_score\":29}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:09:40.181553",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([-10], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:09:40.181648",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"A 2-element increasing example is the most informative missing case. It will strongly distinguish endpoint-based, monotonic-only, pair-count, and consecutive-run hypotheses. Please provide the output for [1, 2].\",\"hypothesis\":\"unknown\",\"confidence_score\":24}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T22:09:55.457353",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([-27, -2, -2, -2, 2], -33)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:09:55.457437",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef f(items):\n    \"\"\"Returns the sum of the list excluding one occurrence of its maximum element; returns 0 for an empty list.\"\"\"\n    if not items:\n        return 0\n    return sum(items) - max(items)\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:09:55.911091",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: WIN"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:09:55.911233",
+        "action": {
+          "type": "solution_feedback",
+          "content": "That is correct!"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:09:55.911252",
+        "action": {
+          "type": "hidden_function",
+          "content": "def sum_excluding_max(items: List[int]) -> int:\n    return sum(items) - max(items) if items else 0"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:09:55.911267",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(items):\n    \"\"\"Returns the sum of the list excluding one occurrence of its maximum element; returns 0 for an empty list.\"\"\"\n    if not items:\n        return 0\n    return sum(items) - max(items)"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T22:09:55.911317",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_examples\nAccuracy: 1.000\nInformation requests: 10/15\nRevealed passive examples: 11\nEfficiency: 0.400\nSlack: 5\nObserved-pair consistency: 1.000\nParse errors: 1\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": false,
+  "Success": true,
+  "efficiency": 0.4,
+  "efficiency_raw": 0.4,
+  "slack": 5,
+  "accuracy": 1.0,
+  "binary_accuracy": 1.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 10,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "output": 3
+    },
+    {
+      "round": 1,
+      "args": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "output": -1
+    },
+    {
+      "round": 2,
+      "args": [
+        []
+      ],
+      "output": 0
+    },
+    {
+      "round": 3,
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "output": 1
+    },
+    {
+      "round": 4,
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "output": 1
+    },
+    {
+      "round": 5,
+      "args": [
+        [
+          0
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 6,
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 7,
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "output": 3
+    },
+    {
+      "round": 8,
+      "args": [
+        [
+          -2,
+          1,
+          1,
+          33,
+          0
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 9,
+      "args": [
+        [
+          -10
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 10,
+      "args": [
+        [
+          -27,
+          -2,
+          -2,
+          -2,
+          2
+        ]
+      ],
+      "output": -33
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "io",
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "expected": -1
+    },
+    {
+      "kind": "io",
+      "args": [
+        []
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          0
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          -2,
+          1,
+          1,
+          33,
+          0
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          -10
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          -27,
+          -2,
+          -2,
+          -2,
+          2
+        ]
+      ],
+      "expected": -33
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 6,
+      "current_mode": "probing",
+      "input_rationale": "Please provide the output for input []. Empty input is highly discriminative among candidate behaviors like length, inversion count, extrema, and sortedness metrics.",
+      "hypothesis": "unknown",
+      "gm_output": -1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        []
+      ],
+      "predicted_output": null,
+      "confidence_score": 22,
+      "current_mode": "probing",
+      "input_rationale": "Current simple hypothesis is 'return the first element', which fits both seen examples. To test that against order-sensitive alternatives, please provide the output for input [1, 3, 2].",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the first element of the list.\"\"\"\n    return items[0]",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": [
+        [
+          1,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 88,
+      "current_mode": "confirming",
+      "input_rationale": "The outputs seen are consistent with returning the first list element, with 0 for an empty list. Please provide the output for [1, 3, 2] to confirm this order-sensitive hypothesis.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the first element of the list, or 0 if the list is empty.\"\"\"\n    return items[0] if items else 0",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        [
+          2,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 93,
+      "current_mode": "confirming",
+      "input_rationale": "All observed outputs match 'return the first element, or 0 for empty'. One more discriminating test with a non-monotonic list would confirm this over alternatives tied to sortedness or extrema. Please provide the output for [2, 5, 1].",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the first element of the list, or 0 if the list is empty.\"\"\"\n    return items[0] if items else 0",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": [
+        [
+          0
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 52,
+      "current_mode": "probing",
+      "input_rationale": "A non-monotonic list will distinguish whether the function returns an inversion count for unsorted inputs, or only does something special for monotone inputs. Please provide the output for [2, 3, 1].",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the first element if the list is nondecreasing; otherwise returns the inversion count; returns 0 for empty.\"\"\"\n    if not items:\n        return 0\n    ok = True\n    for i in range(len(items) - 1):\n        if items[i] > items[i + 1]:\n            ok = False\n            break\n    if ok:\n        return items[0]\n    ans = 0\n    for i in range(len(items)):\n        for j in range(i + 1, len(items)):\n            if items[i] > items[j]:\n                ans += 1\n    return ans",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 57,
+      "current_mode": "probing",
+      "input_rationale": "Two leading candidates remain: returning inversion count on unsorted lists vs returning sum of descent positions (major index), while sorted/nondecreasing lists return the first/min element. The input [3, 1, 2] cleanly separates these: inversion count would be 2, major-index-style would be 1.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the first element for a nondecreasing list; otherwise returns the inversion count; returns 0 for an empty list.\"\"\"\n    if not items:\n        return 0\n    nondecreasing = True\n    for i in range(len(items) - 1):\n        if items[i] > items[i + 1]:\n            nondecreasing = False\n            break\n    if nondecreasing:\n        return items[0]\n    ans = 0\n    for i in range(len(items)):\n        for j in range(i + 1, len(items)):\n            if items[i] > items[j]:\n                ans += 1\n    return ans",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 71,
+      "current_mode": "probing",
+      "input_rationale": "A strong candidate is: return n*(n-1)//2 when the list is nonincreasing; return the first element when it is nondecreasing; otherwise return 0. The input [2, 2, 1] separates this from inversion-count or descent-position hypotheses.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns n*(n-1)//2 if items are nonincreasing, the first element if items are nondecreasing, else 0.\"\"\"\n    if not items:\n        return 0\n    nondec = True\n    noninc = True\n    for i in range(len(items) - 1):\n        if items[i] > items[i + 1]:\n            nondec = False\n        if items[i] < items[i + 1]:\n            noninc = False\n    if noninc:\n        n = len(items)\n        return n * (n - 1) // 2\n    if nondec:\n        return items[0]\n    return 0",
+      "gm_output": 3,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        [
+          -2,
+          1,
+          1,
+          33,
+          0
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "The current examples suggest the output may depend strongly on short monotone lists. The 2-element increasing case is especially informative and should sharply narrow the rule. Please provide the output for [1, 2].",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": [
+        [
+          -10
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 29,
+      "current_mode": "probing",
+      "input_rationale": "Most examples suggest the function may return 0 for non-monotone lists, while monotone lists follow one of a few remaining rules. The constant list [2, 2, 2] cleanly separates key candidates like n*(n-1)//2, endpoint-based rules, and min*max.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns 0 for non-monotone lists; for monotone lists, possibly a value determined by endpoints or length.\"\"\"\n    if not items:\n        return 0\n    nondec = all(items[i] <= items[i+1] for i in range(len(items)-1))\n    noninc = all(items[i] >= items[i+1] for i in range(len(items)-1))\n    if not (nondec or noninc):\n        return 0\n    return len(items) * (len(items) - 1) // 2",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        [
+          -27,
+          -2,
+          -2,
+          -2,
+          2
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 24,
+      "current_mode": "probing",
+      "input_rationale": "A 2-element increasing example is the most informative missing case. It will strongly distinguish endpoint-based, monotonic-only, pair-count, and consecutive-run hypotheses. Please provide the output for [1, 2].",
+      "hypothesis": "unknown",
+      "gm_output": -33,
+      "gm_output_label": true
+    }
+  ],
+  "probe_count": 11,
+  "unique_input_count": 11,
+  "unique_output_count": 5,
+  "novelty_rate": 0.45454545454545453,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 2.0403733936884962,
+  "mode": "passive_examples",
+  "info_request_count": 10,
+  "revealed_example_count": 11,
+  "membership_true_count": 0,
+  "membership_false_count": 0,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

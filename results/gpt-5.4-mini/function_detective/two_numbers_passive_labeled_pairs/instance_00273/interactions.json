@@ -1,0 +1,900 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 273,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:31.772245",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((-2, -10), -11), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:31.772298",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"Only one example is available so far: f(-2, -10) = -11. That is consistent with several possibilities (for example min(a,b)-1, or bitwise/arithmetical transforms), so I need more pairs before making a confident solve attempt.\",\"hypothesis\":\"unknown\",\"confidence_score\":8}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:39.668200",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((99, -2), 99), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:39.668240",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"The original example f(-2, -10) = -11 strongly suggests a relationship to the smaller input, and the rejected candidate (99, -2) -> 99 is also consistent with that being false if the output is actually derived from the minimum. I still want one more confirming pair before finalizing.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns one less than the smaller of the two integers.\\\"\\\"\\\"\\n    return min(a, b) - 1\",\"confidence_score\":74}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:45.289963",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1, -2), 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:45.290029",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The two verified examples fit a simple linear rule: (-2) + (-10) + 1 = -11 and 1 + (-2) + 1 = 0. The rejected candidate (99, -2) -> 99 is also consistent because the rule would give 98, not 99.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":97}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:47.757378",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((10, 0), 12), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:47.757432",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new rejected pair (10, 0) -> 12 is consistent with the rule a + b + 1, since that would give 11, not 12. So the hypothesis remains unchanged.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:50.524537",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1, 99), 101), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:50.524612",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new verified pair (1, 99) -> 101 matches the same rule a + b + 1 exactly, further confirming the hypothesis.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:53.071122",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((0, 1), 3), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:53.071170",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected pair (0, 1) -> 3 is consistent with the rule a + b + 1, since that would give 2, not 3. No change to the hypothesis.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:55.073454",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-2, 1), 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:55.073519",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The verified pair (-2, 1) -> 0 matches a + b + 1 exactly, since -2 + 1 + 1 = 0. The hypothesis is fully consistent with all seen examples.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:57.580273",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-2, -1000), -1002), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:57.580325",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected pair (-2, -1000) -> -1002 is consistent with the rule a + b + 1, since that would give -1001, not -1002.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:48:59.602167",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((0, 1000), 1001), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:48:59.602217",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The verified pair (0, 1000) -> 1001 matches a + b + 1 exactly, reinforcing the same rule.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:03.255545",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1, -1), 2), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:03.255600",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected pair (1, -1) -> 2 is consistent with the rule a + b + 1, since that would give 1, not 2. The pattern is stable across all examples.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:06.337899",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-2, -1), -2), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:06.337945",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The verified pair (-2, -1) -> -2 matches a + b + 1 exactly, since -2 + (-1) + 1 = -2. This continues to fully support the same rule.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:10.030503",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((2, -10), -5), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:10.030559",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected pair (2, -10) -> -5 is consistent with the established rule a + b + 1, since that would produce -7, not -5. All provided examples support this function exactly.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:12.011446",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1, 1000), 1002), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:12.011506",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The verified pair (1, 1000) -> 1002 matches a + b + 1 exactly, since 1 + 1000 + 1 = 1002. The hidden function is clearly the sum plus one.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:15.309534",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-10, -1), -12), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:15.309581",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The rejected pair (-10, -1) -> -12 is consistent with the established rule a + b + 1, since that would give -10, not -12. The function remains the same.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T20:49:17.182699",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((0, 0), 1), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:17.182749",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The verified pair (0, 0) -> 1 matches a + b + 1 exactly. This is fully consistent with every accepted and rejected pair seen so far.\",\"hypothesis\":\"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the two integers plus one.\\\"\\\"\\\"\\n    return a + b + 1\",\"confidence_score\":100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T20:49:17.183468",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 15,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        -2,
+        -10
+      ],
+      "output": -11
+    },
+    {
+      "round": 2,
+      "args": [
+        1,
+        -2
+      ],
+      "output": 0
+    },
+    {
+      "round": 4,
+      "args": [
+        1,
+        99
+      ],
+      "output": 101
+    },
+    {
+      "round": 6,
+      "args": [
+        -2,
+        1
+      ],
+      "output": 0
+    },
+    {
+      "round": 8,
+      "args": [
+        0,
+        1000
+      ],
+      "output": 1001
+    },
+    {
+      "round": 10,
+      "args": [
+        -2,
+        -1
+      ],
+      "output": -2
+    },
+    {
+      "round": 12,
+      "args": [
+        1,
+        1000
+      ],
+      "output": 1002
+    },
+    {
+      "round": 14,
+      "args": [
+        0,
+        0
+      ],
+      "output": 1
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        -10
+      ],
+      "candidate_output": -11,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        99,
+        -2
+      ],
+      "candidate_output": 99,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1,
+        -2
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        10,
+        0
+      ],
+      "candidate_output": 12,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1,
+        99
+      ],
+      "candidate_output": 101,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0,
+        1
+      ],
+      "candidate_output": 3,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        1
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        -1000
+      ],
+      "candidate_output": -1002,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0,
+        1000
+      ],
+      "candidate_output": 1001,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1,
+        -1
+      ],
+      "candidate_output": 2,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        -1
+      ],
+      "candidate_output": -2,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        2,
+        -10
+      ],
+      "candidate_output": -5,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1,
+        1000
+      ],
+      "candidate_output": 1002,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        -1
+      ],
+      "candidate_output": -12,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0,
+        0
+      ],
+      "candidate_output": 1,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1,
+        10
+      ],
+      "candidate_output": 8,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        99,
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 8,
+      "current_mode": "probing",
+      "input_rationale": "Only one example is available so far: f(-2, -10) = -11. That is consistent with several possibilities (for example min(a,b)-1, or bitwise/arithmetical transforms), so I need more pairs before making a confident solve attempt.",
+      "hypothesis": "unknown",
+      "gm_output": 99,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        1,
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 74,
+      "current_mode": "probing",
+      "input_rationale": "The original example f(-2, -10) = -11 strongly suggests a relationship to the smaller input, and the rejected candidate (99, -2) -> 99 is also consistent with that being false if the output is actually derived from the minimum. I still want one more confirming pair before finalizing.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns one less than the smaller of the two integers.\"\"\"\n    return min(a, b) - 1",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        10,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 97,
+      "current_mode": "confirming",
+      "input_rationale": "The two verified examples fit a simple linear rule: (-2) + (-10) + 1 = -11 and 1 + (-2) + 1 = 0. The rejected candidate (99, -2) -> 99 is also consistent because the rule would give 98, not 99.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 12,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        1,
+        99
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The new rejected pair (10, 0) -> 12 is consistent with the rule a + b + 1, since that would give 11, not 12. So the hypothesis remains unchanged.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 101,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        0,
+        1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The new verified pair (1, 99) -> 101 matches the same rule a + b + 1 exactly, further confirming the hypothesis.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        -2,
+        1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected pair (0, 1) -> 3 is consistent with the rule a + b + 1, since that would give 2, not 3. No change to the hypothesis.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        -2,
+        -1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The verified pair (-2, 1) -> 0 matches a + b + 1 exactly, since -2 + 1 + 1 = 0. The hypothesis is fully consistent with all seen examples.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": -1002,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        0,
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected pair (-2, -1000) -> -1002 is consistent with the rule a + b + 1, since that would give -1001, not -1002.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 1001,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        1,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The verified pair (0, 1000) -> 1001 matches a + b + 1 exactly, reinforcing the same rule.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        -2,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected pair (1, -1) -> 2 is consistent with the rule a + b + 1, since that would give 1, not 2. The pattern is stable across all examples.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": -2,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        2,
+        -10
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The verified pair (-2, -1) -> -2 matches a + b + 1 exactly, since -2 + (-1) + 1 = -2. This continues to fully support the same rule.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": -5,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": [
+        1,
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected pair (2, -10) -> -5 is consistent with the established rule a + b + 1, since that would produce -7, not -5. All provided examples support this function exactly.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 1002,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": [
+        -10,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The verified pair (1, 1000) -> 1002 matches a + b + 1 exactly, since 1 + 1000 + 1 = 1002. The hidden function is clearly the sum plus one.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": -12,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": [
+        0,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The rejected pair (-10, -1) -> -12 is consistent with the established rule a + b + 1, since that would give -10, not -12. The function remains the same.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 14,
+      "input": [
+        -1,
+        10
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The verified pair (0, 0) -> 1 matches a + b + 1 exactly. This is fully consistent with every accepted and rejected pair seen so far.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the two integers plus one.\"\"\"\n    return a + b + 1",
+      "gm_output": 8,
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 8,
+  "unique_output_count": 7,
+  "novelty_rate": 0.875,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 2.75,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 15,
+  "revealed_example_count": 16,
+  "membership_true_count": 8,
+  "membership_false_count": 8,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

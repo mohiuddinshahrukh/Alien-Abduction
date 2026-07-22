@@ -1,0 +1,663 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "numbers_active_pair_checks",
+    "game_id": 32,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 14,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:50:41.706351",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(x: int) -> int\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:50:41.706401",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":-7,\"predicted_output\":7,\"current_mode\":\"probing\",\"input_rationale\":\"Tests two very common unary integer functions immediately: absolute value and negation both map -7 to 7, while many other common functions do not.\",\"hypothesis\":\"def f(x):\\n    \\\"\\\"\\\"Returns the absolute value of x.\\\"\\\"\\\"\\n    return x if x >= 0 else -x\",\"confidence_score\":16}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:50:49.261105",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:50:49.261157",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":5,\"predicted_output\":25,\"current_mode\":\"probing\",\"input_rationale\":\"Checks the square hypothesis on a simple positive integer; squaring is a very common unary int function and differs from abs/negation/successor/popcount/etc.\",\"hypothesis\":\"def f(x):\\n    \\\"\\\"\\\"Returns x squared.\\\"\\\"\\\"\\n    return x * x\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:50:56.891424",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:50:56.891485",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":5,\"predicted_output\":120,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the factorial hypothesis on the same positive input already used for squaring; 5 is especially informative because many classic integer functions give very different values there.\",\"hypothesis\":\"def f(x):\\n    \\\"\\\"\\\"Returns the factorial of a nonnegative integer x.\\\"\\\"\\\"\\n    return 1 if x <= 1 else x * f(x - 1)\",\"confidence_score\":14}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:51:05.259353",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:51:05.259407",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":1,\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"1 is a highly informative fixed point for many integer functions (identity, abs, square, factorial, Fibonacci, popcount, digital root, etc.). A mismatch would eliminate a large cluster of common hypotheses.\",\"hypothesis\":\"unknown\",\"confidence_score\":10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:51:13.161927",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:51:13.161971",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":0,\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"0 is a key discriminator: many integer functions send 0 to 0 (identity, negation, abs, square, digit-sum, popcount, reverse digits, triangular), while others send it to 1 or are undefined. This quickly partitions the hypothesis space.\",\"hypothesis\":\"unknown\",\"confidence_score\":11}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:51:29.324137",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:51:29.324166",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":2,\"predicted_output\":1,\"current_mode\":\"probing\",\"input_rationale\":\"2 is the smallest informative value after 0 and 1; output 1 would support several common families consistent with earlier answers (e.g. floor-half, primality as bool, floor-log2, trailing-zero-count, some divisor-count variants), while a mismatch rules out a large cluster.\",\"hypothesis\":\"unknown\",\"confidence_score\":12}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:51:36.509726",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:51:36.509782",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":3,\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Tests whether the function might be one of the many arithmetic predicates/counts that send small nonzero inputs to 0 (e.g. composite indicator, count of nontrivial divisors, some prime-gap-style counts). Using 3 separates these from functions that grow or alternate on small positives.\",\"hypothesis\":\"unknown\",\"confidence_score\":13}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:51:53.720491",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:51:53.720533",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":1,\"predicted_output\":0,\"current_mode\":\"probing\",\"input_rationale\":\"Many plausible integer functions consistent with prior feedback map 1 to 0 (e.g. prime-counting variants, previous-prime/customized arithmetic counts, Collatz steps, divisor-related counts). This is a high-value split on the remaining hypothesis space.\",\"hypothesis\":\"unknown\",\"confidence_score\":17}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:52:15.412461",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:52:15.412517",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":3,\"predicted_output\":5,\"current_mode\":\"probing\",\"input_rationale\":\"Tests the nth-prime hypothesis, which currently fits all known constraints with a natural convention f(n<=0)=0. Using 3 is highly discriminative because many nearby alternatives would give 3, 4, 6, 10, etc., not 5.\",\"hypothesis\":\"def f(x):\\n    \\\"\\\"\\\"Returns the x-th prime for positive x, and 0 for nonpositive x.\\\"\\\"\\\"\\n    if x <= 0:\\n        return 0\\n    count = 0\\n    n = 1\\n    while True:\\n        n += 1\\n        is_prime = True\\n        d = 2\\n        while d * d <= n:\\n            if n % d == 0:\\n                is_prime = False\\n                break\\n            d += 1\\n        if is_prime:\\n            count += 1\\n            if count == x:\\n                return n\",\"confidence_score\":42}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:52:36.187174",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:52:36.187220",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":1,\"predicted_output\":2,\"current_mode\":\"probing\",\"input_rationale\":\"The strongest unresolved discriminator is the exact value at 1. Many common integer functions consistent with f(0)=0 but not with earlier failures map 1 to 2, so this efficiently tests a large remaining cluster.\",\"hypothesis\":\"unknown\",\"confidence_score\":19}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:53:01.487947",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:01.488011",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":1,\"predicted_output\":3,\"current_mode\":\"probing\",\"input_rationale\":\"We already know f(1) is not 0, 1, or 2. Testing 3 is the most efficient next split because many simple integer functions with f(0)=0 land at 3 for x=1 (for example 3*x, prime-successor variants, small-offset recurrences), while a miss pushes us toward 4+ immediately.\",\"hypothesis\":\"unknown\",\"confidence_score\":23}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:53:09.497767",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:09.497823",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":1,\"predicted_output\":4,\"current_mode\":\"probing\",\"input_rationale\":\"We have ruled out 0, 1, 2, and 3 at input 1. Testing 4 is now the most direct way to pin down the smallest positive candidate and strongly narrow toward simple linear/quadratic/exponential families if correct.\",\"hypothesis\":\"unknown\",\"confidence_score\":31}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:53:27.200849",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:27.200902",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":2,\"predicted_output\":8,\"current_mode\":\"probing\",\"input_rationale\":\"With f(0)=0 and f(1)=4, the simplest consistent hypothesis is 4*x. Testing x=2 sharply distinguishes that from many other natural families such as x^2+3x, x^3+3x, and assorted divisor/recurrence-based functions.\",\"hypothesis\":\"def f(x):\\n    \\\"\\\"\\\"Returns four times x.\\\"\\\"\\\"\\n    return 4 * x\",\"confidence_score\":46}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T23:53:32.313633",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:32.313663",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef solution(x):\n    return 4 * x\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:32.791820",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:32.792064",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [1000] | Expected: 4 | Got: 4000\nInput: [-2] | Expected: 1 | Got: -8\nInput: [10] | Expected: 4 | Got: 40"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:32.792110",
+        "action": {
+          "type": "hidden_function",
+          "content": "def times_four_mod_nine(x: int) -> int:\n    return (4 * x) % 9"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:32.792148",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(x):\n    return 4 * x"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T23:53:32.792242",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_pair_checks\nAccuracy: 0.030\nInformation requests: 13/15\nRevealed passive examples: 0\nEfficiency: 0.200\nSlack: 2\nObserved-pair consistency: 0.750\nMembership balance: 4 true / 10 false\nParse errors: 0\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.2,
+  "efficiency_raw": 0.2,
+  "slack": 2,
+  "accuracy": 0.03,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 0,
+  "runtime_error_count": 0,
+  "turns_used": 13,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        1000
+      ],
+      "output": 4
+    },
+    {
+      "round": 5,
+      "args": [
+        0
+      ],
+      "output": 0
+    },
+    {
+      "round": 12,
+      "args": [
+        1
+      ],
+      "output": 4
+    },
+    {
+      "round": 13,
+      "args": [
+        2
+      ],
+      "output": 8
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": -7,
+      "predicted_output": 7,
+      "confidence_score": 16,
+      "current_mode": "probing",
+      "input_rationale": "Tests two very common unary integer functions immediately: absolute value and negation both map -7 to 7, while many other common functions do not.",
+      "hypothesis": "def f(x):\n    \"\"\"Returns the absolute value of x.\"\"\"\n    return x if x >= 0 else -x",
+      "gm_output": 8,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": 5,
+      "predicted_output": 25,
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "Checks the square hypothesis on a simple positive integer; squaring is a very common unary int function and differs from abs/negation/successor/popcount/etc.",
+      "hypothesis": "def f(x):\n    \"\"\"Returns x squared.\"\"\"\n    return x * x",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": 5,
+      "predicted_output": 120,
+      "confidence_score": 14,
+      "current_mode": "probing",
+      "input_rationale": "Tests the factorial hypothesis on the same positive input already used for squaring; 5 is especially informative because many classic integer functions give very different values there.",
+      "hypothesis": "def f(x):\n    \"\"\"Returns the factorial of a nonnegative integer x.\"\"\"\n    return 1 if x <= 1 else x * f(x - 1)",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": 1,
+      "predicted_output": 1,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "1 is a highly informative fixed point for many integer functions (identity, abs, square, factorial, Fibonacci, popcount, digital root, etc.). A mismatch would eliminate a large cluster of common hypotheses.",
+      "hypothesis": "unknown",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": 0,
+      "predicted_output": 0,
+      "confidence_score": 11,
+      "current_mode": "probing",
+      "input_rationale": "0 is a key discriminator: many integer functions send 0 to 0 (identity, negation, abs, square, digit-sum, popcount, reverse digits, triangular), while others send it to 1 or are undefined. This quickly partitions the hypothesis space.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": 2,
+      "predicted_output": 1,
+      "confidence_score": 12,
+      "current_mode": "probing",
+      "input_rationale": "2 is the smallest informative value after 0 and 1; output 1 would support several common families consistent with earlier answers (e.g. floor-half, primality as bool, floor-log2, trailing-zero-count, some divisor-count variants), while a mismatch rules out a large cluster.",
+      "hypothesis": "unknown",
+      "gm_output": 8,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": 3,
+      "predicted_output": 0,
+      "confidence_score": 13,
+      "current_mode": "probing",
+      "input_rationale": "Tests whether the function might be one of the many arithmetic predicates/counts that send small nonzero inputs to 0 (e.g. composite indicator, count of nontrivial divisors, some prime-gap-style counts). Using 3 separates these from functions that grow or alternate on small positives.",
+      "hypothesis": "unknown",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": 1,
+      "predicted_output": 0,
+      "confidence_score": 17,
+      "current_mode": "probing",
+      "input_rationale": "Many plausible integer functions consistent with prior feedback map 1 to 0 (e.g. prime-counting variants, previous-prime/customized arithmetic counts, Collatz steps, divisor-related counts). This is a high-value split on the remaining hypothesis space.",
+      "hypothesis": "unknown",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": 3,
+      "predicted_output": 5,
+      "confidence_score": 42,
+      "current_mode": "probing",
+      "input_rationale": "Tests the nth-prime hypothesis, which currently fits all known constraints with a natural convention f(n<=0)=0. Using 3 is highly discriminative because many nearby alternatives would give 3, 4, 6, 10, etc., not 5.",
+      "hypothesis": "def f(x):\n    \"\"\"Returns the x-th prime for positive x, and 0 for nonpositive x.\"\"\"\n    if x <= 0:\n        return 0\n    count = 0\n    n = 1\n    while True:\n        n += 1\n        is_prime = True\n        d = 2\n        while d * d <= n:\n            if n % d == 0:\n                is_prime = False\n                break\n            d += 1\n        if is_prime:\n            count += 1\n            if count == x:\n                return n",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": 1,
+      "predicted_output": 2,
+      "confidence_score": 19,
+      "current_mode": "probing",
+      "input_rationale": "The strongest unresolved discriminator is the exact value at 1. Many common integer functions consistent with f(0)=0 but not with earlier failures map 1 to 2, so this efficiently tests a large remaining cluster.",
+      "hypothesis": "unknown",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": 1,
+      "predicted_output": 3,
+      "confidence_score": 23,
+      "current_mode": "probing",
+      "input_rationale": "We already know f(1) is not 0, 1, or 2. Testing 3 is the most efficient next split because many simple integer functions with f(0)=0 land at 3 for x=1 (for example 3*x, prime-successor variants, small-offset recurrences), while a miss pushes us toward 4+ immediately.",
+      "hypothesis": "unknown",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": 1,
+      "predicted_output": 4,
+      "confidence_score": 31,
+      "current_mode": "probing",
+      "input_rationale": "We have ruled out 0, 1, 2, and 3 at input 1. Testing 4 is now the most direct way to pin down the smallest positive candidate and strongly narrow toward simple linear/quadratic/exponential families if correct.",
+      "hypothesis": "unknown",
+      "gm_output": 4,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": 2,
+      "predicted_output": 8,
+      "confidence_score": 46,
+      "current_mode": "probing",
+      "input_rationale": "With f(0)=0 and f(1)=4, the simplest consistent hypothesis is 4*x. Testing x=2 sharply distinguishes that from many other natural families such as x^2+3x, x^3+3x, and assorted divisor/recurrence-based functions.",
+      "hypothesis": "def f(x):\n    \"\"\"Returns four times x.\"\"\"\n    return 4 * x",
+      "gm_output": 8,
+      "gm_output_label": true
+    }
+  ],
+  "probe_count": 4,
+  "unique_input_count": 4,
+  "unique_output_count": 3,
+  "novelty_rate": 0.75,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.5,
+  "mode": "active_pair_checks",
+  "info_request_count": 13,
+  "revealed_example_count": 0,
+  "membership_true_count": 4,
+  "membership_false_count": 10,
+  "internal_consistency_score": 0.75,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 1,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

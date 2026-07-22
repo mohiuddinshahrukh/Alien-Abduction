@@ -1,0 +1,652 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "string_active_pair_checks",
+    "game_id": 122,
+    "results_folder": "gpt-5.4",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:32.517900",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(text: str) -> str\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:32.517953",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"\\\"abc def\\\"\",\"predicted_output\":\"\\\"fed cba\\\"\",\"current_mode\":\"probing\",\"input_rationale\":\"Test the very common whole-string reversal transformation on a mixed input with letters and a space.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Returns the input string reversed.\\\"\\\"\\\"\\n    return text[::-1]\",\"confidence_score\":18}\nOUTPUT: False",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:35.371826",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:35.371877",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc def\",\"predicted_output\":\"fed cba\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests simple full-string reversal on letters and a space, a common hidden-string-function baseline.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Returns the input string reversed.\\\"\\\"\\\"\\n    return text[::-1]\",\"confidence_score\":18}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:37.915848",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:37.915905",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc def\",\"predicted_output\":\"cba fed\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether the function reverses each word individually while preserving word order and spaces.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Reverses each whitespace-separated word in the input while preserving word order.\\\"\\\"\\\"\\n    return ' '.join(word[::-1] for word in text.split(' '))\",\"confidence_score\":22}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:39.807670",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:39.807727",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc def ghi\",\"predicted_output\":\"ghi def abc\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether the function reverses the order of space-separated words without changing characters inside each word.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Reverses the order of space-separated words.\\\"\\\"\\\"\\n    return ' '.join(text.split(' ')[::-1])\",\"confidence_score\":20}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:43.569295",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:43.569351",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"Abc 123!\",\"predicted_output\":\"Abc 123!\",\"current_mode\":\"probing\",\"input_rationale\":\"Establishes whether the function can be the identity/no-op; also includes mixed case, digits, punctuation, and space.\",\"hypothesis\":\"unknown\",\"confidence_score\":10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:51.132622",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:51.132669",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc def\",\"predicted_output\":\"ABC DEF\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks a very common transformation: converting all alphabetic characters to uppercase while preserving spacing.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Converts the input string to uppercase.\\\"\\\"\\\"\\n    return text.upper()\",\"confidence_score\":24}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:55.231499",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:55.231555",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"AbC dEf!\",\"predicted_output\":\"abc def!\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether the function lowercases all alphabetic characters while preserving punctuation and spaces.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Converts the input string to lowercase.\\\"\\\"\\\"\\n    return text.lower()\",\"confidence_score\":23}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:10:58.884571",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:10:58.884626",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"AbC dEf!\",\"predicted_output\":\"aBc DeF!\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks swapcase, another very common pure string transformation, using mixed upper/lower letters plus punctuation and a space.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Swaps uppercase letters to lowercase and lowercase letters to uppercase.\\\"\\\"\\\"\\n    return text.swapcase()\",\"confidence_score\":28}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:11:06.604427",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:11:06.604483",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"hello world\",\"predicted_output\":\"Hello World\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests title-casing/JadenCase-style capitalization of each word, a common string transformation distinct from upper/lower/swap/reversal.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Capitalizes the first letter of each space-separated word.\\\"\\\"\\\"\\n    return ' '.join(w[:1].upper() + w[1:] for w in text.split(' '))\",\"confidence_score\":26}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:11:15.828939",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:11:15.828989",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"Abecid ofu!\",\"predicted_output\":\"bcd f!\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests the common 'remove vowels' transformation while preserving consonants, spaces, and punctuation.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Removes vowels from the input string.\\\"\\\"\\\"\\n    vowels = 'aeiouAEIOU'\\n    return ''.join(ch for ch in text if ch not in vowels)\",\"confidence_score\":21}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:11:25.376724",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:11:25.376792",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"ATTGC\",\"predicted_output\":\"TAACG\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks for DNA complementing, a common string-to-string kata; the chosen input cleanly distinguishes it from most casing/reversal transforms.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Returns the DNA complement by mapping A↔T and C↔G.\\\"\\\"\\\"\\n    return ''.join({'A':'T','T':'A','C':'G','G':'C'}[ch] for ch in text)\",\"confidence_score\":17}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:11:34.157351",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:11:34.157427",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"a b  c!\",\"predicted_output\":\"abc!\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks whether the function removes spaces while preserving all other characters, using multiple adjacent spaces to make the behavior distinctive.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Removes space characters from the input string.\\\"\\\"\\\"\\n    return text.replace(' ', '')\",\"confidence_score\":19}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:12:19.678751",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:12:19.678818",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"Pig latin is cool !\",\"predicted_output\":\"igPay atinlay siay oolcay !\",\"current_mode\":\"probing\",\"input_rationale\":\"This is the canonical example for the common 'Simple Pig Latin' transform, which is a strong candidate for a text->text function with parameter name text.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Moves the first letter of each word to the end, adds 'ay', and leaves punctuation tokens unchanged.\\\"\\\"\\\"\\n    return ' '.join(w[1:] + w[0] + 'ay' if w.isalpha() else w for w in text.split(' '))\",\"confidence_score\":31}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:12:38.378120",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:12:38.378181",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"abc def\",\"predicted_output\":\"AbC DeF\",\"current_mode\":\"probing\",\"input_rationale\":\"Tests the common 'weird case' transformation where characters alternate upper/lower within each word, resetting after spaces.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Alternates character case within each word, starting with uppercase, preserving spaces.\\\"\\\"\\\"\\n    return ' '.join(''.join(ch.upper() if i % 2 == 0 else ch.lower() for i, ch in enumerate(word)) for word in text.split(' '))\",\"confidence_score\":33}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T01:12:55.527711",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:12:55.527768",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\":\"Test\",\"predicted_output\":\"Grfg\",\"current_mode\":\"probing\",\"input_rationale\":\"Checks ROT13, a very common text->text kata with distinctive output on mixed-case alphabetic input.\",\"hypothesis\":\"def solution(text):\\n    \\\"\\\"\\\"Applies the ROT13 substitution cipher to the input text.\\\"\\\"\\\"\\n    out = ''\\n    for ch in text:\\n        o = ord(ch)\\n        if 65 <= o <= 90:\\n            out += chr((o - 65 + 13) % 26 + 65)\\n        elif 97 <= o <= 122:\\n            out += chr((o - 97 + 13) % 26 + 97)\\n        else:\\n            out += ch\\n    return out\",\"confidence_score\":29}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T01:12:55.542472",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 1,
+  "runtime_error_count": 0,
+  "turns_used": 14,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        "   "
+      ],
+      "output": "   "
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": "abc def",
+      "predicted_output": "fed cba",
+      "confidence_score": 18,
+      "current_mode": "probing",
+      "input_rationale": "Tests simple full-string reversal on letters and a space, a common hidden-string-function baseline.",
+      "hypothesis": "def solution(text):\n    \"\"\"Returns the input string reversed.\"\"\"\n    return text[::-1]",
+      "gm_output": "nop qrs",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": "abc def",
+      "predicted_output": "cba fed",
+      "confidence_score": 22,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether the function reverses each word individually while preserving word order and spaces.",
+      "hypothesis": "def solution(text):\n    \"\"\"Reverses each whitespace-separated word in the input while preserving word order.\"\"\"\n    return ' '.join(word[::-1] for word in text.split(' '))",
+      "gm_output": "nop qrs",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": "abc def ghi",
+      "predicted_output": "ghi def abc",
+      "confidence_score": 20,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether the function reverses the order of space-separated words without changing characters inside each word.",
+      "hypothesis": "def solution(text):\n    \"\"\"Reverses the order of space-separated words.\"\"\"\n    return ' '.join(text.split(' ')[::-1])",
+      "gm_output": "nop qrs tuv",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": "Abc 123!",
+      "predicted_output": "Abc 123!",
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "Establishes whether the function can be the identity/no-op; also includes mixed case, digits, punctuation, and space.",
+      "hypothesis": "unknown",
+      "gm_output": "Aop 123!",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": "abc def",
+      "predicted_output": "ABC DEF",
+      "confidence_score": 24,
+      "current_mode": "probing",
+      "input_rationale": "Checks a very common transformation: converting all alphabetic characters to uppercase while preserving spacing.",
+      "hypothesis": "def solution(text):\n    \"\"\"Converts the input string to uppercase.\"\"\"\n    return text.upper()",
+      "gm_output": "nop qrs",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": "AbC dEf!",
+      "predicted_output": "abc def!",
+      "confidence_score": 23,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether the function lowercases all alphabetic characters while preserving punctuation and spaces.",
+      "hypothesis": "def solution(text):\n    \"\"\"Converts the input string to lowercase.\"\"\"\n    return text.lower()",
+      "gm_output": "AoC qEs!",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": "AbC dEf!",
+      "predicted_output": "aBc DeF!",
+      "confidence_score": 28,
+      "current_mode": "probing",
+      "input_rationale": "Checks swapcase, another very common pure string transformation, using mixed upper/lower letters plus punctuation and a space.",
+      "hypothesis": "def solution(text):\n    \"\"\"Swaps uppercase letters to lowercase and lowercase letters to uppercase.\"\"\"\n    return text.swapcase()",
+      "gm_output": "AoC qEs!",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": "hello world",
+      "predicted_output": "Hello World",
+      "confidence_score": 26,
+      "current_mode": "probing",
+      "input_rationale": "Tests title-casing/JadenCase-style capitalization of each word, a common string transformation distinct from upper/lower/swap/reversal.",
+      "hypothesis": "def solution(text):\n    \"\"\"Capitalizes the first letter of each space-separated word.\"\"\"\n    return ' '.join(w[:1].upper() + w[1:] for w in text.split(' '))",
+      "gm_output": "uryyb jbeyq",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": "Abecid ofu!",
+      "predicted_output": "bcd f!",
+      "confidence_score": 21,
+      "current_mode": "probing",
+      "input_rationale": "Tests the common 'remove vowels' transformation while preserving consonants, spaces, and punctuation.",
+      "hypothesis": "def solution(text):\n    \"\"\"Removes vowels from the input string.\"\"\"\n    vowels = 'aeiouAEIOU'\n    return ''.join(ch for ch in text if ch not in vowels)",
+      "gm_output": "Aorpvq bsh!",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": "ATTGC",
+      "predicted_output": "TAACG",
+      "confidence_score": 17,
+      "current_mode": "probing",
+      "input_rationale": "Checks for DNA complementing, a common string-to-string kata; the chosen input cleanly distinguishes it from most casing/reversal transforms.",
+      "hypothesis": "def solution(text):\n    \"\"\"Returns the DNA complement by mapping A↔T and C↔G.\"\"\"\n    return ''.join({'A':'T','T':'A','C':'G','G':'C'}[ch] for ch in text)",
+      "gm_output": "ATTGC",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": "a b  c!",
+      "predicted_output": "abc!",
+      "confidence_score": 19,
+      "current_mode": "probing",
+      "input_rationale": "Checks whether the function removes spaces while preserving all other characters, using multiple adjacent spaces to make the behavior distinctive.",
+      "hypothesis": "def solution(text):\n    \"\"\"Removes space characters from the input string.\"\"\"\n    return text.replace(' ', '')",
+      "gm_output": "n o  p!",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 12,
+      "input": "Pig latin is cool !",
+      "predicted_output": "igPay atinlay siay oolcay !",
+      "confidence_score": 31,
+      "current_mode": "probing",
+      "input_rationale": "This is the canonical example for the common 'Simple Pig Latin' transform, which is a strong candidate for a text->text function with parameter name text.",
+      "hypothesis": "def solution(text):\n    \"\"\"Moves the first letter of each word to the end, adds 'ay', and leaves punctuation tokens unchanged.\"\"\"\n    return ' '.join(w[1:] + w[0] + 'ay' if w.isalpha() else w for w in text.split(' '))",
+      "gm_output": "Pvt yngva vf pbby !",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": "abc def",
+      "predicted_output": "AbC DeF",
+      "confidence_score": 33,
+      "current_mode": "probing",
+      "input_rationale": "Tests the common 'weird case' transformation where characters alternate upper/lower within each word, resetting after spaces.",
+      "hypothesis": "def solution(text):\n    \"\"\"Alternates character case within each word, starting with uppercase, preserving spaces.\"\"\"\n    return ' '.join(''.join(ch.upper() if i % 2 == 0 else ch.lower() for i, ch in enumerate(word)) for word in text.split(' '))",
+      "gm_output": "nop qrs",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 14,
+      "input": "Test",
+      "predicted_output": "Grfg",
+      "confidence_score": 29,
+      "current_mode": "probing",
+      "input_rationale": "Checks ROT13, a very common text->text kata with distinctive output on mixed-case alphabetic input.",
+      "hypothesis": "def solution(text):\n    \"\"\"Applies the ROT13 substitution cipher to the input text.\"\"\"\n    out = ''\n    for ch in text:\n        o = ord(ch)\n        if 65 <= o <= 90:\n            out += chr((o - 65 + 13) % 26 + 65)\n        elif 97 <= o <= 122:\n            out += chr((o - 97 + 13) % 26 + 97)\n        else:\n            out += ch\n    return out",
+      "gm_output": "Trfg",
+      "gm_output_label": false
+    }
+  ],
+  "probe_count": 1,
+  "unique_input_count": 1,
+  "unique_output_count": 1,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 0.0,
+  "mode": "active_pair_checks",
+  "info_request_count": 14,
+  "revealed_example_count": 0,
+  "membership_true_count": 1,
+  "membership_false_count": 14,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

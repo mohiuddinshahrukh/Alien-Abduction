@@ -1,0 +1,707 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "string_active_inputs",
+    "game_id": 144,
+    "results_folder": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+    "clem_version": "3.7.2",
+    "round_count": 12,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+        "backend": "openai_compatible",
+        "context_size": "262k",
+        "languages": [
+          "en",
+          "zh"
+        ],
+        "license": {},
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "extra_body": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          }
+        },
+        "model_id": "Qwen/Qwen3.6-35B-A3B-FP8",
+        "open_weight": true,
+        "parameters": "35B",
+        "release_date": "2026-04-28"
+      },
+      "gen_args": {
+        "temperature": 0.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:12:57.720797",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(text: str) -> str\n\nYou have 15 turns total.\n\nYou choose test inputs x, and I return the exact output f(x).\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: \"<output_string>\"\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:12:57.720852",
+        "action": {
+          "type": "get message",
+          "content": "To figure out what the hidden function does, I'll start by testing some simple inputs to observe the transformation. I'll try a few different strings, including empty strings, single characters, and strings with spaces or special characters.\n\nLet's start with a simple string.\n\n{'input': \"hello\", 'predicted_output': \"hello\", 'current_mode': 'probing', 'input_rationale': 'Testing a simple lowercase word to see if it remains unchanged or is transformed.', 'hypothesis': 'unknown', 'confidence_score': 0}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:12:58.235005",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:12:58.235039",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"hello\", \"predicted_output\": \"hello\", \"current_mode\": \"probing\", \"input_rationale\": \"Testing a simple lowercase word to see if it remains unchanged or is transformed.\", \"hypothesis\": \"unknown\", \"confidence_score\": 0}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:12:58.249173",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 1\nInputs: 'hello'\nOutput: 'hellohellohello'#'hellohellohello'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:12:59.411110",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'hellohellohello'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:12:59.411149",
+        "action": {
+          "type": "get message",
+          "content": "The output for \"hello\" is \"hellohellohello\". This suggests the function might be repeating the input string 3 times. Let's test this hypothesis with another input, perhaps one with spaces or different length.\n\n{\"input\": \"hi\", \"predicted_output\": \"hihihi\", \"current_mode\": \"probing\", \"input_rationale\": \"Testing a shorter string to confirm if the pattern is simply repeating the input 3 times.\", \"hypothesis\": \"unknown\", \"confidence_score\": 50}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:00.089684",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:00.089741",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"hi\", \"predicted_output\": \"hihihi\", \"current_mode\": \"probing\", \"input_rationale\": \"Testing a shorter string to confirm if the pattern is simply repeating the input 3 times.\", \"hypothesis\": \"unknown\", \"confidence_score\": 50}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:00.108370",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 2\nInputs: 'hi'\nOutput: 'hihihi'#'hihihi'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:00.959784",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'hihihi'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:00.959833",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"a b c\", \"predicted_output\": \"a b ca b ca b c\", \"current_mode\": \"probing\", \"input_rationale\": \"Testing a string with spaces to see if spaces are preserved and if the repetition count is still 3.\", \"hypothesis\": \"unknown\", \"confidence_score\": 60}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:00.977399",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 3\nInputs: 'a b c'\nOutput: 'a b ca b ca b c'#'a b ca b ca b c'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:01.746011",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'a b ca b ca b c'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:01.746073",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"\", \"predicted_output\": \"\", \"current_mode\": \"probing\", \"input_rationale\": \"Testing an empty string to see if the function handles it correctly (likely returns empty string).\", \"hypothesis\": \"unknown\", \"confidence_score\": 70}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:01.763369",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 4\nInputs: ''\nOutput: ''#''"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:02.746874",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ''",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:02.746926",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"test\", \"predicted_output\": \"testtesttest\", \"current_mode\": \"confirming\", \"input_rationale\": \"Testing another simple string to further confirm the hypothesis that the function repeats the input string 3 times.\", \"hypothesis\": \"def solution(text):\\n    \\\"\\\"\\\"Repeats the input string 3 times.\\\"\\\"\\\"\\n    return text * 3\", \"confidence_score\": 95}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:02.767092",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 5\nInputs: 'test'\nOutput: 'testtesttest'#'testtesttest'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:04.333708",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'testtesttest'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:04.333755",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"test\", \"predicted_output\": \"testtesttest\", \"current_mode\": \"confirming\", \"input_rationale\": \"The hypothesis that the function repeats the input string 3 times has been consistently supported by all test cases: 'hello' -> 'hellohellohello', 'hi' -> 'hihihi', 'a b c' -> 'a b ca b ca b c', '' -> '', and 'test' -> 'testtesttest'.\", \"hypothesis\": \"def solution(text):\\n    \\\"\\\"\\\"Repeats the input string 3 times.\\\"\\\"\\\"\\n    return text * 3\", \"confidence_score\": 100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:04.351043",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 6\nInputs: 'test'\nOutput: 'testtesttest'#'testtesttest'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:05.367575",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'testtesttest'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:05.367637",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"test\", \"predicted_output\": \"testtesttest\", \"current_mode\": \"confirming\", \"input_rationale\": \"The hypothesis is strongly supported. All tests confirm the function returns the input string repeated 3 times.\", \"hypothesis\": \"def solution(text):\\n    \\\"\\\"\\\"Repeats the input string 3 times.\\\"\\\"\\\"\\n    return text * 3\", \"confidence_score\": 100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:05.387420",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 7\nInputs: 'test'\nOutput: 'testtesttest'#'testtesttest'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:06.412184",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'testtesttest'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:06.412241",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"test\", \"predicted_output\": \"testtesttest\", \"current_mode\": \"confirming\", \"input_rationale\": \"The hypothesis is strongly supported. All tests confirm the function returns the input string repeated 3 times.\", \"hypothesis\": \"def solution(text):\\n    \\\"\\\"\\\"Repeats the input string 3 times.\\\"\\\"\\\"\\n    return text * 3\", \"confidence_score\": 100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:06.431760",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 8\nInputs: 'test'\nOutput: 'testtesttest'#'testtesttest'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:07.482768",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'testtesttest'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:07.482825",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"test\", \"predicted_output\": \"testtesttest\", \"current_mode\": \"confirming\", \"input_rationale\": \"The hypothesis is strongly supported. All tests confirm the function returns the input string repeated 3 times.\", \"hypothesis\": \"def solution(text):\\n    \\\"\\\"\\\"Repeats the input string 3 times.\\\"\\\"\\\"\\n    return text * 3\", \"confidence_score\": 100}",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:07.502426",
+        "action": {
+          "type": "probe_result",
+          "content": "Round: 9\nInputs: 'test'\nOutput: 'testtesttest'#'testtesttest'"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:13:07.971259",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: 'testtesttest'",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:07.971315",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef solution(text):\n    \"\"\"Repeats the input string 3 times.\"\"\"\n    return text * 3\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:08.431449",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: WIN"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:08.431571",
+        "action": {
+          "type": "solution_feedback",
+          "content": "That is correct!"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:08.431614",
+        "action": {
+          "type": "hidden_function",
+          "content": "def repeat_three_times(text: str) -> str:\n    return text * 3"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:08.431652",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(text):\n    \"\"\"Repeats the input string 3 times.\"\"\"\n    return text * 3"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:13:08.431749",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_inputs\nAccuracy: 1.000\nInformation requests: 9/15\nRevealed passive examples: 0\nEfficiency: 0.467\nSlack: 6\nObserved-pair consistency: 1.000\nParse errors: 2\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": false,
+  "Success": true,
+  "efficiency": 0.4666666666666667,
+  "efficiency_raw": 0.4666666666666667,
+  "slack": 6,
+  "accuracy": 1.0,
+  "binary_accuracy": 1.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 2,
+  "runtime_error_count": 0,
+  "turns_used": 9,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        "   "
+      ],
+      "output": "         "
+    },
+    {
+      "round": 1,
+      "args": [
+        "hello"
+      ],
+      "output": "hellohellohello"
+    },
+    {
+      "round": 2,
+      "args": [
+        "hi"
+      ],
+      "output": "hihihi"
+    },
+    {
+      "round": 3,
+      "args": [
+        "a b c"
+      ],
+      "output": "a b ca b ca b c"
+    },
+    {
+      "round": 4,
+      "args": [
+        ""
+      ],
+      "output": ""
+    },
+    {
+      "round": 5,
+      "args": [
+        "test"
+      ],
+      "output": "testtesttest"
+    },
+    {
+      "round": 6,
+      "args": [
+        "test"
+      ],
+      "output": "testtesttest"
+    },
+    {
+      "round": 7,
+      "args": [
+        "test"
+      ],
+      "output": "testtesttest"
+    },
+    {
+      "round": 8,
+      "args": [
+        "test"
+      ],
+      "output": "testtesttest"
+    },
+    {
+      "round": 9,
+      "args": [
+        "test"
+      ],
+      "output": "testtesttest"
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": "hello",
+      "predicted_output": "hello",
+      "confidence_score": 0,
+      "current_mode": "probing",
+      "input_rationale": "Testing a simple lowercase word to see if it remains unchanged or is transformed.",
+      "hypothesis": "unknown",
+      "gm_output": "'hellohellohello'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 3,
+      "input": "hi",
+      "predicted_output": "hihihi",
+      "confidence_score": 50,
+      "current_mode": "probing",
+      "input_rationale": "Testing a shorter string to confirm if the pattern is simply repeating the input 3 times.",
+      "hypothesis": "unknown",
+      "gm_output": "'hihihi'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": "a b c",
+      "predicted_output": "a b ca b ca b c",
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "Testing a string with spaces to see if spaces are preserved and if the repetition count is still 3.",
+      "hypothesis": "unknown",
+      "gm_output": "'a b ca b ca b c'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": "",
+      "predicted_output": "",
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "Testing an empty string to see if the function handles it correctly (likely returns empty string).",
+      "hypothesis": "unknown",
+      "gm_output": "''",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": "test",
+      "predicted_output": "testtesttest",
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "Testing another simple string to further confirm the hypothesis that the function repeats the input string 3 times.",
+      "hypothesis": "def solution(text):\n    \"\"\"Repeats the input string 3 times.\"\"\"\n    return text * 3",
+      "gm_output": "'testtesttest'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": "test",
+      "predicted_output": "testtesttest",
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The hypothesis that the function repeats the input string 3 times has been consistently supported by all test cases: 'hello' -> 'hellohellohello', 'hi' -> 'hihihi', 'a b c' -> 'a b ca b ca b c', '' -> '', and 'test' -> 'testtesttest'.",
+      "hypothesis": "def solution(text):\n    \"\"\"Repeats the input string 3 times.\"\"\"\n    return text * 3",
+      "gm_output": "'testtesttest'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": "test",
+      "predicted_output": "testtesttest",
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The hypothesis is strongly supported. All tests confirm the function returns the input string repeated 3 times.",
+      "hypothesis": "def solution(text):\n    \"\"\"Repeats the input string 3 times.\"\"\"\n    return text * 3",
+      "gm_output": "'testtesttest'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": "test",
+      "predicted_output": "testtesttest",
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The hypothesis is strongly supported. All tests confirm the function returns the input string repeated 3 times.",
+      "hypothesis": "def solution(text):\n    \"\"\"Repeats the input string 3 times.\"\"\"\n    return text * 3",
+      "gm_output": "'testtesttest'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": "test",
+      "predicted_output": "testtesttest",
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The hypothesis is strongly supported. All tests confirm the function returns the input string repeated 3 times.",
+      "hypothesis": "def solution(text):\n    \"\"\"Repeats the input string 3 times.\"\"\"\n    return text * 3",
+      "gm_output": "'testtesttest'",
+      "gm_output_label": true
+    }
+  ],
+  "probe_count": 10,
+  "unique_input_count": 6,
+  "unique_output_count": 6,
+  "novelty_rate": 0.6,
+  "input_diversity": 0.6,
+  "output_entropy_bits": 2.1609640474436813,
+  "mode": "active_inputs",
+  "info_request_count": 9,
+  "revealed_example_count": 0,
+  "membership_true_count": 0,
+  "membership_false_count": 0,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

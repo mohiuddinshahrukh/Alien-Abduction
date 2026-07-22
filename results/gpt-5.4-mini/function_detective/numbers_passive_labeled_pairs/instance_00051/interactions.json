@@ -1,0 +1,794 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "numbers_passive_labeled_pairs",
+    "game_id": 51,
+    "results_folder": "gpt-5.4-mini",
+    "clem_version": "3.7.2",
+    "round_count": 14,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "gpt-5.4-mini",
+        "backend": "azure",
+        "context_size": "200k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "reasoning_model": true,
+          "reasoning_effort": "medium",
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "gpt-5.4-mini",
+        "open_weight": false,
+        "parameters": "",
+        "release_date": "2024-12-18"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "gpt-5.4-mini"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:13:59.385478",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(x: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ((2, 1), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:13:59.385525",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"I only have one confirmed example so far: f(2)=1. That's not enough to determine the rule, so I'm requesting another example before making a solve attempt.\",\"hypothesis\":\"unknown\",\"confidence_score\":5}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:02.861286",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((10, 56), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:02.861344",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"probing\",\"input_rationale\":\"I have one positive example, f(2)=1, and one negative example, f(10)=56. That’s still too little to identify the rule reliably, so I need one more candidate pair.\",\"hypothesis\":\"unknown\",\"confidence_score\":6}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:10.232318",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-10, 55), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:10.232383",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The two confirmed cases fit the quadratic formula x(x-1)/2 exactly: f(2)=1 and f(-10)=55, while f(10)=56 is false because the formula gives 45. So the hidden function is the generalized triangular-number formula.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the generalized triangular number x*(x-1)//2.\\\"\\\"\\\"\\n\\treturn x * (x - 1) // 2\",\"confidence_score\":98}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:15.967842",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-1, -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:15.967883",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The four checked pairs are consistent with the same rule: f(2)=1 and f(-10)=55 are correct, while f(10)=56 and f(-1)=-1 are incorrect. This matches the generalized triangular-number formula x*(x-1)//2 exactly.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the generalized triangular number x*(x-1)//2.\\\"\\\"\\\"\\n\\treturn x * (x - 1) // 2\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:17.821269",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((0, 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:17.821324",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new check f(0)=0 is also consistent with the same formula x*(x-1)//2, which gives 0 at x=0. So the hypothesis remains unchanged.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the generalized triangular number x*(x-1)//2.\\\"\\\"\\\"\\n\\treturn x * (x - 1) // 2\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:19.883020",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((1, -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:19.883073",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The additional test f(1)=-1 is false, which still matches the hypothesis x*(x-1)//2 since it gives 0 at x=1. No change needed.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the generalized triangular number x*(x-1)//2.\\\"\\\"\\\"\\n\\treturn x * (x - 1) // 2\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:36.493590",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-99, 4181), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:36.493643",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The outputs fit Fibonacci numbers taken on abs(x) modulo 20: 0→0, 1→1, 2→1, 10→55, and 99→19→4181. That explains all confirmed true/false pairs so far.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns Fibonacci(abs(x) mod 20), with F(0)=0 and F(1)=1.\\\"\\\"\\\"\\n\\tn = abs(x) % 20\\n\\ta, b = 0, 1\\n\\tfor _ in range(n):\\n\\t\\ta, b = b, a + b\\n\\treturn a\",\"confidence_score\":96}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:47.361837",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-1000, -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:47.361883",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The confirmed pairs are consistent with the Fibonacci sequence indexed by abs(x) modulo 20: f(0)=F0=0, f(2)=F2=1, f(-10)=F10=55, and f(-99)=F19=4181. The incorrect candidates also fit this pattern (e.g. 10 maps to 55, not 56).\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the Fibonacci number at index abs(x) % 20.\\\"\\\"\\\"\\n\\tn = abs(x) % 20\\n\\ta, b = 0, 1\\n\\tfor _ in range(n):\\n\\t\\ta, b = b, a + b\\n\\treturn a\",\"confidence_score\":97}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:49.297085",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((99, 4181), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:49.297137",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The new confirmed pair f(99)=4181 matches the same rule since abs(99) % 20 = 19 and F(19)=4181. This further supports the Fibonacci-mod-20 hypothesis.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the Fibonacci number at index abs(x) % 20.\\\"\\\"\\\"\\n\\tn = abs(x) % 20\\n\\ta, b = 0, 1\\n\\tfor _ in range(n):\\n\\t\\ta, b = b, a + b\\n\\treturn a\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:51.687235",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((1000, -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:51.687296",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The accumulated examples consistently match Fibonacci(abs(x) % 20): 2→1, -10→55, -99→4181, 99→4181, and the negative cases with claimed mismatched outputs are false. So the best-fit implementation is now clear.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the Fibonacci number at index abs(x) % 20.\\\"\\\"\\\"\\n\\tn = abs(x) % 20\\n\\ta, b = 0, 1\\n\\tfor _ in range(n):\\n\\t\\ta, b = b, a + b\\n\\treturn a\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:53.865931",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-2, 1), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:53.865980",
+        "action": {
+          "type": "get message",
+          "content": "{\"current_mode\":\"confirming\",\"input_rationale\":\"The latest confirmed pair f(-2)=1 matches the same rule because abs(-2) % 20 = 2 and F(2)=1. The hypothesis remains consistent with all provided examples.\",\"hypothesis\":\"def f(x):\\n\\t\\\"\\\"\\\"Returns the Fibonacci number at index abs(x) % 20.\\\"\\\"\\\"\\n\\tn = abs(x) % 20\\n\\ta, b = 0, 1\\n\\tfor _ in range(n):\\n\\t\\ta, b = b, a + b\\n\\treturn a\",\"confidence_score\":99}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:14:58.697324",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((-16, 988), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:14:58.697364",
+        "action": {
+          "type": "get message",
+          "content": "```python\ndef f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:15:01.227007",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:15:01.227068",
+        "action": {
+          "type": "get message",
+          "content": "```python\ndef f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T19:15:03.942582",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:15:03.942630",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE: ```python\ndef f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:15:04.446550",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: WIN"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:15:04.446698",
+        "action": {
+          "type": "solution_feedback",
+          "content": "That is correct!"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:15:04.446715",
+        "action": {
+          "type": "hidden_function",
+          "content": "def fibonacci_index_small(x: int) -> int:\n    n = abs(x) % 20\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:15:04.446728",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T19:15:04.446766",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 1.000\nInformation requests: 11/15\nRevealed passive examples: 12\nEfficiency: 0.333\nSlack: 4\nObserved-pair consistency: 1.000\nMembership balance: 6 true / 6 false\nParse errors: 2\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": false,
+  "Success": true,
+  "efficiency": 0.3333333333333333,
+  "efficiency_raw": 0.3333333333333333,
+  "slack": 4,
+  "accuracy": 1.0,
+  "binary_accuracy": 1.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 2,
+  "runtime_error_count": 0,
+  "turns_used": 11,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        2
+      ],
+      "output": 1
+    },
+    {
+      "round": 2,
+      "args": [
+        -10
+      ],
+      "output": 55
+    },
+    {
+      "round": 4,
+      "args": [
+        0
+      ],
+      "output": 0
+    },
+    {
+      "round": 6,
+      "args": [
+        -99
+      ],
+      "output": 4181
+    },
+    {
+      "round": 8,
+      "args": [
+        99
+      ],
+      "output": 4181
+    },
+    {
+      "round": 10,
+      "args": [
+        -2
+      ],
+      "output": 1
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        2
+      ],
+      "candidate_output": 1,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        10
+      ],
+      "candidate_output": 56,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10
+      ],
+      "candidate_output": 55,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99
+      ],
+      "candidate_output": 4181,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1000
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        99
+      ],
+      "candidate_output": 4181,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1000
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2
+      ],
+      "candidate_output": 1,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -16
+      ],
+      "candidate_output": 988,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        10
+      ],
+      "predicted_output": null,
+      "confidence_score": 5,
+      "current_mode": "probing",
+      "input_rationale": "I only have one confirmed example so far: f(2)=1. That's not enough to determine the rule, so I'm requesting another example before making a solve attempt.",
+      "hypothesis": "unknown",
+      "gm_output": 56,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        -10
+      ],
+      "predicted_output": null,
+      "confidence_score": 6,
+      "current_mode": "probing",
+      "input_rationale": "I have one positive example, f(2)=1, and one negative example, f(10)=56. That’s still too little to identify the rule reliably, so I need one more candidate pair.",
+      "hypothesis": "unknown",
+      "gm_output": 55,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 98,
+      "current_mode": "confirming",
+      "input_rationale": "The two confirmed cases fit the quadratic formula x(x-1)/2 exactly: f(2)=1 and f(-10)=55, while f(10)=56 is false because the formula gives 45. So the hidden function is the generalized triangular-number formula.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the generalized triangular number x*(x-1)//2.\"\"\"\n\treturn x * (x - 1) // 2",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The four checked pairs are consistent with the same rule: f(2)=1 and f(-10)=55 are correct, while f(10)=56 and f(-1)=-1 are incorrect. This matches the generalized triangular-number formula x*(x-1)//2 exactly.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the generalized triangular number x*(x-1)//2.\"\"\"\n\treturn x * (x - 1) // 2",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        1
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The new check f(0)=0 is also consistent with the same formula x*(x-1)//2, which gives 0 at x=0. So the hypothesis remains unchanged.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the generalized triangular number x*(x-1)//2.\"\"\"\n\treturn x * (x - 1) // 2",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The additional test f(1)=-1 is false, which still matches the hypothesis x*(x-1)//2 since it gives 0 at x=1. No change needed.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the generalized triangular number x*(x-1)//2.\"\"\"\n\treturn x * (x - 1) // 2",
+      "gm_output": 4181,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": [
+        -1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 96,
+      "current_mode": "confirming",
+      "input_rationale": "The outputs fit Fibonacci numbers taken on abs(x) modulo 20: 0→0, 1→1, 2→1, 10→55, and 99→19→4181. That explains all confirmed true/false pairs so far.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns Fibonacci(abs(x) mod 20), with F(0)=0 and F(1)=1.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        99
+      ],
+      "predicted_output": null,
+      "confidence_score": 97,
+      "current_mode": "confirming",
+      "input_rationale": "The confirmed pairs are consistent with the Fibonacci sequence indexed by abs(x) modulo 20: f(0)=F0=0, f(2)=F2=1, f(-10)=F10=55, and f(-99)=F19=4181. The incorrect candidates also fit this pattern (e.g. 10 maps to 55, not 56).",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a",
+      "gm_output": 4181,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": [
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The new confirmed pair f(99)=4181 matches the same rule since abs(99) % 20 = 19 and F(19)=4181. This further supports the Fibonacci-mod-20 hypothesis.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": [
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The accumulated examples consistently match Fibonacci(abs(x) % 20): 2→1, -10→55, -99→4181, 99→4181, and the negative cases with claimed mismatched outputs are false. So the best-fit implementation is now clear.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": [
+        -16
+      ],
+      "predicted_output": null,
+      "confidence_score": 99,
+      "current_mode": "confirming",
+      "input_rationale": "The latest confirmed pair f(-2)=1 matches the same rule because abs(-2) % 20 = 2 and F(2)=1. The hypothesis remains consistent with all provided examples.",
+      "hypothesis": "def f(x):\n\t\"\"\"Returns the Fibonacci number at index abs(x) % 20.\"\"\"\n\tn = abs(x) % 20\n\ta, b = 0, 1\n\tfor _ in range(n):\n\t\ta, b = b, a + b\n\treturn a",
+      "gm_output": 988,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 12,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 6,
+  "unique_input_count": 6,
+  "unique_output_count": 4,
+  "novelty_rate": 0.6666666666666666,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.9182958340544896,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 11,
+  "revealed_example_count": 12,
+  "membership_true_count": 6,
+  "membership_false_count": 6,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1
+  ]
+}

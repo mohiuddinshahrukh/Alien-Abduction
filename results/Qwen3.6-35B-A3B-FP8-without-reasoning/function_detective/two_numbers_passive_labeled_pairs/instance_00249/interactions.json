@@ -1,0 +1,725 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 249,
+    "results_folder": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning",
+        "backend": "openai_compatible",
+        "context_size": "262k",
+        "languages": [
+          "en",
+          "zh"
+        ],
+        "license": {},
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "extra_body": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          }
+        },
+        "model_id": "Qwen/Qwen3.6-35B-A3B-FP8",
+        "open_weight": true,
+        "parameters": "35B",
+        "release_date": "2026-04-28"
+      },
+      "gen_args": {
+        "temperature": 0.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "Qwen3.6-35B-A3B-FP8-without-reasoning"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:42.994151",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((-10, 10), 0), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:42.994207",
+        "action": {
+          "type": "get message",
+          "content": "{'current_mode': 'probing', 'input_rationale': 'I have one preloaded example: f(-10, 10) = True. This suggests the function might return a boolean, but the signature says it returns an int. In Python, True is equivalent to 1 and False to 0 when returned as an int. So f(-10, 10) likely returns 1. I need more examples to understand the logic. Let me try some simple cases like f(0, 0), f(1, 0), f(0, 1), f(1, 1) to see if it relates to comparison, arithmetic, or bitwise operations.', 'hypothesis': 'unknown', 'confidence_score': 10}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:44.091975",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:44.092029",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have one preloaded example: f(-10, 10) = True. Since the return type is int, True likely maps to 1. I need to probe more to understand the relationship between a and b. Let's try f(0, 0) to see if it returns 0 or 1, and f(1, 0) to check asymmetry.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 10\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:45.282554",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((2, -1), -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:45.282607",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have two examples now: f(-10, 10) = True (1) and f(2, -1) = False (0). Let's analyze: -10 < 10 is True, 2 > -1 is True. So it's not simply a < b. Let's try f(0, 0) to see if equal inputs return 0 or 1, and f(1, 2) to check if a < b returns 1.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 10\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:47.129162",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-10, 1000), -10000), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:47.129216",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have three examples: f(-10, 10) = True, f(2, -1) = False, f(-10, 1000) = True. Let's look at the relationship between a and b. In the first case, -10 and 10: maybe it's checking if a + b == 0? -10 + 10 = 0. In the second case, 2 + (-1) = 1 != 0. In the third case, -10 + 1000 = 990 != 0. So it's not a + b == 0. Let's try f(0, 0) to see if 0 + 0 == 0 returns True. Also, let's try f(5, -5) to check if a + b == 0.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 10\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:49.630733",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-2, -99), 199), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:49.630788",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have four examples: f(-10, 10) = True, f(2, -1) = False, f(-10, 1000) = True, f(-2, -99) = False. Let's look for a pattern. Maybe it's checking if a and b have the same sign? -10 and 10 have different signs -> True. 2 and -1 have different signs -> False. This doesn't hold. Maybe it's checking if a * b < 0? -10 * 10 = -100 < 0 -> True. 2 * -1 = -2 < 0 -> False. This doesn't hold either. Let's try f(0, 0) to see if zero is involved. Also, let's try f(5, 5) to check if same sign/positive returns False.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 10\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:52.553520",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-2, -10), 20), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:52.553570",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have five examples now: f(-10, 10) = True, f(2, -1) = False, f(-10, 1000) = True, f(-2, -99) = False, f(-2, -10) = True. Let's look at the relationship between a and b again. Maybe it's checking if a divides b or b divides a? -10 divides 10? Yes. 2 divides -1? No. -10 divides 1000? Yes. -2 divides -99? No. -2 divides -10? Yes. This looks promising! Let's verify: a | b (a divides b) or b | a? In all True cases, at least one divides the other. In False cases, neither divides the other. Let's test f(3, 6) which should be True, and f(3, 4) which should be False.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 40\n}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:56.146384",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1000, 0), -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:56.146433",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:36:58.559247",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:36:58.559297",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:37:01.102388",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:01.102430",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:37:03.636923",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:03.636978",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.\",",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:37:06.379609",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:06.379660",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.\",",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:37:09.244588",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:09.244608",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.\",",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:37:12.197221",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:12.197270",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.\",",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:37:15.274516",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:15.274571",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.\",",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-21T18:37:17.970239",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:17.970287",
+        "action": {
+          "type": "get message",
+          "content": "{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"I have six examples. The divisibility hypothesis (a divides b or b divides a) seems strong but let's check the new case: f(1000, 0) = False. 1000 divides 0? Yes, 0 = 1000 * 0. So if the hypothesis was 'a divides b', this should be True. But it's False. What about 'b divides a'? 0 divides 1000? No (division by zero). So if the condition is 'b divides a', then f(1000, 0) would be False. Let's re-check previous examples with 'b divides a': f(-10, 10): 10 divides -10? Yes. f(2, -1): -1 divides 2? Yes. But f(2, -1) is False. So 'b divides a' is not it. Let's re-check 'a divides b': f(-10, 10): -10 divides 10? Yes. f(2, -1): 2 divides -1? No. f(-10, 1000): -10 divides 1000? Yes. f(-2, -99): -2 divides -99? No.\",",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-21T18:37:17.970898",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 10,
+  "runtime_error_count": 0,
+  "turns_used": 5,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        -10,
+        10
+      ],
+      "output": 0
+    },
+    {
+      "round": 2,
+      "args": [
+        -10,
+        1000
+      ],
+      "output": -10000
+    },
+    {
+      "round": 4,
+      "args": [
+        -2,
+        -10
+      ],
+      "output": 20
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        10
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        2,
+        -1
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        1000
+      ],
+      "candidate_output": -10000,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        -99
+      ],
+      "candidate_output": 199,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -2,
+        -10
+      ],
+      "candidate_output": 20,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1000,
+        0
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": [
+        2,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "I have one preloaded example: f(-10, 10) = True. Since the return type is int, True likely maps to 1. I need to probe more to understand the relationship between a and b. Let's try f(0, 0) to see if it returns 0 or 1, and f(1, 0) to check asymmetry.",
+      "hypothesis": "unknown",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 2,
+      "input": [
+        -10,
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "I have two examples now: f(-10, 10) = True (1) and f(2, -1) = False (0). Let's analyze: -10 < 10 is True, 2 > -1 is True. So it's not simply a < b. Let's try f(0, 0) to see if equal inputs return 0 or 1, and f(1, 2) to check if a < b returns 1.",
+      "hypothesis": "unknown",
+      "gm_output": -10000,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": [
+        -2,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "I have three examples: f(-10, 10) = True, f(2, -1) = False, f(-10, 1000) = True. Let's look at the relationship between a and b. In the first case, -10 and 10: maybe it's checking if a + b == 0? -10 + 10 = 0. In the second case, 2 + (-1) = 1 != 0. In the third case, -10 + 1000 = 990 != 0. So it's not a + b == 0. Let's try f(0, 0) to see if 0 + 0 == 0 returns True. Also, let's try f(5, -5) to check if a + b == 0.",
+      "hypothesis": "unknown",
+      "gm_output": 199,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": [
+        -2,
+        -10
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "I have four examples: f(-10, 10) = True, f(2, -1) = False, f(-10, 1000) = True, f(-2, -99) = False. Let's look for a pattern. Maybe it's checking if a and b have the same sign? -10 and 10 have different signs -> True. 2 and -1 have different signs -> False. This doesn't hold. Maybe it's checking if a * b < 0? -10 * 10 = -100 < 0 -> True. 2 * -1 = -2 < 0 -> False. This doesn't hold either. Let's try f(0, 0) to see if zero is involved. Also, let's try f(5, 5) to check if same sign/positive returns False.",
+      "hypothesis": "unknown",
+      "gm_output": 20,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": [
+        1000,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 40,
+      "current_mode": "probing",
+      "input_rationale": "I have five examples now: f(-10, 10) = True, f(2, -1) = False, f(-10, 1000) = True, f(-2, -99) = False, f(-2, -10) = True. Let's look at the relationship between a and b again. Maybe it's checking if a divides b or b divides a? -10 divides 10? Yes. 2 divides -1? No. -10 divides 1000? Yes. -2 divides -99? No. -2 divides -10? Yes. This looks promising! Let's verify: a | b (a divides b) or b | a? In all True cases, at least one divides the other. In False cases, neither divides the other. Let's test f(3, 6) which should be True, and f(3, 4) which should be False.",
+      "hypothesis": "unknown",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 11,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 12,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 14,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 3,
+  "unique_input_count": 3,
+  "unique_output_count": 3,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.584962500721156,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 5,
+  "revealed_example_count": 6,
+  "membership_true_count": 3,
+  "membership_false_count": 3,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}
