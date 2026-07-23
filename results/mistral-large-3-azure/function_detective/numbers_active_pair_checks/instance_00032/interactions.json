@@ -1,0 +1,652 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "numbers_active_pair_checks",
+    "game_id": 32,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:49:58.301895",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(x: int) -> int\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:49:58.301950",
+        "action": {
+          "type": "get message",
+          "content": "Here's my first probe to start understanding the function's behavior:\n\n```json\n{\n    \"input\": 0,\n    \"predicted_output\": 0,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing the base case with 0, which is commonly a neutral element in many mathematical functions.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 1\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:49:59.232099",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:49:59.232120",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 0,\n    \"predicted_output\": 0,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing the base case with 0 to see if it's an identity or special case.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 1\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:01.597853",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:01.597881",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 1,\n    \"predicted_output\": 1,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing a small positive integer to see if the function is the identity function or something else.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns x unchanged (identity function).\\\"\\\"\\\"\\n    return x\",\n    \"confidence_score\": 50\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:03.299911",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:03.299966",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": -1,\n    \"predicted_output\": 1,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing a negative input to see if the function returns the absolute value or something else.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the absolute value of x.\\\"\\\"\\\"\\n    return x if x >= 0 else -x\",\n    \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:05.185168",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:05.185270",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 2,\n    \"predicted_output\": 1,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing another positive integer to see if the function returns x // 2 (integer division by 2) or similar.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the integer division of x by 2.\\\"\\\"\\\"\\n    return x // 2\",\n    \"confidence_score\": 40\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:06.434056",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:06.434118",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 3,\n    \"predicted_output\": 2,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing an odd positive integer to see if the function returns floor(x/2) or similar.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the floor of x divided by 2.\\\"\\\"\\\"\\n    return x // 2\",\n    \"confidence_score\": 30\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:08.316749",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:08.316815",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 5,\n    \"predicted_output\": 3,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing a larger odd number to see if the function returns the number of set bits in x (Hamming weight) or similar bitwise operation.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the number of set bits (1s) in the binary representation of x.\\\"\\\"\\\"\\n    return bin(x).count('1')\",\n    \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:10.389305",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:10.389331",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 4,\n    \"predicted_output\": 1,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing a power of 2 to see if the function returns the number of times x can be divided by 2 (log2) or similar.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the number of trailing zeros in the binary representation of x.\\\"\\\"\\\"\\n    return (x & -x).bit_length() - 1 if x != 0 else 0\",\n    \"confidence_score\": 50\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:15.119791",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:15.119848",
+        "action": {
+          "type": "get message",
+          "content": "Given the previous tests, let's try a different approach. Here's a test to check if the function returns the number of digits in the binary representation minus one (i.e., the position of the highest set bit):\n\n```json\n{\n    \"input\": 7,\n    \"predicted_output\": 2,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing 7 (binary 111) to see if the function returns the position of the highest set bit (2 for 7).\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the position of the highest set bit in x (0-based index).\\\"\\\"\\\"\\n    return x.bit_length() - 1 if x != 0 else 0\",\n    \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:17.636821",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:17.636874",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 7,\n    \"predicted_output\": 2,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing 7 (binary 111) to see if the function returns the position of the highest set bit (2 for 7, 0-based).\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the position of the highest set bit in x (0-based index).\\\"\\\"\\\"\\n    return x.bit_length() - 1 if x != 0 else 0\",\n    \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:20.327540",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:20.327620",
+        "action": {
+          "type": "get message",
+          "content": "Given the pattern of responses so far, I'll make one final probe before submitting my best SOLVE attempt. Let's test if the function returns the number of 1s in the binary representation of x minus 1:\n\n```json\n{\n    \"input\": 6,\n    \"predicted_output\": 1,\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Testing 6 (binary 110) to see if the function returns (number of set bits - 1). For 6, this would be 2-1=1.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the number of set bits in x minus 1.\\\"\\\"\\\"\\n    return bin(x).count('1') - 1 if x != 0 else 0\",\n    \"confidence_score\": 50\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:22.522956",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:22.523007",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"input\": 6,\n    \"predicted_output\": 1,\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"Testing 6 (binary 110) to confirm if the function returns (number of set bits - 1). For 6, this would be 2-1=1.\",\n    \"hypothesis\": \"def solution(x):\\n    \\\"\\\"\\\"Returns the number of set bits in x minus 1.\\\"\\\"\\\"\\n    return bin(x).count('1') - 1 if x != 0 else 0\",\n    \"confidence_score\": 50\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:23.597209",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:23.597267",
+        "action": {
+          "type": "get message",
+          "content": "Given the accumulated evidence, I'll make my SOLVE attempt with the most plausible remaining hypothesis: the function returns the number of trailing zeros in the binary representation of x.\n\n```python\nSOLVE: ```python\ndef solution(x):\n    \"\"\"Returns the number of trailing zeros in the binary representation of x.\"\"\"\n    return (x & -x).bit_length() - 1 if x != 0 else 0\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:24.970847",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:24.970899",
+        "action": {
+          "type": "get message",
+          "content": "```python\nSOLVE:\ndef solution(x):\n    \"\"\"Returns the number of trailing zeros in the binary representation of x.\"\"\"\n    if x == 0:\n        return 0\n    return (x & -x).bit_length() - 1\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:50:26.096893",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:26.096955",
+        "action": {
+          "type": "get message",
+          "content": "I'll make my final SOLVE attempt with what appears to be the most consistent pattern from our tests - the function appears to return the largest power of 2 less than or equal to x:\n\n```python\nSOLVE:\ndef solution(x):\n    \"\"\"Returns the largest power of 2 less than or equal to x.\"\"\"\n    if x <= 0:\n        return 0\n    return 1 << (x.bit_length() - 1)\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:50:26.097642",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 6,
+  "runtime_error_count": 0,
+  "turns_used": 9,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        1000
+      ],
+      "output": 4
+    },
+    {
+      "round": 1,
+      "args": [
+        0
+      ],
+      "output": 0
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": 0,
+      "predicted_output": 0,
+      "confidence_score": 1,
+      "current_mode": "probing",
+      "input_rationale": "Testing the base case with 0 to see if it's an identity or special case.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": 1,
+      "predicted_output": 1,
+      "confidence_score": 50,
+      "current_mode": "probing",
+      "input_rationale": "Testing a small positive integer to see if the function is the identity function or something else.",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns x unchanged (identity function).\"\"\"\n    return x",
+      "gm_output": 4,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": -1,
+      "predicted_output": 1,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "Testing a negative input to see if the function returns the absolute value or something else.",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns the absolute value of x.\"\"\"\n    return x if x >= 0 else -x",
+      "gm_output": 5,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": 2,
+      "predicted_output": 1,
+      "confidence_score": 40,
+      "current_mode": "probing",
+      "input_rationale": "Testing another positive integer to see if the function returns x // 2 (integer division by 2) or similar.",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns the integer division of x by 2.\"\"\"\n    return x // 2",
+      "gm_output": 8,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": 3,
+      "predicted_output": 2,
+      "confidence_score": 30,
+      "current_mode": "probing",
+      "input_rationale": "Testing an odd positive integer to see if the function returns floor(x/2) or similar.",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns the floor of x divided by 2.\"\"\"\n    return x // 2",
+      "gm_output": 3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": 5,
+      "predicted_output": 3,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "Testing a larger odd number to see if the function returns the number of set bits in x (Hamming weight) or similar bitwise operation.",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns the number of set bits (1s) in the binary representation of x.\"\"\"\n    return bin(x).count('1')",
+      "gm_output": 2,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": 4,
+      "predicted_output": 1,
+      "confidence_score": 50,
+      "current_mode": "probing",
+      "input_rationale": "Testing a power of 2 to see if the function returns the number of times x can be divided by 2 (log2) or similar.",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns the number of trailing zeros in the binary representation of x.\"\"\"\n    return (x & -x).bit_length() - 1 if x != 0 else 0",
+      "gm_output": 7,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 9,
+      "input": 7,
+      "predicted_output": 2,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "Testing 7 (binary 111) to see if the function returns the position of the highest set bit (2 for 7, 0-based).",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns the position of the highest set bit in x (0-based index).\"\"\"\n    return x.bit_length() - 1 if x != 0 else 0",
+      "gm_output": 1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 11,
+      "input": 6,
+      "predicted_output": 1,
+      "confidence_score": 50,
+      "current_mode": "confirming",
+      "input_rationale": "Testing 6 (binary 110) to confirm if the function returns (number of set bits - 1). For 6, this would be 2-1=1.",
+      "hypothesis": "def solution(x):\n    \"\"\"Returns the number of set bits in x minus 1.\"\"\"\n    return bin(x).count('1') - 1 if x != 0 else 0",
+      "gm_output": 6,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 12,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 14,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 2,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.0,
+  "mode": "active_pair_checks",
+  "info_request_count": 9,
+  "revealed_example_count": 0,
+  "membership_true_count": 2,
+  "membership_false_count": 8,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0
+  ]
+}

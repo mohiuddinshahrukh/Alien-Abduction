@@ -1,0 +1,532 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 285,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 10,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:08.955776",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((10, 1), 21), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:08.955831",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example shows that f(10, 1) returns 21. This suggests a relationship where the function might be combining the two integers in a non-trivial way, possibly involving bitwise operations or arithmetic operations like multiplication and addition. The simplest hypothesis is that the function returns a * b + a + b, which for (10, 1) gives 10*1 + 10 + 1 = 21. This fits the given example, so I will test this hypothesis.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns a * b + a + b.\\\"\\\"\\\"\\n    return a * b + a + b\",\n    \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:12.746761",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-10, -99), -9), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:12.746800",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The previous hypothesis (a * b + a + b) fails for (-10, -99), as it would return (-10 * -99) + (-10) + (-99) = 990 - 109 = 881, but the expected output is -9. This suggests the function is not simply a * b + a + b. A common operation that could yield -9 for (-10, -99) is the greatest common divisor (GCD), but GCD(-10, -99) is 1, not -9. Another possibility is bitwise operations or arithmetic like (a + b) or (a ^ b), but (a + b) for (-10, -99) is -109, which is incorrect. The next hypothesis is that the function returns the sum of the digits of a and b, but for (-10, -99), this would be (1 + 0) + (9 + 9) = 19, which is incorrect. Alternatively, it might return the minimum of a and b, but min(-10, -99) is -99, not -9. Another possibility is that the function returns the difference between the two numbers divided by some factor, but this seems unlikely",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:17.349213",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:17.349277",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The previous hypothesis (a * b + a + b) failed for (-10, -99). The correct output was -9, which is the smaller of the two numbers when considering their absolute values (-10 is closer to zero than -99). This suggests the function might return the number with the smaller absolute value (i.e., the 'less extreme' number). For (10, 1), this would return 1, but the preloaded example expected 21, so this is incorrect. Alternatively, the function might return the sum of the digits of a and b, but for (-10, -99), this would be (1 + 0) + (9 + 9) = 19, which is incorrect. Another possibility is that the function returns a + b + 1, but for (10, 1), this would return 12, not 21. The next hypothesis is that the function returns (a + 1) * (b + 1) - 1, which for (10, 1) gives (11 * 2) - 1 = 21, and for (-10, -99) gives (-9 * -98) - 1 = 882 - 1 = 881, which",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:21.509377",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:21.509431",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example (10, 1) → 21 suggests a multiplicative relationship with an offset. The new example (-10, -99) → -9 suggests the function might return the smaller absolute value (min(abs(a), abs(b))) with the original sign, but this fails for (10, 1). Another possibility is that the function returns (a + b) if a and b are positive, but this doesn't fit (-10, -99). The most plausible remaining hypothesis is that the function returns (a + 1) * (b + 1) - 1, which works for (10, 1) but fails for (-10, -99). Given the conflicting examples, I will test a new hypothesis: the function returns a * b + a + b, but with a special case for negative inputs. However, this seems too ad-hoc. Instead, I will test if the function returns the bitwise OR of a and b, but for (10, 1) this is 11, not 21. The next best guess is that the function returns the sum of a and b plus their product, but with a sign adjustment for negatives.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:26.448206",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:26.448258",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Given the first example (10, 1) → 21 and the second (-10, -99) → -9, I observe that 21 = (10 + 1) * (1 + 1) - 1, but this fails for (-10, -99). Alternatively, 21 = 10 * 2 + 1, but this doesn't generalize. The second example (-10, -99) → -9 suggests the function might return the smaller of the two numbers (min(a, b)), but this fails for (10, 1). Another pattern is that 21 = 10 + 10 + 1, and -9 = -10 + 1, but this is inconsistent. The most plausible hypothesis now is that the function returns (a + b) if a and b are positive, and min(a, b) otherwise. This fits both examples: (10 + 1) = 11 (incorrect) or (10 + 10 + 1) = 21 (first case), and min(-10, -99) = -99 (incorrect). Thus, I will test a new hypothesis: the function returns a + b + a * b, which works for (1",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:30.425798",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:30.425860",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The first example (10, 1) → 21 fits the formula (a + 1) * (b + 1) - 1 = 11 * 2 - 1 = 21. The second example (-10, -99) → -9 does not fit this formula (output would be 881). However, -9 is the result of (-10) + 1, which suggests a conditional pattern: if a and b are positive, return (a + 1) * (b + 1) - 1; otherwise, return min(a, b) + 1. This fits both examples: (10, 1) → 21 and (-10, -99) → -10 + 1 = -9. I will test this hypothesis.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns (a + 1) * (b + 1) - 1 if both a and b are positive, otherwise returns min(a, b) + 1.\\\"\\\"\\\"\\n    if a > 0 and b > 0:\\n        return (a + 1) * (b + 1) - 1\\n    else:\\n",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:35.039344",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:35.039405",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The previous hypothesis fits both given examples: (10, 1) → 21 (via (10+1)*(1+1)-1) and (-10, -99) → -9 (via min(-10, -99) + 1). However, this feels too ad-hoc. Given the remaining turns, I will now commit to a SOLVE attempt with a simpler and more general pattern: the function returns a * b + a + b, which is equivalent to (a + 1) * (b + 1) - 1. This works for (10, 1) → 21 but fails for (-10, -99) → -9. Since no other pattern fits both, I will instead propose that the function returns the sum of a and b plus their product, with special handling for negatives. Given the time constraints, I will SOLVE with the original multiplicative hypothesis, as it fits the first example and is a common pattern.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns (a + 1) * (b + 1) - 1.\\\"\\\"\\\"\\n    return (a + 1) * (b + 1) - 1\",\n    \"conf",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:37.708355",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:37.708410",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The first example (10, 1) → 21 fits the formula (a + 1) * (b + 1) - 1 perfectly. The second example (-10, -99) → -9 suggests a different pattern, but given the time constraints and the need to commit to a solution, I will proceed with the hypothesis that works for the first example and is a common mathematical pattern. This function is equivalent to a * b + a + b, which is a known transformation in some contexts.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns (a + 1) * (b + 1) - 1, equivalent to a * b + a + b.\\\"\\\"\\\"\\n    return (a + 1) * (b + 1) - 1\",\n    \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:41.032569",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((99, 1000), 2099), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:41.032624",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The new example (99, 1000) → 2099 fits the formula (a + 1) * (b + 1) - 1 perfectly: (99 + 1) * (1000 + 1) - 1 = 100 * 1001 - 1 = 100100 - 1 = 100099 (incorrect). Wait, this is wrong! The correct calculation is (99 + 1) * (1000 + 1) - 1 = 100 * 1001 - 1 = 100100 - 1 = 100099, but the expected output is 2099. This disproves my hypothesis. The correct pattern must be different. Let me re-examine the examples: (10, 1) → 21 (10 + 10 + 1), (-10, -99) → -9 (-10 + 1), (99, 1000) → 2099 (99 + 1000 + 1000). This suggests the function returns a + b + max(a, b).",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:41.998059",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:41.998106",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(a: int, b: int) -> int:\n    \"\"\"Returns a + b + max(a, b).\"\"\"\n    return a + b + max(a, b)\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:42.497122",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:42.497243",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [-10, -99] | Expected: -10 | Got: -119\nInput: [-99, -10] | Expected: -10 | Got: -119\nInput: [0, -10] | Expected: 0 | Got: -10"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:42.497260",
+        "action": {
+          "type": "hidden_function",
+          "content": "def sum_plus_larger_abs(a: int, b: int) -> int:\n    return a + b + max(abs(a), abs(b))"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:42.497274",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a: int, b: int) -> int:\n    \"\"\"Returns a + b + max(a, b).\"\"\"\n    return a + b + max(a, b)"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:42.497318",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.580\nInformation requests: 2/15\nRevealed passive examples: 3\nEfficiency: 0.933\nSlack: 13\nObserved-pair consistency: 1.000\nMembership balance: 2 true / 1 false\nParse errors: 7\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.9333333333333333,
+  "efficiency_raw": 0.9333333333333333,
+  "slack": 13,
+  "accuracy": 0.58,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 7,
+  "runtime_error_count": 0,
+  "turns_used": 2,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        10,
+        1
+      ],
+      "output": 21
+    },
+    {
+      "round": 2,
+      "args": [
+        99,
+        1000
+      ],
+      "output": 2099
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        10,
+        1
+      ],
+      "candidate_output": 21,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        -99
+      ],
+      "candidate_output": -9,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        99,
+        1000
+      ],
+      "candidate_output": 2099,
+      "is_member": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        -10,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example shows that f(10, 1) returns 21. This suggests a relationship where the function might be combining the two integers in a non-trivial way, possibly involving bitwise operations or arithmetic operations like multiplication and addition. The simplest hypothesis is that the function returns a * b + a + b, which for (10, 1) gives 10*1 + 10 + 1 = 21. This fits the given example, so I will test this hypothesis.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns a * b + a + b.\"\"\"\n    return a * b + a + b",
+      "gm_output": -9,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 2,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": [
+        99,
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "confirming",
+      "input_rationale": "The first example (10, 1) → 21 fits the formula (a + 1) * (b + 1) - 1 perfectly. The second example (-10, -99) → -9 suggests a different pattern, but given the time constraints and the need to commit to a solution, I will proceed with the hypothesis that works for the first example and is a common mathematical pattern. This function is equivalent to a * b + a + b, which is a known transformation in some contexts.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns (a + 1) * (b + 1) - 1, equivalent to a * b + a + b.\"\"\"\n    return (a + 1) * (b + 1) - 1",
+      "gm_output": 2099,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 2,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 2,
+  "revealed_example_count": 3,
+  "membership_true_count": 2,
+  "membership_false_count": 1,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1
+  ]
+}

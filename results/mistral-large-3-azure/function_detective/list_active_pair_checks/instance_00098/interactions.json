@@ -1,0 +1,698 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_active_pair_checks",
+    "game_id": 98,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:02:51.207367",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:02:51.207398",
+        "action": {
+          "type": "get message",
+          "content": "Here's my first probe to understand the function's behavior:\n\n```json\n{\n  \"input\": [],\n  \"predicted_output\": 0,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing empty list to see if it returns a default value (likely 0).\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 1\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:02:55.198376",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:02:55.198441",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [],\n  \"predicted_output\": 0,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing empty list to check base case behavior. Many list-based functions return 0 or None for empty input.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 10\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:02:57.449239",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:02:57.449277",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [1, 2, 3],\n  \"predicted_output\": 6,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing a simple list of positive integers to check if the function sums them (common operation).\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the sum of all integers in the list.\\\"\\\"\\\"\\n    return sum(items)\",\n  \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:02:59.495893",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:02:59.495944",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [1, 2, 3],\n  \"predicted_output\": 3,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing if the function returns the length of the list (another common operation).\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the count of items in the list.\\\"\\\"\\\"\\n    return len(items)\",\n  \"confidence_score\": 50\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:01.964696",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:01.964751",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [1, -1, 2, -2],\n  \"predicted_output\": 0,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing a list with mixed positive/negative numbers to see if the function returns the sum of absolute values, count of positive numbers, or net sum (which would be 0 here).\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the sum of absolute values of the integers.\\\"\\\"\\\"\\n    return sum(abs(x) for x in items)\",\n  \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:03.552646",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:03.552703",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [1, 2, 3, 4],\n  \"predicted_output\": 4,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing if the function returns the maximum value in the list.\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the maximum value in the list.\\\"\\\"\\\"\\n    return max(items) if items else 0\",\n  \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:06.291002",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:06.291056",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [1, 3, 5, 2, 4],\n  \"predicted_output\": 3,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing if the function returns the median value of the list.\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the median value of the list.\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    sorted_items = sorted(items)\\n    n = len(sorted_items)\\n    mid = n // 2\\n    if n % 2 == 1:\\n        return sorted_items[mid]\\n    else:\\n        return (sorted_items[mid - 1] + sorted_items[mid]) // 2\",\n  \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:08.856608",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:08.856677",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [2, 2, 2, 2],\n  \"predicted_output\": 2,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing if the function returns the most frequent value (mode) in the list.\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the mode (most frequent value) in the list.\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    freq = {}\\n    for x in items:\\n        freq[x] = freq.get(x, 0) + 1\\n    return max(freq.items(), key=lambda x: x[1])[0]\",\n  \"confidence_score\": 75\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:11.007911",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:11.007964",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [1, 2, 3, 4, 5],\n  \"predicted_output\": 3,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing if the function returns the middle element when the list is sorted (same as median but without averaging for even lengths).\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the middle element of the sorted list (floor median).\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    return sorted(items)[len(items) // 2]\",\n  \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:13.105988",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:13.106050",
+        "action": {
+          "type": "get message",
+          "content": "Let me try a different approach with some edge cases:\n\n```json\n{\n  \"input\": [5],\n  \"predicted_output\": 5,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing single-element list to see if it returns that element (many functions do this).\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 30\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:14.885413",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:14.885465",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [5],\n  \"predicted_output\": 5,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing single-element list to check if the function returns the element itself (common for reduction operations).\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the XOR of all integers in the list.\\\"\\\"\\\"\\n    result = 0\\n    for x in items:\\n        result ^= x\\n    return result\",\n  \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:17.208802",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:17.208854",
+        "action": {
+          "type": "get message",
+          "content": "Given the previous attempts, let me try one more distinct hypothesis with a new test case:\n\n```json\n{\n  \"input\": [1, 2, 1, 3, 2],\n  \"predicted_output\": 3,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing if the function returns the count of unique elements in the list.\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the number of unique elements in the list.\\\"\\\"\\\"\\n    return len(set(items)) if items else 0\",\n  \"confidence_score\": 75\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:19.468362",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:19.468433",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [1, 2, 3],\n  \"predicted_output\": 1,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing if the function returns the count of positive integers that appear only once (unique positives).\",\n  \"hypothesis\": \"def solution(items):\\n    \\\"\\\"\\\"Returns the count of unique positive integers in the list.\\\"\\\"\\\"\\n    return len({x for x in items if x > 0}) if items else 0\",\n  \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:20.769178",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:20.769202",
+        "action": {
+          "type": "get message",
+          "content": "Based on the pattern of responses, I'll make my best SOLVE attempt now:\n\n```python\nSOLVE: ```python\ndef solution(items):\n    \"\"\"Returns the count of positive integers in the list.\"\"\"\n    return sum(1 for x in items if x > 0)\n```\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:03:21.817592",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:21.817621",
+        "action": {
+          "type": "get message",
+          "content": "```python\nSOLVE: ```python\ndef solution(items):\n    \"\"\"Returns the product of all integers in the list.\"\"\"\n    if not items:\n        return 0\n    product = 1\n    for x in items:\n        product *= x\n    return product\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:03:21.818011",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 5,
+  "runtime_error_count": 0,
+  "turns_used": 10,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "output": -1
+    },
+    {
+      "round": 1,
+      "args": [
+        []
+      ],
+      "output": 0
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": [],
+      "predicted_output": 0,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "Testing empty list to check base case behavior. Many list-based functions return 0 or None for empty input.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "predicted_output": 6,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "Testing a simple list of positive integers to check if the function sums them (common operation).",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the sum of all integers in the list.\"\"\"\n    return sum(items)",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "predicted_output": 3,
+      "confidence_score": 50,
+      "current_mode": "probing",
+      "input_rationale": "Testing if the function returns the length of the list (another common operation).",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the count of items in the list.\"\"\"\n    return len(items)",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 4,
+      "input": [
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "predicted_output": 0,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "Testing a list with mixed positive/negative numbers to see if the function returns the sum of absolute values, count of positive numbers, or net sum (which would be 0 here).",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the sum of absolute values of the integers.\"\"\"\n    return sum(abs(x) for x in items)",
+      "gm_output": -3,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "predicted_output": 4,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "Testing if the function returns the maximum value in the list.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the maximum value in the list.\"\"\"\n    return max(items) if items else 0",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": [
+        1,
+        3,
+        5,
+        2,
+        4
+      ],
+      "predicted_output": 3,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "Testing if the function returns the median value of the list.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the median value of the list.\"\"\"\n    if not items:\n        return 0\n    sorted_items = sorted(items)\n    n = len(sorted_items)\n    mid = n // 2\n    if n % 2 == 1:\n        return sorted_items[mid]\n    else:\n        return (sorted_items[mid - 1] + sorted_items[mid]) // 2",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "predicted_output": 2,
+      "confidence_score": 75,
+      "current_mode": "probing",
+      "input_rationale": "Testing if the function returns the most frequent value (mode) in the list.",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the mode (most frequent value) in the list.\"\"\"\n    if not items:\n        return 0\n    freq = {}\n    for x in items:\n        freq[x] = freq.get(x, 0) + 1\n    return max(freq.items(), key=lambda x: x[1])[0]",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "predicted_output": 3,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "Testing if the function returns the middle element when the list is sorted (same as median but without averaging for even lengths).",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the middle element of the sorted list (floor median).\"\"\"\n    if not items:\n        return 0\n    return sorted(items)[len(items) // 2]",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 10,
+      "input": [
+        5
+      ],
+      "predicted_output": 5,
+      "confidence_score": 80,
+      "current_mode": "probing",
+      "input_rationale": "Testing single-element list to check if the function returns the element itself (common for reduction operations).",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the XOR of all integers in the list.\"\"\"\n    result = 0\n    for x in items:\n        result ^= x\n    return result",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 11,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 12,
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "predicted_output": 1,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "Testing if the function returns the count of positive integers that appear only once (unique positives).",
+      "hypothesis": "def solution(items):\n    \"\"\"Returns the count of unique positive integers in the list.\"\"\"\n    return len({x for x in items if x > 0}) if items else 0",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 14,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 2,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.0,
+  "mode": "active_pair_checks",
+  "info_request_count": 10,
+  "revealed_example_count": 0,
+  "membership_true_count": 2,
+  "membership_false_count": 9,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0
+  ]
+}

@@ -1,0 +1,594 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "string_passive_labeled_pairs",
+    "game_id": 153,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 10,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:20.030396",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(text: str) -> str\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (('aA', 'aA'), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:20.030448",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The preloaded example shows that the function returns the same string when the input is 'aA'. This suggests the function might be identity, case-insensitive identity, or some form of normalization (e.g., case folding). I will test a simple case variation to narrow it down.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 10\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:22.509436",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('', '_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:22.509469",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input `''` (empty string) does not return `'_alt'`, so the function is not a simple default replacement for empty strings. This rules out some trivial transformations. The preloaded example (`'aA' -> 'aA'`) still suggests case normalization or identity, but now we know it's not a default replacement. I will test another case variation to check for case insensitivity or other transformations.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string unchanged.\\\"\\\"\\\"\\n    return text\",\n  \"confidence_score\": 40\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:25.036591",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('ab', 'ab'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:25.036640",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input `'ab'` returns `'ab'`, which aligns with the identity hypothesis. However, the earlier empty string test (`'' -> '_alt'` being False) suggests the function might not be pure identity. The preloaded example (`'aA' -> 'aA'`) could still imply case preservation or normalization. I will test a mixed-case input to see if case is preserved or normalized.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string with all characters converted to lowercase.\\\"\\\"\\\"\\n    return text.lower()\",\n  \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:28.296224",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('aba', 'aba_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:28.296278",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input `'aba'` does not return `'aba_alt'`, which contradicts the idea of a simple suffix addition. Combined with earlier examples (`'aA' -> 'aA'`, `'ab' -> 'ab'`), this suggests the function is not appending anything. The empty string test (`'' -> '_alt'` being False) also rules out default replacements. The function might be identity, but the `'aA'` case suggests case preservation rather than normalization. I will test another mixed-case input to confirm.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string unchanged (identity function).\\\"\\\"\\\"\\n    return text\",\n  \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:31.378089",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('a-b', 'a-b'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:31.378144",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"The input `'a-b'` returns `'a-b'`, which supports the identity hypothesis. The preloaded example (`'aA' -> 'aA'`) and other tests (`'ab' -> 'ab'`, `'a-b' -> 'a-b'`) all align with the function being the identity. The earlier `'aba'` test (`'aba_alt'` being False) also fits, as the function does not modify the string. I will now submit the identity function as the solution.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string unchanged.\\\"\\\"\\\"\\n    return text\",\n  \"confidence_score\": 95\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:34.217082",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('hello', 'hello_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:34.217132",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input `'hello'` does not return `'hello_alt'`, which further confirms the function is not appending a suffix. All previous examples (`'aA' -> 'aA'`, `'ab' -> 'ab'`, `'a-b' -> 'a-b'`, `'' -> '_alt'` being False) align with the identity function. However, the high confidence in the identity hypothesis was slightly shaken by this test, as it was expected to return `'hello'` if the function is truly identity. I will now test a numeric input to see if the behavior is consistent.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string unchanged if it is non-empty, otherwise returns '_alt'.\\\"\\\"\\\"\\n    return text if text else '_alt'\",\n  \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:37.491787",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('123', '123'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:37.491829",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"The input `'123'` returns `'123'`, which aligns with the identity hypothesis. The earlier empty string test (`'' -> '_alt'` being False) and all other examples (`'aA' -> 'aA'`, `'ab' -> 'ab'`, `'a-b' -> 'a-b'`, `'hello' -> 'hello_alt'` being False) suggest the function is the identity function, except possibly for empty strings. However, the empty string test was negative for `'_alt'`, so the function must be pure identity. I will now submit the identity function as the solution.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string unchanged.\\\"\\\"\\\"\\n    return text\",\n  \"confidence_score\": 90\n}\n```\n\n**SOLVE Attempt:**\n```python\ndef f(text: str) -> str:\n    \"\"\"Returns the input string unchanged.\"\"\"\n    return text\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:39.596985",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:39.597004",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"All test cases so far ('aA'->'aA', 'ab'->'ab', 'a-b'->'a-b', '123'->'123') confirm the function is the identity function. The empty string case (''->_alt' being False) and 'hello'->'hello_alt' being False also support this. I am now fully confident this is the correct implementation.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string unchanged.\\\"\\\"\\\"\\n    return text\",\n  \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:41.442415",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((' ', '_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:41.442469",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"The input `' '` (single space) does not return `'_alt'`, which further confirms the function is not performing any special handling for whitespace or empty-like strings. Combined with all previous test cases, this strongly supports the identity function hypothesis. I will now submit the final solution.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Returns the input string unchanged.\\\"\\\"\\\"\\n    return text\",\n  \"confidence_score\": 100\n}\n```\n\n**SOLVE:**\n```python\ndef f(text: str) -> str:\n    \"\"\"Returns the input string unchanged.\"\"\"\n    return text\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:24:41.877067",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:41.877119",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(text: str) -> str:\n    \"\"\"Returns the input string unchanged.\"\"\"\n    return text\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:42.375756",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:42.375846",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [' '] | Expected:  | Got:  \nInput: ['   '] | Expected:  | Got:    \nInput: ['hello world'] | Expected: helloworld | Got: hello world"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:42.375862",
+        "action": {
+          "type": "hidden_function",
+          "content": "def remove_whitespace(text: str) -> str:\n    return ''.join(ch for ch in text if not ch.isspace())"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:42.375876",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(text: str) -> str:\n    \"\"\"Returns the input string unchanged.\"\"\"\n    return text"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:24:42.375923",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.850\nInformation requests: 7/15\nRevealed passive examples: 8\nEfficiency: 0.600\nSlack: 8\nObserved-pair consistency: 1.000\nMembership balance: 4 true / 4 false\nParse errors: 2\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.6,
+  "efficiency_raw": 0.6,
+  "slack": 8,
+  "accuracy": 0.85,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 2,
+  "runtime_error_count": 0,
+  "turns_used": 7,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        "aA"
+      ],
+      "output": "aA"
+    },
+    {
+      "round": 2,
+      "args": [
+        "ab"
+      ],
+      "output": "ab"
+    },
+    {
+      "round": 4,
+      "args": [
+        "a-b"
+      ],
+      "output": "a-b"
+    },
+    {
+      "round": 6,
+      "args": [
+        "123"
+      ],
+      "output": "123"
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        "aA"
+      ],
+      "candidate_output": "aA",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        ""
+      ],
+      "candidate_output": "_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "ab"
+      ],
+      "candidate_output": "ab",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "aba"
+      ],
+      "candidate_output": "aba_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "a-b"
+      ],
+      "candidate_output": "a-b",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "hello"
+      ],
+      "candidate_output": "hello_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "123"
+      ],
+      "candidate_output": "123",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        " "
+      ],
+      "candidate_output": "_alt",
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        ""
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example shows that the function returns the same string when the input is 'aA'. This suggests the function might be identity, case-insensitive identity, or some form of normalization (e.g., case folding). I will test a simple case variation to narrow it down.",
+      "hypothesis": "unknown",
+      "gm_output": "_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        "ab"
+      ],
+      "predicted_output": null,
+      "confidence_score": 40,
+      "current_mode": "probing",
+      "input_rationale": "The input `''` (empty string) does not return `'_alt'`, so the function is not a simple default replacement for empty strings. This rules out some trivial transformations. The preloaded example (`'aA' -> 'aA'`) still suggests case normalization or identity, but now we know it's not a default replacement. I will test another case variation to check for case insensitivity or other transformations.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Returns the input string unchanged.\"\"\"\n    return text",
+      "gm_output": "ab",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        "aba"
+      ],
+      "predicted_output": null,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "The input `'ab'` returns `'ab'`, which aligns with the identity hypothesis. However, the earlier empty string test (`'' -> '_alt'` being False) suggests the function might not be pure identity. The preloaded example (`'aA' -> 'aA'`) could still imply case preservation or normalization. I will test a mixed-case input to see if case is preserved or normalized.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Returns the input string with all characters converted to lowercase.\"\"\"\n    return text.lower()",
+      "gm_output": "aba_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        "a-b"
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The input `'aba'` does not return `'aba_alt'`, which contradicts the idea of a simple suffix addition. Combined with earlier examples (`'aA' -> 'aA'`, `'ab' -> 'ab'`), this suggests the function is not appending anything. The empty string test (`'' -> '_alt'` being False) also rules out default replacements. The function might be identity, but the `'aA'` case suggests case preservation rather than normalization. I will test another mixed-case input to confirm.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Returns the input string unchanged (identity function).\"\"\"\n    return text",
+      "gm_output": "a-b",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        "hello"
+      ],
+      "predicted_output": null,
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "The input `'a-b'` returns `'a-b'`, which supports the identity hypothesis. The preloaded example (`'aA' -> 'aA'`) and other tests (`'ab' -> 'ab'`, `'a-b' -> 'a-b'`) all align with the function being the identity. The earlier `'aba'` test (`'aba_alt'` being False) also fits, as the function does not modify the string. I will now submit the identity function as the solution.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Returns the input string unchanged.\"\"\"\n    return text",
+      "gm_output": "hello_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": [
+        "123"
+      ],
+      "predicted_output": null,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "The input `'hello'` does not return `'hello_alt'`, which further confirms the function is not appending a suffix. All previous examples (`'aA' -> 'aA'`, `'ab' -> 'ab'`, `'a-b' -> 'a-b'`, `'' -> '_alt'` being False) align with the identity function. However, the high confidence in the identity hypothesis was slightly shaken by this test, as it was expected to return `'hello'` if the function is truly identity. I will now test a numeric input to see if the behavior is consistent.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Returns the input string unchanged if it is non-empty, otherwise returns '_alt'.\"\"\"\n    return text if text else '_alt'",
+      "gm_output": "123",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": [
+        " "
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All test cases so far ('aA'->'aA', 'ab'->'ab', 'a-b'->'a-b', '123'->'123') confirm the function is the identity function. The empty string case (''->_alt' being False) and 'hello'->'hello_alt' being False also support this. I am now fully confident this is the correct implementation.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Returns the input string unchanged.\"\"\"\n    return text",
+      "gm_output": "_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 4,
+  "unique_input_count": 4,
+  "unique_output_count": 4,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 2.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 7,
+  "revealed_example_count": 8,
+  "membership_true_count": 4,
+  "membership_false_count": 4,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1
+  ]
+}

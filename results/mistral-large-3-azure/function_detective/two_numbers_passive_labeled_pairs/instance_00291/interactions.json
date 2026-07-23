@@ -1,0 +1,601 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 291,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 11,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:45.826348",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((-99, 10), 723), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:45.826401",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example ((-99, 10), 723) suggests that the function might involve some combination of the inputs 'a' and 'b' that results in a large number. A common operation that could produce such a result is exponentiation or multiplication combined with addition. I will start by testing a simple hypothesis involving multiplication and addition.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns a multiplied by b squared plus b.\\\"\\\"\\\"\\n    return a * b ** 2 + b\",\n    \"confidence_score\": 50\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:49.365305",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1, -99), -398), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:49.365356",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The previous hypothesis (a * b^2 + b) failed for (-1, -99) → -398. The actual output was not -398, so the function is not simply a*b^2 + b. The result 723 for (-99, 10) and the new counterexample suggest a more complex relationship, possibly involving absolute values, bitwise operations, or polynomial combinations. I will now test a hypothesis involving a linear combination of a and b, such as a * (b + k) + c, where k and c are constants to be determined.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns 7*a + 8*b + 3.\\\"\\\"\\\"\\n    return 7 * a + 8 * b + 3\",\n    \"confidence_score\": 40\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:53.548656",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-99, -2), -501), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:53.548709",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The new example ((-99, -2), -501) matches the hypothesis (7*a + 8*b + 3). Let's verify:\\n7*(-99) + 8*(-2) + 3 = -693 - 16 + 3 = -706 + 3 = -703 (incorrect).\\nThis means the hypothesis is wrong. The correct output for (-99, -2) is -501, so the function must involve a different combination. Given the previous examples:\\n1. (-99, 10) → 723\\n2. (-1, -99) → not -398 (unknown actual)\\n3. (-99, -2) → -501\\nI will now test a hypothesis where the function is a * b + a + b, which fits the first and third examples:\\n(-99)*10 + (-99) + 10 = -990 - 99 + 10 = -1079 (does not match 723).\\nAlternative: a * b + a^2 + b^2. Let's test:\\n(-99)*10 + (-99)^2 + 10",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:57.584883",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:57.584939",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Given the examples:\\n1. (-99, 10) → 723\\n2. (-99, -2) → -501\\nI observe that 723 = (-99 + 10) * (-10) - 7 = (-89) * (-10) - 7 = 890 - 7 = 883 (incorrect).\\nAlternatively, 723 = (-99) * (-7) + 10 * 9 = 693 + 90 = 783 (incorrect).\\nAnother approach: 723 = (-99) * (-8) - 69 = 792 - 69 = 723 (fits first example).\\nFor (-99, -2): (-99) * 5 + (-2) * 6 = -495 - 12 = -507 (incorrect).\\nFor (-99, -2): (-99) * 5 + (-2) * 3 = -495 - 6 = -501 (fits second example).\\nThus, the function might be a * (b + 8) + b * (10",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:41:01.677269",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:01.677322",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"From the examples:\\n1. (-99, 10) → 723: -99 * (-8) + 10 * (-6) + 3 = 792 - 60 + 3 = 735 (incorrect).\\n2. (-99, -2) → -501: -99 * 5 + (-2) * 3 = -495 - 6 = -501 (fits).\\n3. (-1, -99) → ?\\nThe pattern suggests the function might be a * (b + k) + c, where k and c depend on b. However, the first example doesn't fit this. Instead, I'll test a piecewise or conditional function, but given the constraints, I'll try a linear combination with coefficients derived from the examples.\\nFor (-99, 10): 723 = -99 * x + 10 * y.\\nFor (-99, -2): -501 = -99 * x + (-2) * y.\\nSolving these equations:\\n-99x + 10y = 723\\n-99x - 2y = -501\\nSubtracting:",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:41:05.621873",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:05.621924",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"From the two examples:\\n1. (-99, 10) → 723\\n2. (-99, -2) → -501\\nI solved the system of equations:\\n-99x + 10y = 723\\n-99x - 2y = -501\\nSubtracting the second from the first gives 12y = 1224 → y = 102.\\nSubstituting back: -99x + 1020 = 723 → -99x = -297 → x = 3.\\nThus, the function appears to be f(a, b) = 3*a + 102*b.\\nVerification:\\n1. 3*(-99) + 102*10 = -297 + 1020 = 723 ✔\\n2. 3*(-99) + 102*(-2) = -297 - 204 = -501 ✔\\nThis fits both examples, so I will submit this as the solution.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:41:08.041787",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:08.041841",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The system of equations derived from the examples (-99, 10) → 723 and (-99, -2) → -501 yields the solution f(a, b) = 3*a + 102*b. This fits both given examples perfectly. I will now submit this as the final solution.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns 3*a + 102*b.\\\"\\\"\\\"\\n    return 3 * a + 102 * b\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:41:11.947243",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-99, 2), -92), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:11.947270",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The previous hypothesis (3*a + 102*b) failed for (-99, 2) → expected -92 but got 3*(-99) + 102*2 = -297 + 204 = -93. This is very close (-93 vs -92), suggesting the function might have a small adjustment term. Given the pattern, I'll test if the function is 3*a + 102*b + (b > 0 ? 1 : 0), but this seems too arbitrary. Alternatively, the function might involve floor/ceil operations or bit manipulation. I'll now test a new hypothesis where the function is (3*a + 102*b + 1) if b > 0 else (3*a + 102*b).\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns 3*a + 102*b + (1 if b > 0 else 0).\\\"\\\"\\\"\\n    return 3 * a + 102 * b + (1 if b > 0 else 0)\",\n    \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:41:15.436319",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-10, -1), -43), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:15.436360",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The latest example (-10, -1) → -43 fits the new hypothesis: 3*(-10) + 102*(-1) + (1 if -1 > 0 else 0) = -30 - 102 + 0 = -132 (incorrect). This means the previous adjustment was wrong. Let's re-examine the examples:\\n1. (-99, 10) → 723: 3*(-99) + 102*10 = -297 + 1020 = 723 ✔\\n2. (-99, -2) → -501: 3*(-99) + 102*(-2) = -297 - 204 = -501 ✔\\n3. (-99, 2) → -92: 3*(-99) + 102*2 = -297 + 204 = -93 (expected -92)\\n4. (-10, -1) → -43: 3*(-10) + 102*(-1) = -30 - 102 = -13",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:41:19.118788",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:19.118846",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The pattern is inconsistent with a simple linear combination. Given the examples:\\n1. (-99, 10) → 723 (3*a + 102*b = 723)\\n2. (-99, -2) → -501 (3*a + 102*b = -501)\\n3. (-99, 2) → -92 (3*a + 102*b = -93, but expected -92)\\n4. (-10, -1) → -43 (3*a + 102*b = -132, but expected -43)\\nThe function must involve more than just 3*a + 102*b. I'll test if it's (3*a + 102*b + b) or similar. For (-99, 2): 3*(-99) + 102*2 + 2 = -297 + 204 + 2 = -91 (still not -92). Alternatively, maybe (3*a + 102*b + (b % 2)). For (-99, 2): -93 + 0 = -93 (no). For (-10, -1",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:41:22.701056",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:22.701109",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(a: int, b: int) -> int:\n    \"\"\"Returns 3*a + 10*b*b + 12*b.\"\"\"\n    return 3 * a + 10 * b * b + 12 * b\n```\n\n**Rationale:**\n1. (-99, 10) → 3*(-99) + 10*100 + 12*10 = -297 + 1000 + 120 = 823 (incorrect, but close to 723)\n   - Adjusting: 3*(-99) + 10*100 + 2*10 = -297 + 1000 + 20 = 723 ✔\n2. (-99, -2) → 3*(-99) + 10*4 + 12*(-2) = -297 + 40 - 24 = -281 (incorrect)\n   - Alternative: 3*(-99) + 10*4 + 2*(-2) = -297 + 40 - 4 = -261 (still incorrect)\n   - Revisiting: 3*(-99) + 10*(-2)*(-2",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:23.188492",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:23.188602",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [-99, 10] | Expected: 723 | Got: 823\nInput: [-1, -99] | Expected: -399 | Got: 96819\nInput: [-99, -2] | Expected: -501 | Got: -281"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:23.188620",
+        "action": {
+          "type": "hidden_function",
+          "content": "def triple_sum_minus_product(a: int, b: int) -> int:\n    return 3 * (a + b) - a * b"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:23.188634",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a: int, b: int) -> int:\n    \"\"\"Returns 3*a + 10*b*b + 12*b.\"\"\"\n    return 3 * a + 10 * b * b + 12 * b"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:41:23.188676",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.100\nInformation requests: 4/15\nRevealed passive examples: 5\nEfficiency: 0.800\nSlack: 11\nObserved-pair consistency: 0.000\nMembership balance: 3 true / 2 false\nParse errors: 6\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.8,
+  "efficiency_raw": 0.8,
+  "slack": 11,
+  "accuracy": 0.1,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 6,
+  "runtime_error_count": 0,
+  "turns_used": 4,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        -99,
+        10
+      ],
+      "output": 723
+    },
+    {
+      "round": 2,
+      "args": [
+        -99,
+        -2
+      ],
+      "output": -501
+    },
+    {
+      "round": 4,
+      "args": [
+        -10,
+        -1
+      ],
+      "output": -43
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        -99,
+        10
+      ],
+      "candidate_output": 723,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1,
+        -99
+      ],
+      "candidate_output": -398,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99,
+        -2
+      ],
+      "candidate_output": -501,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99,
+        2
+      ],
+      "candidate_output": -92,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -10,
+        -1
+      ],
+      "candidate_output": -43,
+      "is_member": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        -1,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 50,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example ((-99, 10), 723) suggests that the function might involve some combination of the inputs 'a' and 'b' that results in a large number. A common operation that could produce such a result is exponentiation or multiplication combined with addition. I will start by testing a simple hypothesis involving multiplication and addition.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns a multiplied by b squared plus b.\"\"\"\n    return a * b ** 2 + b",
+      "gm_output": -398,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        -99,
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 40,
+      "current_mode": "probing",
+      "input_rationale": "The previous hypothesis (a * b^2 + b) failed for (-1, -99) → -398. The actual output was not -398, so the function is not simply a*b^2 + b. The result 723 for (-99, 10) and the new counterexample suggest a more complex relationship, possibly involving absolute values, bitwise operations, or polynomial combinations. I will now test a hypothesis involving a linear combination of a and b, such as a * (b + k) + c, where k and c are constants to be determined.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns 7*a + 8*b + 3.\"\"\"\n    return 7 * a + 8 * b + 3",
+      "gm_output": -501,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": [
+        -99,
+        2
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The system of equations derived from the examples (-99, 10) → 723 and (-99, -2) → -501 yields the solution f(a, b) = 3*a + 102*b. This fits both given examples perfectly. I will now submit this as the final solution.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns 3*a + 102*b.\"\"\"\n    return 3 * a + 102 * b",
+      "gm_output": -92,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 7,
+      "input": [
+        -10,
+        -1
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The previous hypothesis (3*a + 102*b) failed for (-99, 2) → expected -92 but got 3*(-99) + 102*2 = -297 + 204 = -93. This is very close (-93 vs -92), suggesting the function might have a small adjustment term. Given the pattern, I'll test if the function is 3*a + 102*b + (b > 0 ? 1 : 0), but this seems too arbitrary. Alternatively, the function might involve floor/ceil operations or bit manipulation. I'll now test a new hypothesis where the function is (3*a + 102*b + 1) if b > 0 else (3*a + 102*b).",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns 3*a + 102*b + (1 if b > 0 else 0).\"\"\"\n    return 3 * a + 102 * b + (1 if b > 0 else 0)",
+      "gm_output": -43,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 3,
+  "unique_input_count": 3,
+  "unique_output_count": 3,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.584962500721156,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 4,
+  "revealed_example_count": 5,
+  "membership_true_count": 3,
+  "membership_false_count": 2,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 3,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1
+  ]
+}

@@ -1,0 +1,545 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 243,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 10,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:35:50.872010",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((99, 1000), 9), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:35:50.872057",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example ((99, 1000), 9) suggests that the function might be returning the difference between the two numbers, the minimum, or some other simple arithmetic operation. Starting with a simple test case to check if it's the difference (a - b or b - a).\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 1\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:35:55.939254",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-99, 0), 19), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:35:55.939308",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The first example ((99, 1000), 9) suggested a possible difference (1000 - 99 = 901, which doesn't match), or perhaps the number of digits in the difference. The new example ((-99, 0), 19) is False, which rules out simple differences. The output 19 for (-99, 0) suggests it might be related to the absolute value of the numbers or their digit counts. Hypothesizing that it could be the sum of the absolute values of the digits of a and b.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the absolute values of the digits of a and b.\\\"\\\"\\\"\\n    def digit_sum(x):\\n        return sum(int(d) for d in str(abs(x)))\\n    return digit_sum(a) + digit_sum(b)\",\n    \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:00.303555",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((2, -2), 4), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:00.303604",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The previous hypothesis (sum of absolute digit values) works for the new example ((2, -2), 4): 2 + 2 = 4. The first example ((99, 1000), 9) also fits: 9+9 + 1+0+0+0 = 18, but the output was 9, so this hypothesis is incorrect. Re-evaluating. The output 9 for (99, 1000) could be the number of digits in the smaller number (99 has 2 digits, 1000 has 4, but 2+4=6 ≠ 9). Alternatively, it might be the sum of the digits of the smaller number (9+9=18 ≠ 9). Another possibility: the function returns the number of digits in the product of a and b. For (99, 1000): 99*1000=99000 (5 digits), but output is 9. Not matching. New hypothesis: the function returns the sum of the digits of a and b, but only for the smaller number in absolute value. For (99, 1000): min(99, 1000) is 99, sum of",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:06.020690",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:06.020744",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The sum of absolute digits hypothesis failed for the first example ((99, 1000), 9), but worked for ((2, -2), 4). The correct pattern might instead be the count of digits in the smaller absolute value. For (99, 1000): min(99, 1000) is 99 (2 digits), but output is 9, which doesn't match. Alternatively, it could be the sum of the digits of the smaller absolute value: 9+9=18 ≠ 9. New hypothesis: the function returns the number of digits in `a` multiplied by the number of digits in `b`. For (99, 1000): 2 * 4 = 8 ≠ 9. Not matching. Revisiting the first example: 99 and 1000. 99 + 1000 = 1099 (sum of digits: 1+0+9+9=19 ≠ 9). Another idea: the function returns the length of the string representation of the smaller absolute value. For (99, 1000): len('99') = 2 ≠ 9. Not matching. Final hypothesis: the function returns the sum of",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:08.994842",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:08.994900",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The sum of absolute digits hypothesis worked for ((2, -2), 4) but failed for ((99, 1000), 9). The correct pattern might be the number of digits in the smaller number plus the number of digits in the larger number. For (99, 1000): 2 + 4 = 6 ≠ 9. Alternatively, it could be the sum of the digits of the smaller number multiplied by some factor. For (99, 1000): 9+9=18, 18/2=9, which matches the output. For (2, -2): 2+2=4, 4/1=4, which matches. Testing this hypothesis.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of the digits of the smaller absolute value.\\\"\\\"\\\"\\n    def digit_sum(x):\\n        return sum(int(d) for d in str(abs(x)))\\n    return digit_sum(min(a, b, key=abs))\",\n    \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:11.647785",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1000, -1000), -1), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:11.647852",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The last hypothesis (sum of digits of the smaller absolute value) fails for ((-1000, -1000), -1). This suggests the function does not return a negative value, and the output is not purely based on digit sums. The output -1 is likely a sentinel value or indicates something else. Given the examples, the function might return the number of digits in the GCD of a and b. For (99, 1000): GCD is 1 (1 digit) ≠ 9. For (2, -2): GCD is 2 (1 digit) ≠ 4. Not matching. Alternatively, it could be the count of set bits in the binary representation of the sum of a and b. For (99, 1000): 99+1000=1099 (binary 10001000011, 5 set bits) ≠ 9. For (2, -2): 2-2=0 (0 set bits) ≠ 4. Not matching. New hypothesis: the function returns the number of trailing zeros in the product of a and b. For (99, 1000): 99*1000=99000",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:14.478900",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:14.478953",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The previous hypotheses are failing. Let's re-examine the examples: ((99, 1000), 9), ((2, -2), 4), ((-1000, -1000), -1). The output -1 for (-1000, -1000) suggests the function might return -1 when inputs are equal. For (99, 1000), 9 could be the number of letters in the English word for 99 ('ninety-nine' has 9 letters excluding hyphen). For (2, -2), 'two' has 3 letters, but output is 4, so this doesn't fit. Alternatively, 9 could be the count of letters in the Roman numeral for 99 (XCIX: 4 letters), but 4 ≠ 9. Not matching. New hypothesis: the function returns the count of prime factors (with multiplicity) of the smaller absolute value. For 99: 3*3*11 (3 factors) ≠ 9. For 2: 2 (1 factor) ≠ 4. Not matching. Final hypothesis: the function returns the sum of the digits of the smaller number multiplied by the number of digits in the larger number. For (99, 1",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:18.267731",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:18.267787",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"After reviewing all examples, the pattern seems to be: if a == b, return -1. Otherwise, return the sum of the digits of the smaller absolute value multiplied by the number of digits in the larger absolute value. For (99, 1000): smaller=99 (digit sum=18), larger=1000 (4 digits), 18 * 0.5=9 (matches). For (2, -2): smaller=2 (digit sum=2), larger=2 (1 digit), 2 * 2=4 (matches). For (-1000, -1000): a == b, return -1 (matches). This seems consistent.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns -1 if a == b, else returns (sum of digits of min(abs(a), abs(b))) * (digits in max(abs(a), abs(b))) // 2.\\\"\\\"\\\"\\n    if a == b:\\n        return -1\\n    def digit_sum(x):\\n        return sum(int(d) for d in str(abs(x)))\\n    def digit_count(x):\\n        return len(str(abs(x)))\\n    smaller = min(abs(a), abs(b))\\",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:22.092023",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:22.092051",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"Based on all examples, the function appears to return -1 if a == b, otherwise it returns the sum of the digits of the smaller absolute value. The earlier confusion came from the first example ((99, 1000), 9), where 9+9=18, but the output was 9. This suggests the sum is halved when the digit count of the larger number is even. For (99, 1000): 18//2=9 (matches). For (2, -2): 2+2=4 (no halving, matches). For (-1000, -1000): -1 (matches). This seems consistent.\",\n    \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns -1 if a == b, else returns the sum of digits of min(abs(a), abs(b)) halved if max(abs(a), abs(b)) has even digit count.\\\"\\\"\\\"\\n    if a == b:\\n        return -1\\n    def digit_sum(x):\\n        return sum(int(d) for d in str(abs(x)))\\n    def digit_count(x):\\n        return len(str(abs(x)))\\n    smaller = min(abs(a), abs(b))\\n",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:36:23.022925",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:23.022956",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(a: int, b: int) -> int:\n    \"\"\"Returns -1 if a == b, else returns the sum of digits of the smaller absolute value.\"\"\"\n    if a == b:\n        return -1\n    def digit_sum(x):\n        return sum(int(d) for d in str(abs(x)))\n    return digit_sum(min(a, b, key=abs))\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:23.529401",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:23.529515",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [99, 1000] | Expected: 9 | Got: 18\nInput: [-99, 0] | Expected: 9 | Got: 0\nInput: [2, -2] | Expected: 4 | Got: 2"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:23.529531",
+        "action": {
+          "type": "hidden_function",
+          "content": "def last_digit_sum(a: int, b: int) -> int:\n    return abs(a) % 10 + abs(b) % 10"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:23.529545",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a: int, b: int) -> int:\n    \"\"\"Returns -1 if a == b, else returns the sum of digits of the smaller absolute value.\"\"\"\n    if a == b:\n        return -1\n    def digit_sum(x):\n        return sum(int(d) for d in str(abs(x)))\n    return digit_sum(min(a, b, key=abs))"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:36:23.529587",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.300\nInformation requests: 3/15\nRevealed passive examples: 4\nEfficiency: 0.867\nSlack: 12\nObserved-pair consistency: 0.000\nMembership balance: 2 true / 2 false\nParse errors: 6\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.8666666666666667,
+  "efficiency_raw": 0.8666666666666667,
+  "slack": 12,
+  "accuracy": 0.3,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 6,
+  "runtime_error_count": 0,
+  "turns_used": 3,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        99,
+        1000
+      ],
+      "output": 9
+    },
+    {
+      "round": 2,
+      "args": [
+        2,
+        -2
+      ],
+      "output": 4
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        99,
+        1000
+      ],
+      "candidate_output": 9,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -99,
+        0
+      ],
+      "candidate_output": 19,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        2,
+        -2
+      ],
+      "candidate_output": 4,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1000,
+        -1000
+      ],
+      "candidate_output": -1,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        -99,
+        0
+      ],
+      "predicted_output": null,
+      "confidence_score": 1,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example ((99, 1000), 9) suggests that the function might be returning the difference between the two numbers, the minimum, or some other simple arithmetic operation. Starting with a simple test case to check if it's the difference (a - b or b - a).",
+      "hypothesis": "unknown",
+      "gm_output": 19,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        2,
+        -2
+      ],
+      "predicted_output": null,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "The first example ((99, 1000), 9) suggested a possible difference (1000 - 99 = 901, which doesn't match), or perhaps the number of digits in the difference. The new example ((-99, 0), 19) is False, which rules out simple differences. The output 19 for (-99, 0) suggests it might be related to the absolute value of the numbers or their digit counts. Hypothesizing that it could be the sum of the absolute values of the digits of a and b.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the absolute values of the digits of a and b.\"\"\"\n    def digit_sum(x):\n        return sum(int(d) for d in str(abs(x)))\n    return digit_sum(a) + digit_sum(b)",
+      "gm_output": 4,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": [
+        -1000,
+        -1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "confirming",
+      "input_rationale": "The sum of absolute digits hypothesis worked for ((2, -2), 4) but failed for ((99, 1000), 9). The correct pattern might be the number of digits in the smaller number plus the number of digits in the larger number. For (99, 1000): 2 + 4 = 6 ≠ 9. Alternatively, it could be the sum of the digits of the smaller number multiplied by some factor. For (99, 1000): 9+9=18, 18/2=9, which matches the output. For (2, -2): 2+2=4, 4/1=4, which matches. Testing this hypothesis.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of the digits of the smaller absolute value.\"\"\"\n    def digit_sum(x):\n        return sum(int(d) for d in str(abs(x)))\n    return digit_sum(min(a, b, key=abs))",
+      "gm_output": -1,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 2,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 3,
+  "revealed_example_count": 4,
+  "membership_true_count": 2,
+  "membership_false_count": 2,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 2,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+  ]
+}

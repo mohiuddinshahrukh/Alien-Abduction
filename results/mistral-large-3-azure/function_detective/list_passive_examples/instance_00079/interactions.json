@@ -1,0 +1,752 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_passive_examples",
+    "game_id": 79,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:06:43.047759",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nI control which valid input-output examples you see. You can request them one at a time.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ([0], 0)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:06:43.047815",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example ([0], 0) is very basic and could fit many functions (e.g., sum, min, max, length, etc.). I need a more diverse example to narrow down the possibilities. I'll request an input with multiple distinct integers to see how the function behaves.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 1\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:06:45.290627",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([1, 1], 1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:06:45.290649",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The new example ([1, 1], 1) suggests the function might return the sum of the list (1+1=2 would be expected, but got 1), the minimum (1), the maximum (1), or the count of unique elements (1). The sum hypothesis is invalidated, so I'll test another input to distinguish between min, max, or unique count.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 30\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:06:47.480320",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([-2], 0)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:06:47.480375",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The example ([-2], 0) is surprising because the output is 0, not -2. This rules out min, max, and sum. The function might be counting non-negative numbers (0 for [-2]), or it could be something else like the count of even numbers (1 for [-2], but output is 0). I'll request another example to clarify.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 50\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:06:53.587085",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([5, -5, 5], -10)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:06:53.587113",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The example ([5, -5, 5], -10) is unexpected. The output -10 equals the sum of the negative numbers in the list (only -5, so -5) multiplied by 2, or the sum of all numbers (-5) multiplied by 2. Alternatively, it could be the sum of the list (5 + -5 + 5 = 5) minus some function of the list (e.g., 5 - 15 = -10). This is confusing, so I'll test a hypothesis: the function might return the sum of the list minus twice the sum of the positive numbers. For [5, -5, 5], sum is 5, sum of positives is 10, so 5 - 2*10 = -15 (doesn't match). Alternatively, sum of negatives multiplied by 2: -5 * 2 = -10 (matches). I'll request another example to confirm.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 60\n}\n```To confirm my hypothesis, I'll request an input where the sum of negative numbers is zero or where there are multiple negative numbers.\n\n```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"I suspect the function returns twice",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:06:56.125708",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:06:56.125736",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The example ([5, -5, 5], -10) suggests the function might return twice the sum of the negative numbers in the list (-5 * 2 = -10). To confirm, I'll test this hypothesis with another input.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns twice the sum of all negative numbers in the list.\\\"\\\"\\\"\\n    return 2 * sum(x for x in items if x < 0)\",\n    \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:02.536634",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ([2, 1], 1)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:02.536688",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The new example ([2, 1], 1) contradicts my previous hypothesis (which would return 0 for no negatives). This suggests the function is not just about negatives. However, the earlier examples fit a pattern where the output seems to be the sum of the list minus twice the sum of the positive numbers (e.g., [5, -5, 5]: sum=5, sum_pos=10, 5-20=-15 ≠ -10). Alternatively, it might be the sum of the list minus the sum of the absolute values of positives (e.g., [5, -5, 5]: 5 - 10 = -5 ≠ -10). The pattern is unclear, so I'll make my best SOLVE attempt now based on the most consistent observation: the function returns 0 for non-negative lists and twice the sum of negatives otherwise.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns twice the sum of all negative numbers in the list.\\\"\\\"\\\"\\n    return 2 * sum(x for x in items if x < 0)\",\n    \"confidence_score\": 60\n}\n```Since this is the second-to-last turn, I'll submit my best SOLVE attempt:\n\n```python\nSOLVE:\n```python\ndef",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:03.700278",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:03.700337",
+        "action": {
+          "type": "get message",
+          "content": "```python\nSOLVE:\ndef f(items):\n    \"\"\"Returns the difference between the sum of the list and twice the sum of its positive elements.\"\"\"\n    total = sum(items)\n    sum_pos = sum(x for x in items if x > 0)\n    return total - 2 * sum_pos\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:05.068430",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:05.068472",
+        "action": {
+          "type": "get message",
+          "content": "```python\nSOLVE:\ndef f(items):\n    \"\"\"Returns the sum of all elements minus twice the sum of positive elements.\"\"\"\n    return sum(items) - 2 * sum(x for x in items if x > 0)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:09.015080",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:09.015115",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"Based on the examples, the function appears to return the sum of all elements minus twice the sum of positive elements. This matches all given examples: ([0], 0) → 0 - 0 = 0; ([1,1],1) → 2 - 2*2 = -2 (doesn't match, so hypothesis is wrong). Re-evaluating: The correct pattern seems to be returning the sum of negative elements only. For ([5,-5,5], -10), sum of negatives is -5, but output is -10 (twice the sum). Thus, the function returns twice the sum of negative elements.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns twice the sum of all negative numbers in the list.\\\"\\\"\\\"\\n    return 2 * sum(x for x in items if x < 0)\",\n    \"confidence_score\": 90\n}\n```Now submitting the final SOLVE attempt:\n\n```python\nSOLVE:\ndef f(items):\n    \"\"\"Returns twice the sum of all negative numbers in the list.\"\"\"\n    return 2 * sum(x for x in items if x < 0)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:11.216077",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:11.216132",
+        "action": {
+          "type": "get message",
+          "content": "I'll provide the SOLVE attempt in the correct format:\n\n```\nSOLVE:\ndef f(items):\n    \"\"\"Returns twice the sum of all negative numbers in the list.\"\"\"\n    return 2 * sum(x for x in items if x < 0)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:12.385644",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:12.385683",
+        "action": {
+          "type": "get message",
+          "content": "Here is the final SOLVE attempt in the correct format:\n\n```\nSOLVE:\n```python\ndef f(items):\n    \"\"\"Returns twice the sum of all negative numbers in the list.\"\"\"\n    return 2 * sum(x for x in items if x < 0)\n```\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:14.223418",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:14.223471",
+        "action": {
+          "type": "get message",
+          "content": "I understand now - I need to provide either a single JSON object or a SOLVE block, not both. Here's the SOLVE attempt:\n\n```python\nSOLVE:\ndef f(items):\n    \"\"\"Returns twice the sum of all negative numbers in the list.\"\"\"\n    return 2 * sum(x for x in items if x < 0)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:15.373773",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:15.373798",
+        "action": {
+          "type": "get message",
+          "content": "Here is the correct SOLVE submission:\n\n```\nSOLVE:\ndef f(items):\n    \"\"\"Returns the sum of all elements minus twice the sum of positive elements.\"\"\"\n    return sum(items) - 2 * sum(x for x in items if x > 0)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:16.699859",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:16.699904",
+        "action": {
+          "type": "get message",
+          "content": "I'll provide the final solution in the exact required format:\n\n```\nSOLVE:\n```python\ndef f(items):\n    \"\"\"Returns twice the sum of all negative numbers in the list.\"\"\"\n    return 2 * sum(x for x in items if x < 0)\n``````",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:07:18.376564",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:18.376590",
+        "action": {
+          "type": "get message",
+          "content": "I'll provide the solution in the exact correct format for the SOLVE action:\n\n```\nSOLVE:\n```python\ndef f(items):\n    \"\"\"Returns the sum of all elements minus twice the sum of positive elements.\"\"\"\n    return sum(items) - 2 * sum(x for x in items if x > 0)\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:07:18.376934",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 100,
+  "parse_error_count": 11,
+  "runtime_error_count": 0,
+  "turns_used": 4,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          0
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 1,
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "output": 1
+    },
+    {
+      "round": 2,
+      "args": [
+        [
+          -2
+        ]
+      ],
+      "output": 0
+    },
+    {
+      "round": 3,
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "output": -10
+    },
+    {
+      "round": 4,
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "output": 1
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "io",
+      "args": [
+        [
+          0
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          -2
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "expected": -10
+    },
+    {
+      "kind": "io",
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "expected": 1
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        [
+          1,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 1,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example ([0], 0) is very basic and could fit many functions (e.g., sum, min, max, length, etc.). I need a more diverse example to narrow down the possibilities. I'll request an input with multiple distinct integers to see how the function behaves.",
+      "hypothesis": "unknown",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 1,
+      "input": [
+        [
+          -2
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 30,
+      "current_mode": "probing",
+      "input_rationale": "The new example ([1, 1], 1) suggests the function might return the sum of the list (1+1=2 would be expected, but got 1), the minimum (1), the maximum (1), or the count of unique elements (1). The sum hypothesis is invalidated, so I'll test another input to distinguish between min, max, or unique count.",
+      "hypothesis": "unknown",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        [
+          5,
+          -5,
+          5
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 50,
+      "current_mode": "probing",
+      "input_rationale": "The example ([-2], 0) is surprising because the output is 0, not -2. This rules out min, max, and sum. The function might be counting non-negative numbers (0 for [-2]), or it could be something else like the count of even numbers (1 for [-2], but output is 0). I'll request another example to clarify.",
+      "hypothesis": "unknown",
+      "gm_output": -10,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": [
+        [
+          2,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "probing",
+      "input_rationale": "The example ([5, -5, 5], -10) suggests the function might return twice the sum of the negative numbers in the list (-5 * 2 = -10). To confirm, I'll test this hypothesis with another input.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns twice the sum of all negative numbers in the list.\"\"\"\n    return 2 * sum(x for x in items if x < 0)",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 11,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 12,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 14,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 5,
+  "unique_input_count": 5,
+  "unique_output_count": 3,
+  "novelty_rate": 0.6,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.5219280948873621,
+  "mode": "passive_examples",
+  "info_request_count": 4,
+  "revealed_example_count": 5,
+  "membership_true_count": 0,
+  "membership_false_count": 0,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}

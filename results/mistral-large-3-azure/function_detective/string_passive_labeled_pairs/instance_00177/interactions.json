@@ -1,0 +1,594 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "string_passive_labeled_pairs",
+    "game_id": 177,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 10,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:25:55.726161",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(text: str) -> str\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (('hello world', '#hello world'), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:25:55.726213",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The preloaded example shows that the input 'hello world' becomes '#hello world'. This suggests the function might be adding a '#' prefix to the input string. However, this is just one example, so I need to confirm if this is the general behavior or if there are edge cases (e.g., empty string, strings already starting with '#').\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Adds a '#' prefix to the input string.\\\"\\\"\\\"\\n    return '#' + text\",\n  \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:25:57.531593",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((' ', '# _alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:25:57.531643",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The previous hypothesis that the function simply adds a '#' prefix is incorrect for the input ' ', which outputs '# _alt' instead of '# '. This suggests the function has more complex behavior, possibly replacing spaces with '_alt' or handling whitespace specially. I need to test another input to narrow it down.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 30\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:25:59.577407",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('A', '#A'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:25:59.577455",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input 'A' becomes '#A', which aligns with the initial hypothesis of adding a '#' prefix. However, the previous example with a space (' ') showed a different behavior ('# _alt'). This suggests the function may replace spaces with '_alt' while otherwise prepending a '#'. I will test this hypothesis.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Adds a '#' prefix and replaces spaces with '_alt'.\\\"\\\"\\\"\\n    return '#' + text.replace(' ', '_alt')\",\n  \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:26:00.709914",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('123', '#123_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:00.709942",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input '123' becomes '#123_alt', which contradicts the previous hypothesis (spaces → '_alt'). This suggests the '_alt' suffix is added conditionally, not just for spaces. The pattern might involve appending '_alt' if the input is numeric or meets some other condition. I need to refine the hypothesis further.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 40\n}\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:26:02.191245",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:02.191298",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The previous examples show conflicting patterns: 'hello world' → '#hello world' (no change to spaces), ' ' → '# _alt' (space replaced), 'A' → '#A' (no suffix), and '123' → '#123_alt' (suffix added). This suggests the function may append '_alt' only if the input is non-alphabetic or contains digits. I will test a hypothesis where '_alt' is appended if the input is not purely alphabetic (a-z/A-Z).\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Adds a '#' prefix and appends '_alt' if the input is not purely alphabetic.\\\"\\\"\\\"\\n    if text.isalpha():\\n        return '#' + text\\n    else:\\n        return '#' + text + '_alt'\",\n  \"confidence_score\": 75\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:26:05.406795",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('aba', '#aba'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:05.406856",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"The input 'aba' (purely alphabetic) becomes '#aba', which matches the hypothesis. The previous examples also align: 'hello world' (not purely alphabetic due to space) → '#hello world_alt' (but this contradicts the first example, so the hypothesis needs adjustment). The key insight is that '_alt' is appended only if the input contains non-alphabetic characters *other than spaces*. I will refine the hypothesis to exclude spaces from triggering '_alt'.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Adds a '#' prefix and appends '_alt' if the input contains non-alphabetic, non-space characters.\\\"\\\"\\\"\\n    if any(not c.isalpha() and not c.isspace() for c in text):\\n        return '#' + text + '_alt'\\n    else:\\n        return '#' + text.replace(' ', '_alt')\",\n  \"confidence_score\": 90\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:26:08.544596",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('aA', '#aA_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:08.544648",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input 'aA' (purely alphabetic) unexpectedly becomes '#aA_alt', contradicting the previous hypothesis. This suggests the function's logic is not based on non-alphabetic characters. Given the examples so far, the pattern might involve appending '_alt' if the input contains uppercase letters or meets some other condition. I will test a new hypothesis where '_alt' is appended if the input is not purely lowercase alphabetic.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Adds a '#' prefix and appends '_alt' if the input is not purely lowercase alphabetic.\\\"\\\"\\\"\\n    if text.islower() and text.isalpha():\\n        return '#' + text\\n    else:\\n        return '#' + text + '_alt'\",\n  \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:26:12.744005",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('', '#'), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:12.744024",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"The empty string input `''` outputs `'#'`, which aligns with the current hypothesis (empty string is not purely lowercase alphabetic, so `'_alt'` would be appended, but the output is just `'#'`). This suggests the function appends `'_alt'` only if the input is non-empty *and* not purely lowercase alphabetic. I will adjust the hypothesis to handle empty strings and refine the condition.\",\n  \"hypothesis\": \"def f(text: str) -> str:\\n    \\\"\\\"\\\"Adds a '#' prefix and appends '_alt' if the input is non-empty and not purely lowercase alphabetic.\\\"\\\"\\\"\\n    if text and text.islower() and text.isalpha():\\n        return '#' + text\\n    else:\\n        return '#' + text + ('_alt' if text else '')\",\n  \"confidence_score\": 95\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:26:14.658580",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (('hello', '#hello_alt'), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:14.658647",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The input 'hello' (purely lowercase alphabetic) unexpectedly outputs '#hello_alt', contradicting the hypothesis. This suggests the function's logic is not based on lowercase alphabetic checks. Given the examples, the pattern might involve appending '_alt' if the input length is odd or some other property. However, 'aba' (length 3) did not append '_alt', so length is not the factor. I will now attempt a SOLVE with a hypothesis that matches all observed examples.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 20\n}\n```\n\nSOLVE:\n```python\ndef f(text: str) -> str:\n    \"\"\"Adds a '#' prefix and appends '_alt' if the input contains vowels or is non-alphabetic.\"\"\"\n    if any(c.lower() in {'a', 'e', 'i', 'o', 'u'} for c in text) or not text.isalpha():\n        return '#' + text + '_alt'\n    else:\n        return '#' + text\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:26:15.694148",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:15.694198",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(text: str) -> str:\n    \"\"\"Prepends '#' and appends '_alt' unless the input is a single lowercase letter or empty.\"\"\"\n    if len(text) == 1 and text.islower():\n        return '#' + text\n    else:\n        return '#' + text + ('_alt' if text else '')\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:16.328469",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:16.328606",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: ['hello world'] | Expected: #hello world | Got: #hello world_alt\nInput: [' '] | Expected: #  | Got: # _alt\nInput: ['A'] | Expected: #A | Got: #A_alt"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:16.328624",
+        "action": {
+          "type": "hidden_function",
+          "content": "def prepend_hash(text: str) -> str:\n    return '#' + text"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:16.328639",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(text: str) -> str:\n    \"\"\"Prepends '#' and appends '_alt' unless the input is a single lowercase letter or empty.\"\"\"\n    if len(text) == 1 and text.islower():\n        return '#' + text\n    else:\n        return '#' + text + ('_alt' if text else '')"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:26:16.328688",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.080\nInformation requests: 7/15\nRevealed passive examples: 8\nEfficiency: 0.600\nSlack: 8\nObserved-pair consistency: 0.250\nMembership balance: 4 true / 4 false\nParse errors: 2\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.6,
+  "efficiency_raw": 0.6,
+  "slack": 8,
+  "accuracy": 0.08,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 2,
+  "runtime_error_count": 0,
+  "turns_used": 7,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        "hello world"
+      ],
+      "output": "#hello world"
+    },
+    {
+      "round": 2,
+      "args": [
+        "A"
+      ],
+      "output": "#A"
+    },
+    {
+      "round": 4,
+      "args": [
+        "aba"
+      ],
+      "output": "#aba"
+    },
+    {
+      "round": 6,
+      "args": [
+        ""
+      ],
+      "output": "#"
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        "hello world"
+      ],
+      "candidate_output": "#hello world",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        " "
+      ],
+      "candidate_output": "# _alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "A"
+      ],
+      "candidate_output": "#A",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "123"
+      ],
+      "candidate_output": "#123_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "aba"
+      ],
+      "candidate_output": "#aba",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "aA"
+      ],
+      "candidate_output": "#aA_alt",
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        ""
+      ],
+      "candidate_output": "#",
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        "hello"
+      ],
+      "candidate_output": "#hello_alt",
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        " "
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example shows that the input 'hello world' becomes '#hello world'. This suggests the function might be adding a '#' prefix to the input string. However, this is just one example, so I need to confirm if this is the general behavior or if there are edge cases (e.g., empty string, strings already starting with '#').",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Adds a '#' prefix to the input string.\"\"\"\n    return '#' + text",
+      "gm_output": "# _alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        "A"
+      ],
+      "predicted_output": null,
+      "confidence_score": 30,
+      "current_mode": "probing",
+      "input_rationale": "The previous hypothesis that the function simply adds a '#' prefix is incorrect for the input ' ', which outputs '# _alt' instead of '# '. This suggests the function has more complex behavior, possibly replacing spaces with '_alt' or handling whitespace specially. I need to test another input to narrow it down.",
+      "hypothesis": "unknown",
+      "gm_output": "#A",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        "123"
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "probing",
+      "input_rationale": "The input 'A' becomes '#A', which aligns with the initial hypothesis of adding a '#' prefix. However, the previous example with a space (' ') showed a different behavior ('# _alt'). This suggests the function may replace spaces with '_alt' while otherwise prepending a '#'. I will test this hypothesis.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Adds a '#' prefix and replaces spaces with '_alt'.\"\"\"\n    return '#' + text.replace(' ', '_alt')",
+      "gm_output": "#123_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": [
+        "aba"
+      ],
+      "predicted_output": null,
+      "confidence_score": 75,
+      "current_mode": "probing",
+      "input_rationale": "The previous examples show conflicting patterns: 'hello world' → '#hello world' (no change to spaces), ' ' → '# _alt' (space replaced), 'A' → '#A' (no suffix), and '123' → '#123_alt' (suffix added). This suggests the function may append '_alt' only if the input is non-alphabetic or contains digits. I will test a hypothesis where '_alt' is appended if the input is not purely alphabetic (a-z/A-Z).",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Adds a '#' prefix and appends '_alt' if the input is not purely alphabetic.\"\"\"\n    if text.isalpha():\n        return '#' + text\n    else:\n        return '#' + text + '_alt'",
+      "gm_output": "#aba",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": [
+        "aA"
+      ],
+      "predicted_output": null,
+      "confidence_score": 90,
+      "current_mode": "confirming",
+      "input_rationale": "The input 'aba' (purely alphabetic) becomes '#aba', which matches the hypothesis. The previous examples also align: 'hello world' (not purely alphabetic due to space) → '#hello world_alt' (but this contradicts the first example, so the hypothesis needs adjustment). The key insight is that '_alt' is appended only if the input contains non-alphabetic characters *other than spaces*. I will refine the hypothesis to exclude spaces from triggering '_alt'.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Adds a '#' prefix and appends '_alt' if the input contains non-alphabetic, non-space characters.\"\"\"\n    if any(not c.isalpha() and not c.isspace() for c in text):\n        return '#' + text + '_alt'\n    else:\n        return '#' + text.replace(' ', '_alt')",
+      "gm_output": "#aA_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 6,
+      "input": [
+        ""
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The input 'aA' (purely alphabetic) unexpectedly becomes '#aA_alt', contradicting the previous hypothesis. This suggests the function's logic is not based on non-alphabetic characters. Given the examples so far, the pattern might involve appending '_alt' if the input contains uppercase letters or meets some other condition. I will test a new hypothesis where '_alt' is appended if the input is not purely lowercase alphabetic.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Adds a '#' prefix and appends '_alt' if the input is not purely lowercase alphabetic.\"\"\"\n    if text.islower() and text.isalpha():\n        return '#' + text\n    else:\n        return '#' + text + '_alt'",
+      "gm_output": "#",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": [
+        "hello"
+      ],
+      "predicted_output": null,
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "The empty string input `''` outputs `'#'`, which aligns with the current hypothesis (empty string is not purely lowercase alphabetic, so `'_alt'` would be appended, but the output is just `'#'`). This suggests the function appends `'_alt'` only if the input is non-empty *and* not purely lowercase alphabetic. I will adjust the hypothesis to handle empty strings and refine the condition.",
+      "hypothesis": "def f(text: str) -> str:\n    \"\"\"Adds a '#' prefix and appends '_alt' if the input is non-empty and not purely lowercase alphabetic.\"\"\"\n    if text and text.islower() and text.isalpha():\n        return '#' + text\n    else:\n        return '#' + text + ('_alt' if text else '')",
+      "gm_output": "#hello_alt",
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 4,
+  "unique_input_count": 4,
+  "unique_output_count": 4,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 2.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 7,
+  "revealed_example_count": 8,
+  "membership_true_count": 4,
+  "membership_false_count": 4,
+  "internal_consistency_score": 0.25,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 3,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1
+  ]
+}

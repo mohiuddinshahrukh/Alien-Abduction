@@ -1,0 +1,565 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_labeled_pairs",
+    "game_id": 195,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 9,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:35:42.706580",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((True, True), True), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:35:42.706635",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example ((True, True), True) suggests that when both inputs are True, the output is True. This is consistent with logical AND, OR, or other common boolean operations. I will start by testing the simplest hypothesis: logical AND, as it is the most restrictive and would quickly reveal itself if incorrect.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical AND of a and b.\\\"\\\"\\\"\\n    return a and b\",\n    \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:35:45.709098",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:35:45.709149",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The new example ((True, False), True) → False contradicts my initial hypothesis (logical AND), since (True and False) is False, but the expected output was True. This means the function is not a simple AND. The output was False, so the function must behave differently. Possible candidates now include XOR, NAND, or a custom operation. I will test XOR next, as it is a common boolean operation that would return False for (True, False) if the output was inverted.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical XOR of a and b.\\\"\\\"\\\"\\n    return a != b\",\n    \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:35:48.371044",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:35:48.371107",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The new example ((False, True), True) → True matches XOR (False != True is True), which aligns with my previous hypothesis. However, the first preloaded example ((True, True), True) → True contradicts XOR (True != True is False). This inconsistency suggests the function is not XOR. Possible alternatives include OR, NAND, or a conditional operation. I will now test OR, as it fits the preloaded example and the latest example.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical OR of a and b.\\\"\\\"\\\"\\n    return a or b\",\n    \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:35:51.185042",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, False), False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:35:51.185106",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The new example ((False, False), False) → False matches the logical OR hypothesis (False or False is False). Combined with the previous examples:\\n- ((True, True), True) → True (True or True is True)\\n- ((True, False), True) → False (True or False is True, but output was False)\\nThis contradicts OR, so the function is not OR. The only remaining common boolean operation that fits ((True, True), True) → True and ((False, False), False) → False is NAND (NOT AND). Let's test NAND.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical NAND of a and b.\\\"\\\"\\\"\\n    return not (a and b)\",\n    \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:35:56.571635",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:35:56.571662",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The example ((True, True), True) → True contradicts NAND (not (True and True) is False), so the function is not NAND. The only remaining common boolean operation that fits all examples so far is the logical implication (a implies b, or equivalently not a or b). Let's test this:\\n- ((True, True), True) → True (not True or True is True)\\n- ((True, False), True) → False (not True or False is False)\\n- ((False, True), True) → True (not False or True is True)\\n- ((False, False), False) → False (not False or False is True, but output was False)\\nThis does not fit the last example, so the function must be something else. Given the contradictions, I will now test the hypothesis that the function returns True only if both inputs are equal (i.e., equivalence or XNOR).\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if a and b are equal, False otherwise (XNOR).\\\"\\\"\\\"\\n    return a == b\",\n    \"confidence_score\": 90\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:36:01.484535",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((True, False), True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:01.484639",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The example ((True, False), True) → False fits the XNOR hypothesis (True == False is False). Combined with previous examples:\\n- ((True, True), True) → True (True == True is True)\\n- ((False, True), True) → True (False == True is False, but output was True)\\nThis contradicts XNOR, so the function is not XNOR. The only remaining common boolean operation that fits most examples is the logical implication (a implies b), but it failed earlier. Given the contradictions, I will now test the hypothesis that the function returns True if at least one input is True, but False if both are False (OR), but with an exception for (True, False). Alternatively, it could be a custom operation. Given the time, I will submit the OR hypothesis with a note about the exception.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if at least one of a or b is True, except when a is True and b is False.\\\"\\\"\\\"\\n    return a or b if not (a and not b) else False\",\n    \"confidence_score\": 60\n}\n```Wait, this is getting convoluted. Let me re-examine all examples:\n\n1. ((True",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:36:03.547367",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:03.547413",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"Re-examining all examples:\\n1. ((True, True), True) → True\\n2. ((True, False), True) → False\\n3. ((False, True), True) → True\\n4. ((False, False), False) → False\\n\\nThis matches the behavior of `b` alone (return the second input). Let's verify:\\n- (True, True) → True (matches b)\\n- (True, False) → False (matches b)\\n- (False, True) → True (matches b)\\n- (False, False) → False (matches b)\\nThis fits all examples perfectly.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the second input (b).\\\"\\\"\\\"\\n    return b\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:36:07.997953",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((False, True), True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:07.998002",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The latest example ((False, True), True) → True confirms my hypothesis that the function simply returns the second input (b). All previous examples also align with this:\\n- ((True, True), True) → True (b=True)\\n- ((True, False), True) → False (b=False)\\n- ((False, False), False) → False (b=False)\\nThis is the simplest explanation that fits all given input-output pairs.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the second input (b).\\\"\\\"\\\"\\n    return b\",\n    \"confidence_score\": 100\n}\n```\n\nSince this matches all examples and I'm highly confident, I'll submit the solution now:\n\nSOLVE:\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the second input (b).\"\"\"\n    return b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:36:08.779528",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:08.779550",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the second input (b).\"\"\"\n    return b\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:09.266055",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:09.266280",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [False, False] | Expected: True | Got: False"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:09.266349",
+        "action": {
+          "type": "hidden_function",
+          "content": "def a_requires_b(a: bool, b: bool) -> bool:\n    if a and not b:\n        return False\n    return True"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:09.266388",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the second input (b).\"\"\"\n    return b"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:36:09.266482",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.750\nInformation requests: 6/15\nRevealed passive examples: 7\nEfficiency: 0.667\nSlack: 9\nObserved-pair consistency: 1.000\nMembership balance: 4 true / 3 false\nParse errors: 2\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.6666666666666666,
+  "efficiency_raw": 0.6666666666666666,
+  "slack": 9,
+  "accuracy": 0.75,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 4,
+  "parse_error_count": 2,
+  "runtime_error_count": 0,
+  "turns_used": 6,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 2,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 4,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 6,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        false
+      ],
+      "candidate_output": false,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        true,
+        false
+      ],
+      "candidate_output": true,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        false,
+        true
+      ],
+      "candidate_output": true,
+      "is_member": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example ((True, True), True) suggests that when both inputs are True, the output is True. This is consistent with logical AND, OR, or other common boolean operations. I will start by testing the simplest hypothesis: logical AND, as it is the most restrictive and would quickly reveal itself if incorrect.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical AND of a and b.\"\"\"\n    return a and b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "The new example ((True, False), True) → False contradicts my initial hypothesis (logical AND), since (True and False) is False, but the expected output was True. This means the function is not a simple AND. The output was False, so the function must behave differently. Possible candidates now include XOR, NAND, or a custom operation. I will test XOR next, as it is a common boolean operation that would return False for (True, False) if the output was inverted.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical XOR of a and b.\"\"\"\n    return a != b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The new example ((False, True), True) → True matches XOR (False != True is True), which aligns with my previous hypothesis. However, the first preloaded example ((True, True), True) → True contradicts XOR (True != True is False). This inconsistency suggests the function is not XOR. Possible alternatives include OR, NAND, or a conditional operation. I will now test OR, as it fits the preloaded example and the latest example.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical OR of a and b.\"\"\"\n    return a or b",
+      "gm_output": false,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "confirming",
+      "input_rationale": "The new example ((False, False), False) → False matches the logical OR hypothesis (False or False is False). Combined with the previous examples:\n- ((True, True), True) → True (True or True is True)\n- ((True, False), True) → False (True or False is True, but output was False)\nThis contradicts OR, so the function is not OR. The only remaining common boolean operation that fits ((True, True), True) → True and ((False, False), False) → False is NAND (NOT AND). Let's test NAND.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NAND of a and b.\"\"\"\n    return not (a and b)",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 90,
+      "current_mode": "confirming",
+      "input_rationale": "The example ((True, True), True) → True contradicts NAND (not (True and True) is False), so the function is not NAND. The only remaining common boolean operation that fits all examples so far is the logical implication (a implies b, or equivalently not a or b). Let's test this:\n- ((True, True), True) → True (not True or True is True)\n- ((True, False), True) → False (not True or False is False)\n- ((False, True), True) → True (not False or True is True)\n- ((False, False), False) → False (not False or False is True, but output was False)\nThis does not fit the last example, so the function must be something else. Given the contradictions, I will now test the hypothesis that the function returns True only if both inputs are equal (i.e., equivalence or XNOR).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a and b are equal, False otherwise (XNOR).\"\"\"\n    return a == b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "Re-examining all examples:\n1. ((True, True), True) → True\n2. ((True, False), True) → False\n3. ((False, True), True) → True\n4. ((False, False), False) → False\n\nThis matches the behavior of `b` alone (return the second input). Let's verify:\n- (True, True) → True (matches b)\n- (True, False) → False (matches b)\n- (False, True) → True (matches b)\n- (False, False) → False (matches b)\nThis fits all examples perfectly.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the second input (b).\"\"\"\n    return b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 4,
+  "unique_input_count": 2,
+  "unique_output_count": 1,
+  "novelty_rate": 0.25,
+  "input_diversity": 0.5,
+  "output_entropy_bits": 0.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 6,
+  "revealed_example_count": 7,
+  "membership_true_count": 4,
+  "membership_false_count": 3,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1
+  ]
+}

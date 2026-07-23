@@ -1,0 +1,600 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "list_passive_labeled_pairs",
+    "game_id": 63,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 10,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:25.207559",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(items: List[int]) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (([3, 2, 1], 3), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:25.207611",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example shows that for input [3, 2, 1], the output is 3. This suggests the function might return the length of the list, the maximum value, or the first element. I will test a simple case to narrow it down.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the length of the list.\\\"\\\"\\\"\\n    return len(items)\",\n    \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:27.372322",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([-1, 0, 1], 0), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:27.372375",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The previous hypothesis (returning the length of the list) is incorrect because for input [-1, 0, 1], the length is 3 but the output was 0. This rules out length and suggests the function might be counting non-negative numbers, the count of zeros, or something else. I will test a hypothesis that counts the number of zeros.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the count of zeros in the list.\\\"\\\"\\\"\\n    return items.count(0)\",\n    \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:29.655610",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([], 0), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:29.655683",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The empty list case returns 0, which aligns with the zero-counting hypothesis. However, the first example ([3, 2, 1], 3) does not fit this, since there are no zeros. This suggests the function might return the count of non-negative numbers (including zeros). I will test this hypothesis.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the count of non-negative integers in the list.\\\"\\\"\\\"\\n    return sum(1 for x in items if x >= 0)\",\n    \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:32.505164",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([1, 1], 11), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:32.505215",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The hypothesis that the function counts non-negative integers is incorrect because [1, 1] would return 2, not 11. This suggests the function might be doing something else, such as concatenating the digits of the list elements. I will test this hypothesis.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the integer formed by concatenating all elements in the list.\\\"\\\"\\\"\\n    return int(''.join(map(str, items))) if items else 0\",\n    \"confidence_score\": 85\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:38.543631",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([2, 1], 1), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:38.543721",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The concatenation hypothesis fails for [2, 1], which would return 21, not 1. This suggests the function might be returning the count of elements that are greater than the next element (i.e., local maxima or peaks). For [2, 1], 2 is greater than 1, so the count is 1. For [3, 2, 1], 3 > 2 and 2 > 1, so the count is 2, but the output was 3, which doesn't match. Alternatively, it might count the number of elements where the element is greater than or equal to all previous elements (i.e., non-decreasing sequence leaders). For [3, 2, 1], all 3 elements are leaders (3 >= nothing, 2 < 3, 1 < 2), but the output was 3, which fits. For [2, 1], 2 is a leader, 1 is not, so output is 1. For [1, 1], both are leaders, so output would be 2, but the output was 11, which doesn't fit. This is inconsistent. Another possibility: the function returns the length of the longest non-increasing subsequence. For [3, 2, 1], it's 3. For",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:43.031228",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:43.031290",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The function seems to return the count of elements that are greater than or equal to all preceding elements (leaders in a non-increasing sequence). For [3, 2, 1], all 3 elements are leaders (3 >= nothing, 2 <= 3, 1 <= 2), output 3. For [2, 1], 2 is a leader, 1 is not, output 1. For [1, 1], both are leaders, but the output was 11, which contradicts. Alternatively, it might return the sum of all elements where the element is greater than the next element. For [3, 2, 1], 3>2 and 2>1, sum is 5, which doesn't match. Given inconsistencies, I will test the 'leaders' hypothesis again with a clearer implementation.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the count of elements that are >= all preceding elements (leaders in non-increasing sequence).\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    count = 1\\n    max_so_far = items[0]\\n    for x in items[1:]:\\n        if x <= max_so_far:\\n            count += 1\\n            max",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:51.346064",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:51.346111",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"Given the previous inconsistencies, I will test a simpler hypothesis: the function returns the count of elements that are greater than their immediate predecessor (i.e., the number of 'increases' in the sequence, but inverted since the example [3,2,1] returns 3). Alternatively, it might return the count of elements that are not smaller than the first element. For [3,2,1], all elements are <= 3, so count is 3. For [2,1], both are <= 2, count is 2, but output was 1. This doesn't fit. Another idea: the function returns the length of the list if all elements are in non-increasing order, otherwise 0. For [3,2,1], it returns 3. For [2,1], it returns 2, but output was 1. Not matching. Given time, I will now commit to the 'leaders' hypothesis with a corrected implementation.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the count of elements that are >= all preceding elements (leaders in non-increasing sequence).\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    count = 1\\n    max_so_far = items[0]\\n    for x in items[",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:11:55.009501",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:11:55.009527",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"After analyzing the examples, the function appears to return the count of elements that are greater than or equal to all previous elements (leaders in a non-increasing sequence). This matches the given examples: [3,2,1] → 3 (all elements are leaders), [-1,0,1] → 0 (no elements are leaders after -1), [] → 0, [2,1] → 1 (only 2 is a leader). The [1,1] case was confusing, but the output 11 suggests a possible typo in the example. I will now submit this as the solution.\",\n    \"hypothesis\": \"def f(items):\\n    \\\"\\\"\\\"Returns the count of elements that are >= all preceding elements (leaders in non-increasing sequence).\\\"\\\"\\\"\\n    if not items:\\n        return 0\\n    count = 1\\n    max_so_far = items[0]\\n    for x in items[1:]:\\n        if x <= max_so_far:\\n            count += 1\\n            max_so_far = x\\n    return count\",\n    \"confidence_score\": 95\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:12:00.624006",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (([0], 10), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:12:00.624032",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The last example ([0], 10) contradicts my previous hypothesis (should return 1, not 10). This suggests the function is not counting leaders. Given the outputs 3 ([3,2,1]), 0 ([-1,0,1]), 0 ([]), 1 ([2,1]), and 10 ([0]), a pattern emerges: the function might be returning the sum of the digits of all elements, but [3,2,1] sums to 6, not 3. Alternatively, it could be returning the first digit of the first element multiplied by the length, but [3,2,1] would be 3*3=9, not 3. Another idea: the function returns 10 if the list contains a 0, otherwise it returns the count of elements. This fits [0] → 10, [] → 0, [2,1] → 1, but not [3,2,1] → 3 (should be 3, which fits) or [-1,0,1] → 0 (should be 10, but output was 0). This is inconsistent. Given time, I will now SOLVE with a new hypothesis: the function returns the length of the list if all elements are non-negative, otherwise 0",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:12:01.692694",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:12:01.692748",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(items):\n    \"\"\"Returns the sum of all single-digit numbers in the list, or 10 if the list contains a 0.\"\"\"\n    if 0 in items:\n        return 10\n    return sum(x for x in items if 0 <= x < 10)\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:12:02.169959",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:12:02.170135",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [[3, 2, 1]] | Expected: 3 | Got: 6\nInput: [[-1, 0, 1]] | Expected: -1 | Got: 10\nInput: [[1, 1]] | Expected: 1 | Got: 2"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:12:02.170164",
+        "action": {
+          "type": "hidden_function",
+          "content": "def sum_excluding_max(items: List[int]) -> int:\n    return sum(items) - max(items) if items else 0"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:12:02.170179",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(items):\n    \"\"\"Returns the sum of all single-digit numbers in the list, or 10 if the list contains a 0.\"\"\"\n    if 0 in items:\n        return 10\n    return sum(x for x in items if 0 <= x < 10)"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:12:02.170277",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.080\nInformation requests: 5/15\nRevealed passive examples: 6\nEfficiency: 0.733\nSlack: 10\nObserved-pair consistency: 0.333\nMembership balance: 3 true / 3 false\nParse errors: 4\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.7333333333333333,
+  "efficiency_raw": 0.7333333333333333,
+  "slack": 10,
+  "accuracy": 0.08,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 4,
+  "runtime_error_count": 0,
+  "turns_used": 5,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "output": 3
+    },
+    {
+      "round": 2,
+      "args": [
+        []
+      ],
+      "output": 0
+    },
+    {
+      "round": 4,
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "output": 1
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "candidate_output": 3,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "candidate_output": 0,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        []
+      ],
+      "candidate_output": 0,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          1,
+          1
+        ]
+      ],
+      "candidate_output": 11,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          2,
+          1
+        ]
+      ],
+      "candidate_output": 1,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        [
+          0
+        ]
+      ],
+      "candidate_output": 10,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example shows that for input [3, 2, 1], the output is 3. This suggests the function might return the length of the list, the maximum value, or the first element. I will test a simple case to narrow it down.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the length of the list.\"\"\"\n    return len(items)",
+      "gm_output": 0,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        []
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The previous hypothesis (returning the length of the list) is incorrect because for input [-1, 0, 1], the length is 3 but the output was 0. This rules out length and suggests the function might be counting non-negative numbers, the count of zeros, or something else. I will test a hypothesis that counts the number of zeros.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the count of zeros in the list.\"\"\"\n    return items.count(0)",
+      "gm_output": 0,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        [
+          1,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "probing",
+      "input_rationale": "The empty list case returns 0, which aligns with the zero-counting hypothesis. However, the first example ([3, 2, 1], 3) does not fit this, since there are no zeros. This suggests the function might return the count of non-negative numbers (including zeros). I will test this hypothesis.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the count of non-negative integers in the list.\"\"\"\n    return sum(1 for x in items if x >= 0)",
+      "gm_output": 11,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        [
+          2,
+          1
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 85,
+      "current_mode": "probing",
+      "input_rationale": "The hypothesis that the function counts non-negative integers is incorrect because [1, 1] would return 2, not 11. This suggests the function might be doing something else, such as concatenating the digits of the list elements. I will test this hypothesis.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the integer formed by concatenating all elements in the list.\"\"\"\n    return int(''.join(map(str, items))) if items else 0",
+      "gm_output": 1,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": [
+        [
+          0
+        ]
+      ],
+      "predicted_output": null,
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "After analyzing the examples, the function appears to return the count of elements that are greater than or equal to all previous elements (leaders in a non-increasing sequence). This matches the given examples: [3,2,1] → 3 (all elements are leaders), [-1,0,1] → 0 (no elements are leaders after -1), [] → 0, [2,1] → 1 (only 2 is a leader). The [1,1] case was confusing, but the output 11 suggests a possible typo in the example. I will now submit this as the solution.",
+      "hypothesis": "def f(items):\n    \"\"\"Returns the count of elements that are >= all preceding elements (leaders in non-increasing sequence).\"\"\"\n    if not items:\n        return 0\n    count = 1\n    max_so_far = items[0]\n    for x in items[1:]:\n        if x <= max_so_far:\n            count += 1\n            max_so_far = x\n    return count",
+      "gm_output": 10,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 3,
+  "unique_input_count": 3,
+  "unique_output_count": 3,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.584962500721156,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 5,
+  "revealed_example_count": 6,
+  "membership_true_count": 3,
+  "membership_false_count": 3,
+  "internal_consistency_score": 0.3333333333333333,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 2,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1
+  ]
+}

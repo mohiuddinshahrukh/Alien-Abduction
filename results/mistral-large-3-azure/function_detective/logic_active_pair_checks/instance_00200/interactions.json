@@ -1,0 +1,672 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_active_pair_checks",
+    "game_id": 200,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 14,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:25.306086",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nYou propose function inputs together with a candidate output, and I tell you whether that pair is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>, <value2>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: True\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:25.306139",
+        "action": {
+          "type": "get message",
+          "content": "Here's my first probe to start narrowing down the function's behavior:\n\n```json\n{\n  \"input\": [true, true],\n  \"predicted_output\": true,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing the simplest case where both inputs are true to see if the function is a basic logical operator like AND/OR.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 1\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:26.245932",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:26.245988",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [true, true],\n  \"predicted_output\": true,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing the simplest case where both inputs are true to see if the function is a basic logical operator like AND or OR.\",\n  \"hypothesis\": \"unknown\",\n  \"confidence_score\": 1\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:27.557144",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:27.557175",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [false, false],\n  \"predicted_output\": false,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing the case where both inputs are false to distinguish between AND (would return false) and OR (would return false). This helps narrow down possibilities.\",\n  \"hypothesis\": \"def solution(a, b):\\n    \\\"\\\"\\\"Returns the logical AND of a and b.\\\"\\\"\\\"\\n    return a and b\",\n  \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:28.873205",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:28.873261",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [true, false],\n  \"predicted_output\": false,\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"Testing mixed inputs (true, false) to confirm if the function is indeed logical AND (which would return false) or if it's something else like XOR (which would return true).\",\n  \"hypothesis\": \"def solution(a, b):\\n    \\\"\\\"\\\"Returns the logical AND of a and b.\\\"\\\"\\\"\\n    return a and b\",\n  \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:30.568900",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:30.568956",
+        "action": {
+          "type": "get message",
+          "content": "The last result (`[true, false] → True`) contradicts the logical AND hypothesis. Let me test another case to distinguish between XOR and other possibilities:\n\n```json\n{\n  \"input\": [false, true],\n  \"predicted_output\": true,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing (false, true) to confirm if the function is XOR (would return true) or another operator like OR (would also return true). This will help distinguish between XOR and OR.\",\n  \"hypothesis\": \"def solution(a, b):\\n    \\\"\\\"\\\"Returns the logical XOR of a and b.\\\"\\\"\\\"\\n    return a != b\",\n  \"confidence_score\": 90\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:32.270124",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:32.270176",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [false, true],\n  \"predicted_output\": true,\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Testing (false, true) to confirm if the function is XOR (would return true) or another operator like OR (would also return true). This will help distinguish between XOR and OR.\",\n  \"hypothesis\": \"def solution(a, b):\\n    \\\"\\\"\\\"Returns the logical XOR of a and b.\\\"\\\"\\\"\\n    return a != b\",\n  \"confidence_score\": 90\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:36.469111",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: True",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:36.469165",
+        "action": {
+          "type": "get message",
+          "content": "Based on the test results:\n- `[True, True] → True`\n- `[False, False] → False`\n- `[True, False] → True`\n- `[False, True] → True`\n\nThis matches the behavior of **logical OR** (not XOR). However, the first test (`[True, True] → True`) is consistent with both OR and XOR, but the second test (`[False, False] → False`) rules out XOR (which would return `False` for `[False, False]` but `True` for `[True, False]` and `[False, True]`).\n\nBut wait - the third test (`[True, False] → True`) is consistent with OR, but the fourth test (`[False, True] → True`) is also consistent with OR. However, the second test (`[False, False] → False`) is consistent with both AND and OR.\n\nLet me verify with one more test to confirm:\n\n```json\n{\n  \"input\": [true, false],\n  \"predicted_output\": true,\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"Re-testing (true, false) to confirm OR behavior (should return true). This will solidify the hypothesis.\",\n  \"hypothesis\": \"def solution(a, b):\\n    \\\"\\\"\\\"Returns the logical OR of a and b.\\\"\\\"\\\"\\n    return a or b\",\n  \"",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:38.663380",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:38.663427",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"input\": [false, false],\n  \"predicted_output\": false,\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"Final confirmation test for OR (false, false should return false) to distinguish from other operators like XOR (which would also return false but differs on other cases).\",\n  \"hypothesis\": \"def solution(a, b):\\n    \\\"\\\"\\\"Returns the logical OR of a and b.\\\"\\\"\\\"\\n    return a or b\",\n  \"confidence_score\": 95\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:40.138527",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: False",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:40.138583",
+        "action": {
+          "type": "get message",
+          "content": "Based on all test results:\n- `[True, True] → True` (OR would return True)\n- `[False, False] → False` (OR would return False)\n- `[True, False] → True` (OR would return True)\n- `[False, True] → True` (OR would return True)\n\nThis perfectly matches the logical **OR** operation. Here's my SOLVE attempt:\n\n```python\nSOLVE: ```python\ndef solution(a, b):\n    \"\"\"Returns the logical OR of a and b.\"\"\"\n    return a or b\n```\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:41.368811",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:41.368863",
+        "action": {
+          "type": "get message",
+          "content": "```python\nSOLVE:\ndef solution(a, b):\n    \"\"\"Returns the logical OR of a and b.\"\"\"\n    return a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:42.074655",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:42.074718",
+        "action": {
+          "type": "get message",
+          "content": "I'll submit the final solution in the correct format:\n\n```\nSOLVE:\n```python\ndef solution(a, b):\n    \"\"\"Returns the logical OR of a and b.\"\"\"\n    return a or b\n```\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:42.979738",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:42.979790",
+        "action": {
+          "type": "get message",
+          "content": "Here's the correct SOLVE submission:\n\nSOLVE:\n```python\ndef solution(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if either a or b is True, False otherwise.\"\"\"\n    return a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:43.783592",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:43.783644",
+        "action": {
+          "type": "get message",
+          "content": "I understand now - I'll provide the solution in the exact required format without any additional text:\n\n```python\ndef solution(a, b):\n    return a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:27:44.336626",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:44.336647",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef solution(a, b):\n    return a or b\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:45.039762",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:45.039948",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [False, False] | Expected: True | Got: False\nInput: [True, False] | Expected: False | Got: True"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:45.039965",
+        "action": {
+          "type": "hidden_function",
+          "content": "def second_is_majority(a: bool, b: bool) -> bool:\n    return int(b) >= int(a)"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:45.039979",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def solution(a, b):\n    return a or b"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:27:45.040029",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: active_pair_checks\nAccuracy: 0.500\nInformation requests: 5/15\nRevealed passive examples: 0\nEfficiency: 0.733\nSlack: 10\nObserved-pair consistency: 0.750\nMembership balance: 4 true / 2 false\nParse errors: 8\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.7333333333333333,
+  "efficiency_raw": 0.7333333333333333,
+  "slack": 10,
+  "accuracy": 0.5,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 4,
+  "parse_error_count": 8,
+  "runtime_error_count": 0,
+  "turns_used": 5,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 1,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 3,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 4,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    }
+  ],
+  "revealed_examples": [],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": true,
+      "confidence_score": 1,
+      "current_mode": "probing",
+      "input_rationale": "Testing the simplest case where both inputs are true to see if the function is a basic logical operator like AND or OR.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": false,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "Testing the case where both inputs are false to distinguish between AND (would return false) and OR (would return false). This helps narrow down possibilities.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the logical AND of a and b.\"\"\"\n    return a and b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": false,
+      "confidence_score": 80,
+      "current_mode": "confirming",
+      "input_rationale": "Testing mixed inputs (true, false) to confirm if the function is indeed logical AND (which would return false) or if it's something else like XOR (which would return true).",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the logical AND of a and b.\"\"\"\n    return a and b",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 4,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 5,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": true,
+      "confidence_score": 90,
+      "current_mode": "probing",
+      "input_rationale": "Testing (false, true) to confirm if the function is XOR (would return true) or another operator like OR (would also return true). This will help distinguish between XOR and OR.",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the logical XOR of a and b.\"\"\"\n    return a != b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": false,
+      "confidence_score": 95,
+      "current_mode": "confirming",
+      "input_rationale": "Final confirmation test for OR (false, false should return false) to distinguish from other operators like XOR (which would also return false but differs on other cases).",
+      "hypothesis": "def solution(a, b):\n    \"\"\"Returns the logical OR of a and b.\"\"\"\n    return a or b",
+      "gm_output": true,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 11,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 12,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 4,
+  "unique_input_count": 3,
+  "unique_output_count": 2,
+  "novelty_rate": 0.5,
+  "input_diversity": 0.75,
+  "output_entropy_bits": 0.8112781244591328,
+  "mode": "active_pair_checks",
+  "info_request_count": 5,
+  "revealed_example_count": 0,
+  "membership_true_count": 4,
+  "membership_false_count": 2,
+  "internal_consistency_score": 0.75,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 1,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1
+  ]
+}

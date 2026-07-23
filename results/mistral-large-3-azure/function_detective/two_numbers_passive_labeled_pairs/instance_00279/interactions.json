@@ -1,0 +1,545 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "two_numbers_passive_labeled_pairs",
+    "game_id": 279,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 10,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:39:42.168946",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: int, b: int) -> int\n\nYou have 15 turns total.\n\nI reveal candidate input-output pairs one at a time and tell you whether each one is correct.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. (((1, -10), 11), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:39:42.168998",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The preloaded example ((1, -10), 11) suggests that the function might be computing the difference between the two integers (a - b) and then taking the absolute value or similar. However, 1 - (-10) = 11, which matches the output, so the function could simply be a - b. I will test this hypothesis with a new input pair.\",\n  \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the difference between a and b (a - b).\\\"\\\"\\\"\\n    return a - b\",\n  \"confidence_score\": 70\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:39:45.047965",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((0, 1000), 999), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:39:45.048017",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The previous hypothesis (a - b) failed for the input ((0, 1000), 999), since 0 - 1000 = -1000, not 999. This suggests the function is not a simple subtraction. The output 999 is very close to 1000, so it might involve a decrement or some form of clamping. Alternatively, it could be max(a, b) - min(a, b) - 1, but I will test a simpler hypothesis first: abs(a - b) - 1.\",\n  \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the absolute difference between a and b, minus 1.\\\"\\\"\\\"\\n    return abs(a - b) - 1\",\n  \"confidence_score\": 60\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:39:47.771409",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((1000, 2), 1002), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:39:47.771460",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"The previous hypothesis (abs(a - b) - 1) worked for the first preloaded example (1 - (-10) = 11 → abs(11) - 1 = 10, but the output was 11, so this was incorrect). However, the new input ((1000, 2), 1002) suggests that the function might instead be a + b. Testing this: 1000 + 2 = 1002, which matches. The first preloaded example (1 + (-10) = -9, but the output was 11) contradicts this, so the function is not a simple addition. The next likely candidate is a + abs(b) or abs(a) + b. Testing (1 + abs(-10) = 11), which matches the first example, and (1000 + abs(2) = 1002), which also matches. This seems promising.\",\n  \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns the sum of a and the absolute value of b.\\\"\\\"\\\"\\n    return a + abs(b)\",\n  \"confidence_score\": 90\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:39:50.341777",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: (((-1000, -99), 1100), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:39:50.341824",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The hypothesis (a + abs(b)) fails for ((-1000, -99), 1100), since -1000 + abs(-99) = -1000 + 99 = -901, not 1100. This suggests the function is not simply a + abs(b). Given the outputs so far, another possibility is abs(a) + abs(b), but for ((1, -10), 11), abs(1) + abs(-10) = 11 (matches), ((0, 1000), 999), abs(0) + abs(1000) = 1000 (does not match), so this is incorrect. Alternatively, the function might be max(a, b) - min(a, b) + something, but this seems inconsistent. Another pattern: for ((1, -10), 11), 1 - (-10) = 11 (matches), ((0, 1000), 999), 0 - 1000 = -1000 (does not match), but 1000 - 0 - 1 = 999 (matches). For ((1000, 2),",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:39:53.033528",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:39:53.033585",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"The function seems to behave like `a - b` in some cases (e.g., (1, -10) → 11) but not others (e.g., (0, 1000) → 999). The output for (0, 1000) is 999, which is `b - 1`. For (1000, 2) → 1002, which is `a + 2`. For (-1000, -99) → 1100, which is `abs(a) + 100`. This suggests the function might be `a + abs(b)` when `a` is positive, but this fails for (-1000, -99). Alternatively, it might be `abs(a) + abs(b) + (some condition)`. Given the inconsistency, I will test `max(a, b) - min(a, b) + 1` as a new hypothesis: (1, -10) → 11 (matches), (0, 1000) → 1000 (does not match 999), so this is incorrect. The next best guess is `a + b` if `a > 0`, else `abs(a) + abs",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:39:55.490362",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:39:55.490408",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"probing\",\n  \"input_rationale\": \"Analyzing the examples: (1, -10) → 11 (1 - (-10) = 11), (0, 1000) → 999 (1000 - 1 = 999), (1000, 2) → 1002 (1000 + 2 = 1002), (-1000, -99) → 1100 (1000 + 100 = 1100). The pattern seems to be `a + abs(b)` when `a >= 0`, but for negative `a`, it's `abs(a) + abs(b) + 1` (since -1000 + 99 = -901, but 1000 + 99 + 1 = 1100). This suggests the function is `abs(a) + abs(b) + (1 if a < 0 else 0)`. Testing: (1, -10) → 1 + 10 + 0 = 11 (matches), (0, 1000) → 0 + 1000 + 0 = 1000 (does not match 99",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:39:58.052064",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:39:58.052124",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"After analyzing all examples, the function appears to be `a + abs(b)` when `a >= 0`, and `abs(a) + abs(b) + 1` when `a < 0`. This explains: (1, -10) → 1 + 10 = 11, (0, 1000) → 0 + 1000 = 1000 (but output was 999, so this is incorrect). Alternative pattern: For (0, 1000) → 999, which is `b - 1`. For (1000, 2) → 1002, which is `a + b`. For (-1000, -99) → 1100, which is `abs(a) + abs(b) + 1`. The only consistent pattern is `a + b` when `a > 0`, else `abs(a) + abs(b) + 1`. Testing: (1, -10) → 1 + (-10) = -9 (does not match 11), so this is wrong. Final guess: The function is `abs(a) + abs(b)` for all cases except when `a == 0`, where it's `abs",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:00.878814",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:00.878881",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"After carefully analyzing all input-output pairs, the function appears to be: if a >= 0, return a + abs(b); else, return abs(a) + abs(b) + 1. This matches all given examples: (1, -10) → 1 + 10 = 11, (0, 1000) → 0 + 1000 = 1000 (but output was 999, so this is close but not perfect). The only consistent pattern that fits all cases is: return a + b if a > 0 else abs(a) + abs(b). Testing: (1, -10) → 1 + (-10) = -9 (doesn't match). Final hypothesis: The function is abs(a) + abs(b) - (1 if a == 0 else 0). This matches all cases: (1, -10) → 11, (0, 1000) → 999, (1000, 2) → 1002, (-1000, -99) → 1100.\",\n  \"hypothesis\": \"def f(a: int, b: int) -> int:\\n    \\\"\\\"\\\"Returns abs(a) +",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:03.837781",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:03.837806",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n  \"current_mode\": \"confirming\",\n  \"input_rationale\": \"After analyzing all examples, the pattern is clear: the function returns the sum of the absolute values of a and b, minus 1 if a is zero. This matches all given cases: (1, -10) → 1 + 10 = 11, (0, 1000) → 0 + 1000 - 1 = 999, (1000, 2) → 1000 + 2 = 1002, (-1000, -99) → 1000 + 99 = 1099 (but output was 1100, so this is off by 1). The correct pattern must be: return abs(a) + abs(b) + (1 if a < 0 else 0). This matches all cases: (1, -10) → 1 + 10 + 0 = 11, (0, 1000) → 0 + 1000 + 0 = 1000 (doesn't match 999), so this is incorrect. Final correct hypothesis: The function is abs(a) + abs(b) - (1 if a == 0 else 0).\",\n  \"hypoth",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T18:40:05.537120",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:05.537172",
+        "action": {
+          "type": "get message",
+          "content": "SOLVE:\n```python\ndef f(a: int, b: int) -> int:\n    \"\"\"Returns abs(a) + abs(b) if a != 0, otherwise abs(b) - 1.\"\"\"\n    return abs(a) + abs(b) if a != 0 else abs(b) - 1\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:06.008694",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:06.008939",
+        "action": {
+          "type": "solution_feedback",
+          "content": "Incorrect.\nFailed Cases:\nInput: [0, 1000] | Expected: 1000 | Got: 999\nInput: [0, 1] | Expected: 1 | Got: 0\nInput: [0, 0] | Expected: 0 | Got: -1"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:06.008982",
+        "action": {
+          "type": "hidden_function",
+          "content": "def manhattan_to_pair(a: int, b: int) -> int:\n    return abs(a) + abs(b)"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:06.009018",
+        "action": {
+          "type": "submitted_solution",
+          "content": "def f(a: int, b: int) -> int:\n    \"\"\"Returns abs(a) + abs(b) if a != 0, otherwise abs(b) - 1.\"\"\"\n    return abs(a) + abs(b) if a != 0 else abs(b) - 1"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T18:40:06.009118",
+        "action": {
+          "type": "episode_summary",
+          "content": "Mode: passive_labeled_pairs\nAccuracy: 0.900\nInformation requests: 3/15\nRevealed passive examples: 4\nEfficiency: 0.867\nSlack: 12\nObserved-pair consistency: 1.000\nMembership balance: 2 true / 2 false\nParse errors: 6\nRuntime errors: 0"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.8666666666666667,
+  "efficiency_raw": 0.8666666666666667,
+  "slack": 12,
+  "accuracy": 0.9,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 1,
+  "n_test_cases": 100,
+  "parse_error_count": 6,
+  "runtime_error_count": 0,
+  "turns_used": 3,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        1,
+        -10
+      ],
+      "output": 11
+    },
+    {
+      "round": 2,
+      "args": [
+        1000,
+        2
+      ],
+      "output": 1002
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "membership",
+      "args": [
+        1,
+        -10
+      ],
+      "candidate_output": 11,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        0,
+        1000
+      ],
+      "candidate_output": 999,
+      "is_member": false
+    },
+    {
+      "kind": "membership",
+      "args": [
+        1000,
+        2
+      ],
+      "candidate_output": 1002,
+      "is_member": true
+    },
+    {
+      "kind": "membership",
+      "args": [
+        -1000,
+        -99
+      ],
+      "candidate_output": 1100,
+      "is_member": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        0,
+        1000
+      ],
+      "predicted_output": null,
+      "confidence_score": 70,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example ((1, -10), 11) suggests that the function might be computing the difference between the two integers (a - b) and then taking the absolute value or similar. However, 1 - (-10) = 11, which matches the output, so the function could simply be a - b. I will test this hypothesis with a new input pair.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the difference between a and b (a - b).\"\"\"\n    return a - b",
+      "gm_output": 999,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 1,
+      "input": [
+        1000,
+        2
+      ],
+      "predicted_output": null,
+      "confidence_score": 60,
+      "current_mode": "probing",
+      "input_rationale": "The previous hypothesis (a - b) failed for the input ((0, 1000), 999), since 0 - 1000 = -1000, not 999. This suggests the function is not a simple subtraction. The output 999 is very close to 1000, so it might involve a decrement or some form of clamping. Alternatively, it could be max(a, b) - min(a, b) - 1, but I will test a simpler hypothesis first: abs(a - b) - 1.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the absolute difference between a and b, minus 1.\"\"\"\n    return abs(a - b) - 1",
+      "gm_output": 1002,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        -1000,
+        -99
+      ],
+      "predicted_output": null,
+      "confidence_score": 90,
+      "current_mode": "confirming",
+      "input_rationale": "The previous hypothesis (abs(a - b) - 1) worked for the first preloaded example (1 - (-10) = 11 → abs(11) - 1 = 10, but the output was 11, so this was incorrect). However, the new input ((1000, 2), 1002) suggests that the function might instead be a + b. Testing this: 1000 + 2 = 1002, which matches. The first preloaded example (1 + (-10) = -9, but the output was 11) contradicts this, so the function is not a simple addition. The next likely candidate is a + abs(b) or abs(a) + b. Testing (1 + abs(-10) = 11), which matches the first example, and (1000 + abs(2) = 1002), which also matches. This seems promising.",
+      "hypothesis": "def f(a: int, b: int) -> int:\n    \"\"\"Returns the sum of a and the absolute value of b.\"\"\"\n    return a + abs(b)",
+      "gm_output": 1100,
+      "gm_output_label": false
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 2,
+  "unique_input_count": 2,
+  "unique_output_count": 2,
+  "novelty_rate": 1.0,
+  "input_diversity": 1.0,
+  "output_entropy_bits": 1.0,
+  "mode": "passive_labeled_pairs",
+  "info_request_count": 3,
+  "revealed_example_count": 4,
+  "membership_true_count": 2,
+  "membership_false_count": 2,
+  "internal_consistency_score": 1.0,
+  "internal_consistency_all_observed": true,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1
+  ]
+}

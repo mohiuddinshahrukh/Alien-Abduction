@@ -1,0 +1,786 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_examples",
+    "game_id": 199,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:12.196272",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI control which valid input-output examples you see. You can request them one at a time.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ((True, True), True)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:12.196327",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example shows that when both inputs are True, the output is True. This could be consistent with several logical operations (AND, OR, XNOR, etc.). I will request another example to narrow down the possibilities.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 10\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:16.022803",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:16.022854",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The new example shows that when both inputs are False, the output is True. This rules out AND (which would return False) and OR (which would return False). The behavior matches XNOR (equivalence) or NOT XOR. I will request one more example to confirm.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if both inputs are equal, False otherwise (logical XNOR).\\\"\\\"\\\"\\n    return a == b\",\n    \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:18.715242",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((True, False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:18.715298",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The new example ((True, False), False) confirms the hypothesis that the function returns True only when both inputs are equal (XNOR). This matches all observed examples: (True, True) → True, (False, False) → True, and (True, False) → False.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if both inputs are equal, False otherwise (logical XNOR).\\\"\\\"\\\"\\n    return a == b\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:20.733993",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:20.734024",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The final example ((False, True), True) is inconsistent with the previous hypothesis (which would return False for unequal inputs). This suggests the function is actually returning the second argument (b), since all examples align with that: (True, True) → True, (False, False) → False (but wait, earlier output was True—this contradicts). Alternatively, it could be a logical implication (a <= b), but (False, True) → True fits, while (True, False) → False also fits. Re-evaluating: the function is likely `a <= b` (logical implication).\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the result of logical implication (a implies b, i.e., not a or b).\\\"\\\"\\\"\\n    return not a or b\",\n    \"confidence_score\": 100\n}\n```\n\n**SOLVE Attempt:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the result of logical implication (a implies b, i.e., not a or b).\"\"\"\n    return not a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:23.529842",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:23.529899",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All examples align with logical implication (a implies b): (True, True) → True, (False, False) → True, (True, False) → False, (False, True) → True. This is equivalent to `not a or b`.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if a implies b (logical implication).\\\"\\\"\\\"\\n    return not a or b\",\n    \"confidence_score\": 100\n}\n```\n\n**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return not a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:25.400137",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:25.400193",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All examples match logical implication (a implies b). The function returns True unless a is True and b is False.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if a implies b (logical implication).\\\"\\\"\\\"\\n    return not a or b\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:26.321520",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((True, True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:26.321568",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return not a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:27.387044",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:27.387093",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All provided examples confirm the function implements logical implication (a → b). Specifically: (True, True) → True, (False, False) → True, (True, False) → False, and (False, True) → True. This matches the truth table for 'not a or b'.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if a implies b (a → b).\\\"\\\"\\\"\\n    return not a or b\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:28.180324",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:28.180356",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return not a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:30.666474",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:30.666761",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All test cases now confirm the function is logical implication (a → b). The implementation 'not a or b' correctly handles all cases: (T,T)→T, (F,F)→T, (T,F)→F, (F,T)→T. Submitting final solution.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if a implies b (a → b).\\\"\\\"\\\"\\n    return not a or b\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:31.538971",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((True, False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:31.539011",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return (not a) or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:32.521927",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:32.521974",
+        "action": {
+          "type": "get message",
+          "content": "I'll provide the final SOLVE attempt in the required format:\n\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return not a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:33.859764",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:33.859817",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All test cases confirm this is logical implication (a → b). The implementation handles all cases correctly: (T,T)→T, (F,F)→T, (T,F)→F, (F,T)→T. Submitting final solution.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True if a implies b (logical implication).\\\"\\\"\\\"\\n    return not a or b\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:34.585697",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, True), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:34.585726",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the result of logical implication (a implies b).\"\"\"\n    return not a or b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:31:35.654626",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:35.654678",
+        "action": {
+          "type": "get message",
+          "content": "I understand the requirement now. Here's the final SOLVE attempt in the correct format:\n\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return not a or b\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:31:35.655341",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 4,
+  "parse_error_count": 8,
+  "runtime_error_count": 0,
+  "turns_used": 7,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 1,
+      "args": [
+        false,
+        false
+      ],
+      "output": true
+    },
+    {
+      "round": 2,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 3,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 4,
+      "args": [
+        true,
+        true
+      ],
+      "output": true
+    },
+    {
+      "round": 5,
+      "args": [
+        false,
+        false
+      ],
+      "output": true
+    },
+    {
+      "round": 6,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 7,
+      "args": [
+        false,
+        true
+      ],
+      "output": true
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "io",
+      "args": [
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        false
+      ],
+      "expected": true
+    },
+    {
+      "kind": "io",
+      "args": [
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "kind": "io",
+      "args": [
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        false
+      ],
+      "expected": true
+    },
+    {
+      "kind": "io",
+      "args": [
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        true
+      ],
+      "expected": true
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example shows that when both inputs are True, the output is True. This could be consistent with several logical operations (AND, OR, XNOR, etc.). I will request another example to narrow down the possibilities.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 1,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "probing",
+      "input_rationale": "The new example shows that when both inputs are False, the output is True. This rules out AND (which would return False) and OR (which would return False). The behavior matches XNOR (equivalence) or NOT XOR. I will request one more example to confirm.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if both inputs are equal, False otherwise (logical XNOR).\"\"\"\n    return a == b",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "The new example ((True, False), False) confirms the hypothesis that the function returns True only when both inputs are equal (XNOR). This matches all observed examples: (True, True) → True, (False, False) → True, and (True, False) → False.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if both inputs are equal, False otherwise (logical XNOR).\"\"\"\n    return a == b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 5,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All examples match logical implication (a implies b). The function returns True unless a is True and b is False.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return not a or b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 6,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 7,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All provided examples confirm the function implements logical implication (a → b). Specifically: (True, True) → True, (False, False) → True, (True, False) → False, and (False, True) → True. This matches the truth table for 'not a or b'.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (a → b).\"\"\"\n    return not a or b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 8,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 9,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All test cases now confirm the function is logical implication (a → b). The implementation 'not a or b' correctly handles all cases: (T,T)→T, (F,F)→T, (T,F)→F, (F,T)→T. Submitting final solution.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (a → b).\"\"\"\n    return not a or b",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 11,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 12,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All test cases confirm this is logical implication (a → b). The implementation handles all cases correctly: (T,T)→T, (F,F)→T, (T,F)→F, (F,T)→T. Submitting final solution.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True if a implies b (logical implication).\"\"\"\n    return not a or b",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 14,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 4,
+  "unique_output_count": 2,
+  "novelty_rate": 0.25,
+  "input_diversity": 0.5,
+  "output_entropy_bits": 0.8112781244591328,
+  "mode": "passive_examples",
+  "info_request_count": 7,
+  "revealed_example_count": 8,
+  "membership_true_count": 0,
+  "membership_false_count": 0,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+  ]
+}

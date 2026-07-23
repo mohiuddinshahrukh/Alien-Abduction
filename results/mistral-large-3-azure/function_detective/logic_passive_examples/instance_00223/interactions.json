@@ -1,0 +1,786 @@
+{
+  "meta": {
+    "game_name": "function_detective",
+    "experiment_name": "logic_passive_examples",
+    "game_id": 223,
+    "results_folder": "mistral-large-3-azure",
+    "clem_version": "3.7.2",
+    "round_count": 15,
+    "completed": true
+  },
+  "player_models": {
+    "0": {
+      "model_spec": {
+        "model_name": "mistral-large-3-azure",
+        "backend": "azure",
+        "context_size": "256k",
+        "languages": [
+          "en"
+        ],
+        "license": {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "lookup_source": "/Users/sherzodhakimov/Work/Projects/Alien-Abduction/model_registry.json",
+        "model_config": {
+          "multimodality": {
+            "single_image": true,
+            "multiple_images": true,
+            "audio": false,
+            "video": false
+          }
+        },
+        "model_id": "Mistral-Large-3",
+        "open_weight": true,
+        "parameters": "",
+        "release_date": "2025-12-02"
+      },
+      "gen_args": {
+        "temperature": 1.0,
+        "max_tokens": 300
+      }
+    }
+  },
+  "players": {
+    "GM": {
+      "game_role": "Game Master",
+      "model_name": "programmatic"
+    },
+    "Player 1": {
+      "game_role": "FunctionGuesser",
+      "model_name": "mistral-large-3-azure"
+    }
+  },
+  "turns": [
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:28.158657",
+        "action": {
+          "type": "send message",
+          "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(a: bool, b: bool) -> bool\n\nYou have 15 turns total.\n\nI control which valid input-output examples you see. You can request them one at a time.\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body in hypothesis and return the answer.\n\nPreloaded examples:\n1. ((True, True), False)\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this hypothesis>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nOutput only one valid json per turn.\n",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:28.158706",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The preloaded example shows that (True, True) returns False. This rules out common boolean operations like AND, OR, or XOR (which would return True for (True, True)). The next logical step is to test (True, False) to see if it matches NAND, NOR, or another less common operation.\",\n    \"hypothesis\": \"unknown\",\n    \"confidence_score\": 10\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:29.783892",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:29.783945",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"probing\",\n    \"input_rationale\": \"The new example ((False, False), True) further narrows the possibilities. The function returns True for (False, False) and False for (True, True). This behavior matches the logical NAND operation (negation of AND), but let's confirm with another input to be sure. I'll request (True, False).\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the negation of the logical AND of a and b.\\\"\\\"\\\"\\n    return not (a and b)\",\n    \"confidence_score\": 80\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:32.600486",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((True, False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:32.600539",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The new example ((True, False), False) confirms the hypothesis. The function returns False for (True, False), which aligns with NAND (since True AND False is False, and its negation is True—but wait, this contradicts the hypothesis). Wait, no: the preloaded example was (True, True) -> False (NAND would return False, which matches), (False, False) -> True (NAND would return True, which matches), but (True, False) -> False (NAND would return True, but the output is False). This suggests the function is actually NOR (negation of OR). Let me verify with one more input to be sure.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the negation of the logical OR of a and b.\\\"\\\"\\\"\\n    return not (a or b)\",\n    \"confidence_score\": 90\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:34.981218",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:34.981241",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"The new example ((False, True), False) confirms the NOR hypothesis. Here's the breakdown:\\n- (True, True) -> False (True OR True is True, negation is False)\\n- (False, False) -> True (False OR False is False, negation is True)\\n- (True, False) -> False (True OR False is True, negation is False)\\n- (False, True) -> False (False OR True is True, negation is False)\\nAll examples align perfectly with NOR. No further examples are needed.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the negation of the logical OR of a and b (NOR operation).\\\"\\\"\\\"\\n    return not (a or b)\",\n    \"confidence_score\": 100\n}\n```\n\n**SOLVE attempt:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the negation of the logical OR of a and b (NOR operation).\"\"\"\n    return not (a or b)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:36.826537",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:36.826600",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All previous examples confirm the function is the NOR operation (negation of OR). The hypothesis is now certain.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical NOR of a and b (negation of OR).\\\"\\\"\\\"\\n    return not (a or b)\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:37.504054",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((True, True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:37.504079",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b (negation of OR).\"\"\"\n    return not (a or b)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:39.187447",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:39.187469",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All test cases confirm the function implements logical NOR (negation of OR). The preloaded example ((True, True), False) matches NOR, as do all other cases. Submitting final solution.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical NOR of a and b.\\\"\\\"\\\"\\n    return not (a or b)\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:40.069391",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, False), True)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:40.069421",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b (negation of OR).\"\"\"\n    return not (a or b)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:41.474692",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:41.474740",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"Final confirmation: All test cases ((True,True)->False, (False,False)->True, (True,False)->False, (False,True)->False) perfectly match the NOR operation. Submitting the solution now.\",\n    \"hypothesis\": \"SOLVE: ```python\\ndef f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical NOR of a and b.\\\"\\\"\\\"\\n    return not (a or b)\\n```\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:41.984693",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((True, False), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:41.984760",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b.\"\"\"\n    return not (a or b)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:42.669871",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:42.669921",
+        "action": {
+          "type": "get message",
+          "content": "I'll output the final SOLVE attempt directly:\n\n**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b (negation of OR).\"\"\"\n    return not (a or b)\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:43.923025",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:43.923322",
+        "action": {
+          "type": "get message",
+          "content": "```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All test cases confirm this is the NOR operation. Final submission.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns True only when both inputs are False (logical NOR).\\\"\\\"\\\"\\n    return not (a or b)\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:45.450839",
+        "action": {
+          "type": "send message",
+          "content": "OUTPUT: ((False, True), False)",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:45.450863",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b.\"\"\"\n    return not a and not b\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:47.037742",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:47.037796",
+        "action": {
+          "type": "get message",
+          "content": "I'll provide the final solution in the required format:\n\n```json\n{\n    \"current_mode\": \"confirming\",\n    \"input_rationale\": \"All test cases confirm this is the NOR operation. The function returns True only when both inputs are False. This is the final correct implementation.\",\n    \"hypothesis\": \"def f(a: bool, b: bool) -> bool:\\n    \\\"\\\"\\\"Returns the logical NOR of a and b (True only when both inputs are False).\\\"\\\"\\\"\\n    return not (a or b)\",\n    \"confidence_score\": 100\n}\n```",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-22T17:32:47.929074",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:47.929140",
+        "action": {
+          "type": "get message",
+          "content": "**SOLVE:**\n```python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b.\"\"\"\n    return not (a or b)\n```",
+          "label": "response"
+        }
+      },
+      {
+        "from": "GM",
+        "to": "GM",
+        "timestamp": "2026-07-22T17:32:47.929970",
+        "action": {
+          "type": "outcome",
+          "content": "Game Verdict: LOSS (turn limit reached)"
+        }
+      }
+    ]
+  ],
+  "Aborted": false,
+  "Lose": true,
+  "Success": false,
+  "efficiency": 0.0,
+  "efficiency_raw": 0.0,
+  "slack": 0.0,
+  "accuracy": 0.0,
+  "binary_accuracy": 0.0,
+  "tolerance_used": 0,
+  "n_test_cases": 4,
+  "parse_error_count": 8,
+  "runtime_error_count": 0,
+  "turns_used": 7,
+  "max_turns": 15,
+  "observed_pairs": [
+    {
+      "round": 0,
+      "args": [
+        true,
+        true
+      ],
+      "output": false
+    },
+    {
+      "round": 1,
+      "args": [
+        false,
+        false
+      ],
+      "output": true
+    },
+    {
+      "round": 2,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 3,
+      "args": [
+        false,
+        true
+      ],
+      "output": false
+    },
+    {
+      "round": 4,
+      "args": [
+        true,
+        true
+      ],
+      "output": false
+    },
+    {
+      "round": 5,
+      "args": [
+        false,
+        false
+      ],
+      "output": true
+    },
+    {
+      "round": 6,
+      "args": [
+        true,
+        false
+      ],
+      "output": false
+    },
+    {
+      "round": 7,
+      "args": [
+        false,
+        true
+      ],
+      "output": false
+    }
+  ],
+  "revealed_examples": [
+    {
+      "kind": "io",
+      "args": [
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        false
+      ],
+      "expected": true
+    },
+    {
+      "kind": "io",
+      "args": [
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "kind": "io",
+      "args": [
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        false
+      ],
+      "expected": true
+    },
+    {
+      "kind": "io",
+      "args": [
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "kind": "io",
+      "args": [
+        false,
+        true
+      ],
+      "expected": false
+    }
+  ],
+  "evaldata": [
+    {
+      "current_round": 0,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 10,
+      "current_mode": "probing",
+      "input_rationale": "The preloaded example shows that (True, True) returns False. This rules out common boolean operations like AND, OR, or XOR (which would return True for (True, True)). The next logical step is to test (True, False) to see if it matches NAND, NOR, or another less common operation.",
+      "hypothesis": "unknown",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 1,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 80,
+      "current_mode": "probing",
+      "input_rationale": "The new example ((False, False), True) further narrows the possibilities. The function returns True for (False, False) and False for (True, True). This behavior matches the logical NAND operation (negation of AND), but let's confirm with another input to be sure. I'll request (True, False).",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the negation of the logical AND of a and b.\"\"\"\n    return not (a and b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 2,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 90,
+      "current_mode": "confirming",
+      "input_rationale": "The new example ((True, False), False) confirms the hypothesis. The function returns False for (True, False), which aligns with NAND (since True AND False is False, and its negation is True—but wait, this contradicts the hypothesis). Wait, no: the preloaded example was (True, True) -> False (NAND would return False, which matches), (False, False) -> True (NAND would return True, which matches), but (True, False) -> False (NAND would return True, but the output is False). This suggests the function is actually NOR (negation of OR). Let me verify with one more input to be sure.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the negation of the logical OR of a and b.\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 3,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 4,
+      "input": [
+        true,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All previous examples confirm the function is the NOR operation (negation of OR). The hypothesis is now certain.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b (negation of OR).\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 5,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 6,
+      "input": [
+        false,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All test cases confirm the function implements logical NOR (negation of OR). The preloaded example ((True, True), False) matches NOR, as do all other cases. Submitting final solution.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b.\"\"\"\n    return not (a or b)",
+      "gm_output": true,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 8,
+      "input": [
+        true,
+        false
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "Final confirmation: All test cases ((True,True)->False, (False,False)->True, (True,False)->False, (False,True)->False) perfectly match the NOR operation. Submitting the solution now.",
+      "hypothesis": "SOLVE: python\ndef f(a: bool, b: bool) -> bool:\n    \"\"\"Returns the logical NOR of a and b.\"\"\"\n    return not (a or b)\n",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 9,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 10,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 11,
+      "input": [
+        false,
+        true
+      ],
+      "predicted_output": null,
+      "confidence_score": 100,
+      "current_mode": "confirming",
+      "input_rationale": "All test cases confirm this is the NOR operation. Final submission.",
+      "hypothesis": "def f(a: bool, b: bool) -> bool:\n    \"\"\"Returns True only when both inputs are False (logical NOR).\"\"\"\n    return not (a or b)",
+      "gm_output": false,
+      "gm_output_label": true
+    },
+    {
+      "current_round": 12,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 13,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 14,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    }
+  ],
+  "probe_count": 8,
+  "unique_input_count": 4,
+  "unique_output_count": 2,
+  "novelty_rate": 0.25,
+  "input_diversity": 0.5,
+  "output_entropy_bits": 0.8112781244591328,
+  "mode": "passive_examples",
+  "info_request_count": 7,
+  "revealed_example_count": 8,
+  "membership_true_count": 0,
+  "membership_false_count": 0,
+  "internal_consistency_score": 0.0,
+  "internal_consistency_all_observed": false,
+  "internal_consistency_violations": 0,
+  "Request Count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Violated Request Count": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1
+  ],
+  "Parsed Request Count": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+  ]
+}
