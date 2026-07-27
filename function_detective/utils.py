@@ -380,10 +380,15 @@ def parse_membership_probe(raw: str, num_params: int) -> Tuple[List[Any], Any]:
         raise ValueError("Membership probe must parse to a tuple.")
     if len(parsed) != num_params + 1:
         #Check if the input is an iterable of inputs followed by a candidate output
-        if len(parsed) == 2 and isinstance(parsed[0], (list, tuple)):
-            inputs, candidate_output = parsed
-            if len(inputs) == num_params:
-                return list(inputs), candidate_output
+        if len(parsed) == 2:
+            if isinstance(parsed[0], (list, tuple)):
+                inputs, candidate_output = parsed
+                if len(inputs) == num_params:
+                    return list(inputs), candidate_output
+            elif isinstance(parsed[0], Dict):
+                inputs_dict, candidate_output = parsed
+                if len(inputs_dict) == num_params:
+                    return list(inputs_dict.values()), candidate_output
         raise ValueError("Membership probe must contain function inputs followed by a candidate output.")
     values = list(parsed)
     return values[:-1], values[-1]
