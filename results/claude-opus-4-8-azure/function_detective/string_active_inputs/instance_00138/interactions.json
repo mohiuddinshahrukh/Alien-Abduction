@@ -5,7 +5,7 @@
     "game_id": 138,
     "results_folder": "claude-opus-4-8-azure",
     "clem_version": "3.7.2",
-    "round_count": 8,
+    "round_count": 9,
     "completed": true
   },
   "player_models": {
@@ -58,7 +58,7 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:26.412384",
+        "timestamp": "2026-07-24T20:38:30.173094",
         "action": {
           "type": "send message",
           "content": "I have a hidden Python function for you to figure out.\n\nYour job is to infer what it does and then submit a correct Python implementation.\n\nFunction signature:\n(text: str) -> str\n\nYou have 15 turns total.\n\nYou choose test inputs x, and I return the exact output f(x).\n\nYou must make your best SOLVE attempt no later than the second-to-last turn.\nDo not wait until the very end.\n\nYou can use these actions:\n- JSON format described at the end of the prompt\n- SOLVE: ```python ... ```\n\nSOLVE: ```python\ndef solution(<value1>):\n    ...\n```\n\nDo not add import statements in your guess.\nAnything you might need is already available, so just write the function body and return the answer.\n\nScoring:\n- correctness is required for any non-zero score\n- in interactive modes, solving with fewer information requests is better\n\nInput formatting reminders:\n- strings must be quoted\n- booleans must be True/False\n- use commas between multiple values\n- do not write any extra action tags in the same message\n\nFormat example:\nYou write:\n{'input': <test input>, 'predicted_output': <your predicted output for the chosen input>, 'current_mode': <probing/confirming/don't know; choose whichever best describes your current state in the task>, 'input_rationale': <brief description of why you chose this input, what it tests>, 'hypothesis': <either the exact string \"unknown\" if you have no guess yet OR your current best guess as runnable Python matching the given signature, with a one-line docstring stating what it does. Never write placeholder code, if you cannot commit to a guess, use \"unknown\". Match the given signature.\ne.g.\ndef f(x):\n\t\"\"\"Returns the absolute value of x.\"\"\"\n\treturn x if x >= 0 else -x\n\nUse \"unknown\" if you have no guess yet.>, 'confidence_score': <score between 1-100. 100 means highest confidence in your hypothesis>}\n\nI answer:\nOUTPUT: \"<output_string>\"\n\nOutput only one valid json per turn.\n",
@@ -68,17 +68,39 @@
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:26.412433",
+        "timestamp": "2026-07-24T20:38:30.173148",
         "action": {
           "type": "get message",
-          "content": "{\"input\": \"Hello World\", \"predicted_output\": \"unknown\", \"current_mode\": \"probing\", \"input_rationale\": \"Basic test to see general transformation on typical text with spaces and mixed case.\", \"hypothesis\": \"unknown\", \"confidence_score\": 1}",
+          "content": "{'input': 'Hello World', 'predicted_output': 'unknown', 'current_mode': 'probing', 'input_rationale': 'Basic test to see general transformation like case, reversal, etc.', 'hypothesis': 'unknown', 'confidence_score': 1}",
+          "label": "response"
+        }
+      }
+    ],
+    [
+      {
+        "from": "GM",
+        "to": "Player 1",
+        "timestamp": "2026-07-24T20:38:37.309808",
+        "action": {
+          "type": "send message",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
+          "label": "context"
+        }
+      },
+      {
+        "from": "Player 1",
+        "to": "GM",
+        "timestamp": "2026-07-24T20:38:37.309837",
+        "action": {
+          "type": "get message",
+          "content": "{\"input\": \"Hello World\", \"predicted_output\": \"unknown\", \"current_mode\": \"probing\", \"input_rationale\": \"Basic test to see general transformation like case, reversal, spacing.\", \"hypothesis\": \"unknown\", \"confidence_score\": 1}",
           "label": "response"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:26.428767",
+        "timestamp": "2026-07-24T20:38:37.322046",
         "action": {
           "type": "probe_result",
           "content": "Round: 1\nInputs: 'Hello World'\nOutput: 'hello world'#'hello world'"
@@ -89,7 +111,7 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:29.697985",
+        "timestamp": "2026-07-24T20:38:41.891284",
         "action": {
           "type": "send message",
           "content": "OUTPUT: 'hello world'",
@@ -99,20 +121,20 @@
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:29.698023",
+        "timestamp": "2026-07-24T20:38:41.891313",
         "action": {
           "type": "get message",
-          "content": "{\"input\": \"Hello WORLD 123!\", \"predicted_output\": \"hello world 123!\", \"current_mode\": \"probing\", \"input_rationale\": \"Test if it just lowercases everything including numbers and punctuation.\", \"hypothesis\": \"def f(text): return text.lower()\", \"confidence_score\": 40}",
+          "content": "{\"input\": \"HeLLo, WORLD! 123 AbC\", \"predicted_output\": \"hello, world! 123 abc\", \"current_mode\": \"probing\", \"input_rationale\": \"Test if it's simply lowercasing including punctuation and numbers.\", \"hypothesis\": \"def f(text):\\n    \\\"\\\"\\\"Returns lowercase of text.\\\"\\\"\\\"\\n    return text.lower()\", \"confidence_score\": 40}",
           "label": "response"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:29.713686",
+        "timestamp": "2026-07-24T20:38:41.900904",
         "action": {
           "type": "probe_result",
-          "content": "Round: 2\nInputs: 'Hello WORLD 123!'\nOutput: 'hello world 123!'#'hello world 123!'"
+          "content": "Round: 2\nInputs: 'HeLLo, WORLD! 123 AbC'\nOutput: 'hello, world! 123 abc'#'hello, world! 123 abc'"
         }
       }
     ],
@@ -120,30 +142,30 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:33.112751",
+        "timestamp": "2026-07-24T20:38:47.161104",
         "action": {
           "type": "send message",
-          "content": "OUTPUT: 'hello world 123!'",
+          "content": "OUTPUT: 'hello, world! 123 abc'",
           "label": "context"
         }
       },
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:33.112792",
+        "timestamp": "2026-07-24T20:38:47.161122",
         "action": {
           "type": "get message",
-          "content": "{\"input\": \"HÉLLO Ω İ\", \"predicted_output\": \"héllo ω i̇\", \"current_mode\": \"confirming\", \"input_rationale\": \"Test unicode lowercasing behavior to confirm it's str.lower().\", \"hypothesis\": \"def f(text): return text.lower()\", \"confidence_score\": 70}",
+          "content": "{\"input\": \"  ÀÉ  Straße İ  \", \"predicted_output\": \"  àé  straße i̇  \", \"current_mode\": \"confirming\", \"input_rationale\": \"Test unicode casefold vs lower and whitespace preservation.\", \"hypothesis\": \"def f(text):\\n    \\\"\\\"\\\"Returns lowercase of text.\\\"\\\"\\\"\\n    return text.lower()\", \"confidence_score\": 70}",
           "label": "response"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:33.134962",
+        "timestamp": "2026-07-24T20:38:47.172192",
         "action": {
           "type": "probe_result",
-          "content": "Round: 3\nInputs: 'HÉLLO Ω İ'\nOutput: 'héllo ω i̇'#'héllo ω i̇'"
+          "content": "Round: 3\nInputs: '  ÀÉ  Straße İ  '\nOutput: 'àé  straße i̇'#'àé  straße i̇'"
         }
       }
     ],
@@ -151,30 +173,21 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:36.654821",
+        "timestamp": "2026-07-24T20:38:52.537835",
         "action": {
           "type": "send message",
-          "content": "OUTPUT: 'héllo ω i̇'",
+          "content": "OUTPUT: 'àé  straße i̇'",
           "label": "context"
         }
       },
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:36.654840",
+        "timestamp": "2026-07-24T20:38:52.537871",
         "action": {
           "type": "get message",
-          "content": "{\"input\": \"  Multiple   Spaces  \\tTab\\n\", \"predicted_output\": \"  multiple   spaces  \\ttab\\n\", \"current_mode\": \"confirming\", \"input_rationale\": \"Confirm whitespace is preserved exactly (no stripping/collapsing).\", \"hypothesis\": \"def f(text): return text.lower()\", \"confidence_score\": 85}",
+          "content": "{\"input\": \"  Multiple   Spaces\\tTab\\nNew  \", \"predicted_output\": \"multiple   spaces\\ttab\\nnew\", \"current_mode\": \"confirming\", \"",
           "label": "response"
-        }
-      },
-      {
-        "from": "GM",
-        "to": "GM",
-        "timestamp": "2026-07-22T11:50:36.670165",
-        "action": {
-          "type": "probe_result",
-          "content": "Round: 4\nInputs: '  Multiple   Spaces  \\tTab\\n'\nOutput: 'multiple   spaces  \\ttab'#'multiple   spaces  \\ttab'"
         }
       }
     ],
@@ -182,30 +195,30 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:40.465765",
+        "timestamp": "2026-07-24T20:38:56.664573",
         "action": {
           "type": "send message",
-          "content": "OUTPUT: 'multiple   spaces  \\ttab'",
+          "content": "Game Violation: ParseError: Response is not valid JSON.\nOutput ONLY:\nOne JSON with input, predicted_output, confidence_score, current_mode, input_rationale, and hypothesis keys ...\nOR\nSOLVE: ```python ... ```",
           "label": "context"
         }
       },
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:40.465817",
+        "timestamp": "2026-07-24T20:38:56.664597",
         "action": {
           "type": "get message",
-          "content": "{\"input\": \"  Hello World  \", \"predicted_output\": \"hello world\", \"current_mode\": \"confirming\", \"input_rationale\": \"Confirm it lowercases and strips leading/trailing whitespace.\", \"hypothesis\": \"def f(text): return text.strip().lower()\", \"confidence_score\": 80}",
+          "content": "{\"input\": \"  Multiple   Spaces\\tTab\\nNew  \", \"predicted_output\": \"multiple   spaces\\ttab\\nnew\", \"current_mode\": \"probing\", \"input_rationale\": \"Previous output stripped leading/trailing whitespace. Test if it uses strip() and whether internal whitespace/tabs preserved.\", \"hypothesis\": \"def f(text):\\n    \\\"\\\"\\\"Returns lowercased and stripped text.\\\"\\\"\\\"\\n    return text.lower().strip()\", \"confidence_score\": 65}",
           "label": "response"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:40.481512",
+        "timestamp": "2026-07-24T20:38:56.687190",
         "action": {
           "type": "probe_result",
-          "content": "Round: 5\nInputs: '  Hello World  '\nOutput: 'hello world'#'hello world'"
+          "content": "Round: 4\nInputs: '  Multiple   Spaces\\tTab\\nNew  '\nOutput: 'multiple   spaces\\ttab\\nnew'#'multiple   spaces\\ttab\\nnew'"
         }
       }
     ],
@@ -213,30 +226,30 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:44.492079",
+        "timestamp": "2026-07-24T20:39:00.502587",
         "action": {
           "type": "send message",
-          "content": "OUTPUT: 'hello world'",
+          "content": "OUTPUT: 'multiple   spaces\\ttab\\nnew'",
           "label": "context"
         }
       },
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:44.492099",
+        "timestamp": "2026-07-24T20:39:00.502634",
         "action": {
           "type": "get message",
-          "content": "{\"input\": \"\\n\\t  Test\\r\\n\", \"predicted_output\": \"test\", \"current_mode\": \"confirming\", \"input_rationale\": \"Confirm strip handles various whitespace chars.\", \"hypothesis\": \"def f(text): return text.strip().lower()\", \"confidence_score\": 90}",
+          "content": "{\"input\": \"\\t\\n  Test\\r\\n\", \"predicted_output\": \"test\", \"current_mode\": \"confirming\", \"input_rationale\": \"Confirm strip removes all whitespace types including \\\\r.\", \"hypothesis\": \"def f(text):\\n    \\\"\\\"\\\"Returns lowercased and stripped text.\\\"\\\"\\\"\\n    return text.lower().strip()\", \"confidence_score\": 85}",
           "label": "response"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:44.502188",
+        "timestamp": "2026-07-24T20:39:00.514339",
         "action": {
           "type": "probe_result",
-          "content": "Round: 6\nInputs: '\\n\\t  Test\\r\\n'\nOutput: 'test'#'test'"
+          "content": "Round: 5\nInputs: '\\t\\n  Test\\r\\n'\nOutput: 'test'#'test'"
         }
       }
     ],
@@ -244,7 +257,7 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:49.784564",
+        "timestamp": "2026-07-24T20:39:02.867503",
         "action": {
           "type": "send message",
           "content": "OUTPUT: 'test'",
@@ -254,20 +267,20 @@
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:49.784606",
+        "timestamp": "2026-07-24T20:39:02.867522",
         "action": {
           "type": "get message",
-          "content": "{\"input\": \"café RÉSUMÉ\", \"predicted_output\": \"café résumé\", \"current_mode\": \"confirming\", \"input_rationale\": \"Final confirm.\", \"hypothesis\": \"def f(text): return text.strip().lower()\", \"confidence_score\": 92}",
+          "content": "{\"input\": \"\", \"predicted_output\": \"\", \"current_mode\": \"confirming\", \"input_rationale\": \"Edge case empty string.\", \"hypothesis\": \"def f(text):\\n    \\\"\\\"\\\"Returns lowercased and stripped text.\\\"\\\"\\\"\\n    return text.lower().strip()\", \"confidence_score\": 90}",
           "label": "response"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:49.801515",
+        "timestamp": "2026-07-24T20:39:02.878587",
         "action": {
           "type": "probe_result",
-          "content": "Round: 7\nInputs: 'café RÉSUMÉ'\nOutput: 'café résumé'#'café résumé'"
+          "content": "Round: 6\nInputs: ''\nOutput: ''#''"
         }
       }
     ],
@@ -275,27 +288,27 @@
       {
         "from": "GM",
         "to": "Player 1",
-        "timestamp": "2026-07-22T11:50:53.179045",
+        "timestamp": "2026-07-24T20:39:04.740267",
         "action": {
           "type": "send message",
-          "content": "OUTPUT: 'café résumé'",
+          "content": "OUTPUT: ''",
           "label": "context"
         }
       },
       {
         "from": "Player 1",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:53.179092",
+        "timestamp": "2026-07-24T20:39:04.740296",
         "action": {
           "type": "get message",
-          "content": "SOLVE: ```python\ndef solution(text):\n    \"\"\"Strips leading/trailing whitespace and lowercases the text.\"\"\"\n    return text.strip().lower()\n```",
+          "content": "SOLVE: ```python\ndef solution(text):\n    \"\"\"Returns lowercased and stripped text.\"\"\"\n    return text.lower().strip()\n```",
           "label": "response"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:53.611789",
+        "timestamp": "2026-07-24T20:39:05.185420",
         "action": {
           "type": "outcome",
           "content": "Game Verdict: WIN"
@@ -304,7 +317,7 @@
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:53.611931",
+        "timestamp": "2026-07-24T20:39:05.185538",
         "action": {
           "type": "solution_feedback",
           "content": "That is correct!"
@@ -313,7 +326,7 @@
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:53.611950",
+        "timestamp": "2026-07-24T20:39:05.185554",
         "action": {
           "type": "hidden_function",
           "content": "def strip_and_lowercase(text: str) -> str:\n    return text.strip().lower()"
@@ -322,19 +335,19 @@
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:53.611967",
+        "timestamp": "2026-07-24T20:39:05.185568",
         "action": {
           "type": "submitted_solution",
-          "content": "def solution(text):\n    \"\"\"Strips leading/trailing whitespace and lowercases the text.\"\"\"\n    return text.strip().lower()"
+          "content": "def solution(text):\n    \"\"\"Returns lowercased and stripped text.\"\"\"\n    return text.lower().strip()"
         }
       },
       {
         "from": "GM",
         "to": "GM",
-        "timestamp": "2026-07-22T11:50:53.612005",
+        "timestamp": "2026-07-24T20:39:05.185610",
         "action": {
           "type": "episode_summary",
-          "content": "Mode: active_inputs\nAccuracy: 1.000\nInformation requests: 7/15\nRevealed passive examples: 0\nEfficiency: 0.600\nSlack: 8\nObserved-pair consistency: 1.000\nParse errors: 0\nRuntime errors: 0"
+          "content": "Mode: active_inputs\nAccuracy: 1.000\nInformation requests: 6/15\nRevealed passive examples: 0\nEfficiency: 0.667\nSlack: 9\nObserved-pair consistency: 1.000\nParse errors: 2\nRuntime errors: 0"
         }
       }
     ]
@@ -342,16 +355,16 @@
   "Aborted": false,
   "Lose": false,
   "Success": true,
-  "efficiency": 0.6,
-  "efficiency_raw": 0.6,
-  "slack": 8,
+  "efficiency": 0.6666666666666666,
+  "efficiency_raw": 0.6666666666666666,
+  "slack": 9,
   "accuracy": 1.0,
   "binary_accuracy": 1.0,
   "tolerance_used": 1,
   "n_test_cases": 100,
-  "parse_error_count": 0,
+  "parse_error_count": 2,
   "runtime_error_count": 0,
-  "turns_used": 7,
+  "turns_used": 6,
   "max_turns": 15,
   "observed_pairs": [
     {
@@ -371,134 +384,136 @@
     {
       "round": 2,
       "args": [
-        "Hello WORLD 123!"
+        "HeLLo, WORLD! 123 AbC"
       ],
-      "output": "hello world 123!"
+      "output": "hello, world! 123 abc"
     },
     {
       "round": 3,
       "args": [
-        "HÉLLO Ω İ"
+        "  ÀÉ  Straße İ  "
       ],
-      "output": "héllo ω i̇"
+      "output": "àé  straße i̇"
     },
     {
       "round": 4,
       "args": [
-        "  Multiple   Spaces  \tTab\n"
+        "  Multiple   Spaces\tTab\nNew  "
       ],
-      "output": "multiple   spaces  \ttab"
+      "output": "multiple   spaces\ttab\nnew"
     },
     {
       "round": 5,
       "args": [
-        "  Hello World  "
-      ],
-      "output": "hello world"
-    },
-    {
-      "round": 6,
-      "args": [
-        "\n\t  Test\r\n"
+        "\t\n  Test\r\n"
       ],
       "output": "test"
     },
     {
-      "round": 7,
+      "round": 6,
       "args": [
-        "café RÉSUMÉ"
+        ""
       ],
-      "output": "café résumé"
+      "output": ""
     }
   ],
   "revealed_examples": [],
   "evaldata": [
     {
       "current_round": 0,
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
+    },
+    {
+      "current_round": 1,
       "input": "Hello World",
       "predicted_output": "unknown",
       "confidence_score": 1,
       "current_mode": "probing",
-      "input_rationale": "Basic test to see general transformation on typical text with spaces and mixed case.",
+      "input_rationale": "Basic test to see general transformation like case, reversal, spacing.",
       "hypothesis": "unknown",
       "gm_output": "'hello world'",
       "gm_output_label": true
     },
     {
-      "current_round": 1,
-      "input": "Hello WORLD 123!",
-      "predicted_output": "hello world 123!",
+      "current_round": 2,
+      "input": "HeLLo, WORLD! 123 AbC",
+      "predicted_output": "hello, world! 123 abc",
       "confidence_score": 40,
       "current_mode": "probing",
-      "input_rationale": "Test if it just lowercases everything including numbers and punctuation.",
-      "hypothesis": "def f(text): return text.lower()",
-      "gm_output": "'hello world 123!'",
-      "gm_output_label": true
-    },
-    {
-      "current_round": 2,
-      "input": "HÉLLO Ω İ",
-      "predicted_output": "héllo ω i̇",
-      "confidence_score": 70,
-      "current_mode": "confirming",
-      "input_rationale": "Test unicode lowercasing behavior to confirm it's str.lower().",
-      "hypothesis": "def f(text): return text.lower()",
-      "gm_output": "'héllo ω i̇'",
+      "input_rationale": "Test if it's simply lowercasing including punctuation and numbers.",
+      "hypothesis": "def f(text):\n    \"\"\"Returns lowercase of text.\"\"\"\n    return text.lower()",
+      "gm_output": "'hello, world! 123 abc'",
       "gm_output_label": true
     },
     {
       "current_round": 3,
-      "input": "  Multiple   Spaces  \tTab\n",
-      "predicted_output": "  multiple   spaces  \ttab\n",
-      "confidence_score": 85,
+      "input": "  ÀÉ  Straße İ  ",
+      "predicted_output": "  àé  straße i̇  ",
+      "confidence_score": 70,
       "current_mode": "confirming",
-      "input_rationale": "Confirm whitespace is preserved exactly (no stripping/collapsing).",
-      "hypothesis": "def f(text): return text.lower()",
-      "gm_output": "'multiple   spaces  \\ttab'",
+      "input_rationale": "Test unicode casefold vs lower and whitespace preservation.",
+      "hypothesis": "def f(text):\n    \"\"\"Returns lowercase of text.\"\"\"\n    return text.lower()",
+      "gm_output": "'àé  straße i̇'",
       "gm_output_label": true
     },
     {
       "current_round": 4,
-      "input": "  Hello World  ",
-      "predicted_output": "hello world",
-      "confidence_score": 80,
-      "current_mode": "confirming",
-      "input_rationale": "Confirm it lowercases and strips leading/trailing whitespace.",
-      "hypothesis": "def f(text): return text.strip().lower()",
-      "gm_output": "'hello world'",
-      "gm_output_label": true
+      "input": "parser_error",
+      "predicted_output": "parser_error",
+      "confidence_score": "parser_error",
+      "current_mode": "parser_error",
+      "mode_rationale": "parser_error",
+      "hypothesis": "parser_error",
+      "gm_output": "parser_error"
     },
     {
       "current_round": 5,
-      "input": "\n\t  Test\r\n",
-      "predicted_output": "test",
-      "confidence_score": 90,
-      "current_mode": "confirming",
-      "input_rationale": "Confirm strip handles various whitespace chars.",
-      "hypothesis": "def f(text): return text.strip().lower()",
-      "gm_output": "'test'",
+      "input": "  Multiple   Spaces\tTab\nNew  ",
+      "predicted_output": "multiple   spaces\ttab\nnew",
+      "confidence_score": 65,
+      "current_mode": "probing",
+      "input_rationale": "Previous output stripped leading/trailing whitespace. Test if it uses strip() and whether internal whitespace/tabs preserved.",
+      "hypothesis": "def f(text):\n    \"\"\"Returns lowercased and stripped text.\"\"\"\n    return text.lower().strip()",
+      "gm_output": "'multiple   spaces\\ttab\\nnew'",
       "gm_output_label": true
     },
     {
       "current_round": 6,
-      "input": "café RÉSUMÉ",
-      "predicted_output": "café résumé",
-      "confidence_score": 92,
+      "input": "\t\n  Test\r\n",
+      "predicted_output": "test",
+      "confidence_score": 85,
       "current_mode": "confirming",
-      "input_rationale": "Final confirm.",
-      "hypothesis": "def f(text): return text.strip().lower()",
-      "gm_output": "'café résumé'",
+      "input_rationale": "Confirm strip removes all whitespace types including \\r.",
+      "hypothesis": "def f(text):\n    \"\"\"Returns lowercased and stripped text.\"\"\"\n    return text.lower().strip()",
+      "gm_output": "'test'",
+      "gm_output_label": true
+    },
+    {
+      "current_round": 7,
+      "input": "",
+      "predicted_output": "",
+      "confidence_score": 90,
+      "current_mode": "confirming",
+      "input_rationale": "Edge case empty string.",
+      "hypothesis": "def f(text):\n    \"\"\"Returns lowercased and stripped text.\"\"\"\n    return text.lower().strip()",
+      "gm_output": "''",
       "gm_output_label": true
     }
   ],
-  "probe_count": 8,
-  "unique_input_count": 8,
+  "probe_count": 7,
+  "unique_input_count": 7,
   "unique_output_count": 7,
-  "novelty_rate": 0.875,
+  "novelty_rate": 1.0,
   "input_diversity": 1.0,
-  "output_entropy_bits": 2.75,
+  "output_entropy_bits": 2.807354922057604,
   "mode": "active_inputs",
-  "info_request_count": 7,
+  "info_request_count": 6,
   "revealed_example_count": 0,
   "membership_true_count": 0,
   "membership_false_count": 0,
@@ -513,23 +528,26 @@
     1,
     1,
     1,
+    1,
     1
   ],
   "Violated Request Count": [
+    1,
     0,
     0,
     0,
-    0,
+    1,
     0,
     0,
     0,
     0
   ],
   "Parsed Request Count": [
+    0,
     1,
     1,
     1,
-    1,
+    0,
     1,
     1,
     1,

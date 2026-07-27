@@ -83,7 +83,33 @@
         \cellcolor[rgb]{0.561,0.737,0.561}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"input": "Hello World", "predicted\_output": "unknown", "current\_mode": "probing", "input\_rationale": "Basic test to see general transformation", "hypothesis": "unknown", "confidence\_score": 1\}} \\
+                \texttt{\{'input': 'Hello World', 'predicted\_output': 'unknown', 'current\_mode': 'probing', 'input\_rationale': 'Basic input to see general transformation like case changes or reversing.', 'hypothesis': 'unknown', 'confidence\_score': 1\}} \\
+            }
+        }
+    }
+    & & \\ \\
+
+    \theutterance \stepcounter{utterance}  
+    & & & \multicolumn{4}{p{0.6\linewidth}}{
+        \cellcolor[rgb]{0.9,0.9,0.9}{
+            \makecell[{{p{\linewidth}}}]{
+                \texttt{\tiny{[P1$\langle$GM]}}
+                \texttt{Game Violation: ParseError: Response is not valid JSON.} \\
+\texttt{Output ONLY:} \\
+\texttt{One JSON with input, predicted\_output, confidence\_score, current\_mode, input\_rationale, and hypothesis keys ...} \\
+\texttt{OR} \\
+\texttt{SOLVE: ```python ... ```} \\
+            }
+        }
+    }
+     \\ \\
+
+    \theutterance \stepcounter{utterance}  
+    & \multicolumn{4}{p{0.6\linewidth}}{
+        \cellcolor[rgb]{0.561,0.737,0.561}{
+            \makecell[{{p{\linewidth}}}]{
+                \texttt{\tiny{[P1$\rangle$GM]}}
+                \texttt{\{"input": "Hello World", "predicted\_output": "unknown", "current\_mode": "probing", "input\_rationale": "Basic input to see general transformation like case changes or reversing.", "hypothesis": "unknown", "confidence\_score": 1\}} \\
             }
         }
     }
@@ -118,7 +144,7 @@
         \cellcolor[rgb]{0.561,0.737,0.561}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"input": "AB", "predicted\_output": "41 42", "current\_mode": "confirming", "input\_rationale": "Confirm hex byte encoding", "hypothesis": "def f(text): return ' '.join(format(b,'02x') for b in text.encode())", "confidence\_score": 85\}} \\
+                \texttt{\{"input": "AB é", "predicted\_output": "41 42 20 c3 a9", "current\_mode": "confirming", "input\_rationale": "Test uppercase, space, and non{-}ASCII char to check if UTF{-}8 encoding is used (é = c3 a9).", "hypothesis": "def f(text):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns space{-}separated hex of UTF{-}8 bytes.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    return ' '.join(f'\{b:02x\}' for b in text.encode('utf{-}8'))", "confidence\_score": 80\}} \\
             }
         }
     }
@@ -130,8 +156,8 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Round: 2} \\
-\texttt{Inputs: 'AB'} \\
-\texttt{Output: '41 42'\#'41 42'} \\
+\texttt{Inputs: 'AB é'} \\
+\texttt{Output: '41 42 20 e9'\#'41 42 20 e9'} \\
             }
         }
     }
@@ -142,7 +168,7 @@
         \cellcolor[rgb]{0.9,0.9,0.9}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\langle$GM]}}
-                \texttt{OUTPUT: '41 42'} \\
+                \texttt{OUTPUT: '41 42 20 e9'} \\
             }
         }
     }
@@ -153,7 +179,7 @@
         \cellcolor[rgb]{0.561,0.737,0.561}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"input": "é", "predicted\_output": "c3 a9", "current\_mode": "confirming", "input\_rationale": "Check UTF{-}8 multibyte encoding", "hypothesis": "def f(text): return ' '.join(format(b,'02x') for b in text.encode())", "confidence\_score": 92\}} \\
+                \texttt{\{"input": "€", "predicted\_output": "20ac", "current\_mode": "confirming", "input\_rationale": "é gave e9 (single byte), so it uses ord() not UTF{-}8. Test a char above 255 to see format for large code points.", "hypothesis": "def f(text):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns space{-}separated hex of each character's ordinal value.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    return ' '.join(f'\{ord(c):02x\}' for c in text)", "confidence\_score": 70\}} \\
             }
         }
     }
@@ -165,41 +191,6 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Round: 3} \\
-\texttt{Inputs: 'é'} \\
-\texttt{Output: 'e9'\#'e9'} \\
-            }
-        }
-    }
-    & & \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & & & \multicolumn{4}{p{0.6\linewidth}}{
-        \cellcolor[rgb]{0.9,0.9,0.9}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[P1$\langle$GM]}}
-                \texttt{OUTPUT: 'e9'} \\
-            }
-        }
-    }
-     \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & \multicolumn{4}{p{0.6\linewidth}}{
-        \cellcolor[rgb]{0.561,0.737,0.561}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"input": "€", "predicted\_output": "20ac", "current\_mode": "confirming", "input\_rationale": "Check how codepoints above 255 are formatted (ord{-}based, not UTF{-}8)", "hypothesis": "def f(text): return ' '.join(format(ord(c),'02x') for c in text)", "confidence\_score": 80\}} \\
-            }
-        }
-    }
-    & & \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & & & \multicolumn{2}{p{0.3\linewidth}}{
-        \cellcolor[rgb]{0.9,0.9,0.9}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[GM$|$GM]}}
-                \texttt{Round: 4} \\
 \texttt{Inputs: '€'} \\
 \texttt{Output: '20ac'\#'20ac'} \\
             }
@@ -223,7 +214,42 @@
         \cellcolor[rgb]{0.561,0.737,0.561}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"input": "AΩ", "predicted\_output": "41 3a9", "current\_mode": "confirming", "input\_rationale": "Check padding for codepoint needing 3 hex digits", "hypothesis": "def f(text): return ' '.join(format(ord(c),'02x') for c in text)", "confidence\_score": 88\}} \\
+                \texttt{\{"input": "\textbackslash{}u0001", "predicted\_output": "01", "current\_mode": "confirming", "input\_rationale": "Confirm zero{-}padding to 2 digits for small values.", "hypothesis": "def f(text):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns space{-}separated hex of each character's ordinal value, min 2 digits.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    return ' '.join(f'\{ord(c):02x\}' for c in text)", "confidence\_score": 92\}} \\
+            }
+        }
+    }
+    & & \\ \\
+
+    \theutterance \stepcounter{utterance}  
+    & & & \multicolumn{2}{p{0.3\linewidth}}{
+        \cellcolor[rgb]{0.9,0.9,0.9}{
+            \makecell[{{p{\linewidth}}}]{
+                \texttt{\tiny{[GM$|$GM]}}
+                \texttt{Round: 4} \\
+\texttt{Inputs: '\textbackslash{}x01'} \\
+\texttt{Output: '1'\#'1'} \\
+            }
+        }
+    }
+    & & \\ \\
+
+    \theutterance \stepcounter{utterance}  
+    & & & \multicolumn{4}{p{0.6\linewidth}}{
+        \cellcolor[rgb]{0.9,0.9,0.9}{
+            \makecell[{{p{\linewidth}}}]{
+                \texttt{\tiny{[P1$\langle$GM]}}
+                \texttt{OUTPUT: '1'} \\
+            }
+        }
+    }
+     \\ \\
+
+    \theutterance \stepcounter{utterance}  
+    & \multicolumn{4}{p{0.6\linewidth}}{
+        \cellcolor[rgb]{0.561,0.737,0.561}{
+            \makecell[{{p{\linewidth}}}]{
+                \texttt{\tiny{[P1$\rangle$GM]}}
+                \texttt{\{"input": "\textbackslash{}u0000A\textbackslash{}n", "predicted\_output": "0 41 a", "current\_mode": "confirming", "input\_rationale": "No padding confirmed. Test null char and newline to see if they map to 0 and a.", "hypothesis": "def f(text):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns space{-}separated hex (no padding) of each character's ordinal value.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    return ' '.join(f'\{ord(c):x\}' for c in text)", "confidence\_score": 90\}} \\
             }
         }
     }
@@ -235,8 +261,8 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Round: 5} \\
-\texttt{Inputs: 'AΩ'} \\
-\texttt{Output: '41 3a9'\#'41 3a9'} \\
+\texttt{Inputs: '\textbackslash{}x00A\textbackslash{}n'} \\
+\texttt{Output: '0 41 a'\#'0 41 a'} \\
             }
         }
     }
@@ -247,77 +273,7 @@
         \cellcolor[rgb]{0.9,0.9,0.9}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\langle$GM]}}
-                \texttt{OUTPUT: '41 3a9'} \\
-            }
-        }
-    }
-     \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & \multicolumn{4}{p{0.6\linewidth}}{
-        \cellcolor[rgb]{0.561,0.737,0.561}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"input": "", "predicted\_output": "", "current\_mode": "confirming", "input\_rationale": "Check empty string", "hypothesis": "def f(text): return ' '.join(format(ord(c),'02x') for c in text)", "confidence\_score": 95\}} \\
-            }
-        }
-    }
-    & & \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & & & \multicolumn{2}{p{0.3\linewidth}}{
-        \cellcolor[rgb]{0.9,0.9,0.9}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[GM$|$GM]}}
-                \texttt{Round: 6} \\
-\texttt{Inputs: ''} \\
-\texttt{Output: ''\#''} \\
-            }
-        }
-    }
-    & & \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & & & \multicolumn{4}{p{0.6\linewidth}}{
-        \cellcolor[rgb]{0.9,0.9,0.9}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[P1$\langle$GM]}}
-                \texttt{OUTPUT: ''} \\
-            }
-        }
-    }
-     \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & \multicolumn{4}{p{0.6\linewidth}}{
-        \cellcolor[rgb]{0.561,0.737,0.561}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"input": "", "predicted\_output": "", "current\_mode": "confirming", "input\_rationale": "done", "hypothesis": "def f(text): return ' '.join(format(ord(c),'02x') for c in text)", "confidence\_score": 96\}} \\
-            }
-        }
-    }
-    & & \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & & & \multicolumn{2}{p{0.3\linewidth}}{
-        \cellcolor[rgb]{0.9,0.9,0.9}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[GM$|$GM]}}
-                \texttt{Round: 7} \\
-\texttt{Inputs: ''} \\
-\texttt{Output: ''\#''} \\
-            }
-        }
-    }
-    & & \\ \\
-
-    \theutterance \stepcounter{utterance}  
-    & & & \multicolumn{4}{p{0.6\linewidth}}{
-        \cellcolor[rgb]{0.9,0.9,0.9}{
-            \makecell[{{p{\linewidth}}}]{
-                \texttt{\tiny{[P1$\langle$GM]}}
-                \texttt{OUTPUT: ''} \\
+                \texttt{OUTPUT: '0 41 a'} \\
             }
         }
     }
@@ -330,8 +286,8 @@
                 \texttt{\tiny{[P1$\rangle$GM]}}
                 \texttt{SOLVE: ```python} \\
 \texttt{def solution(text):} \\
-\texttt{    """Returns space{-}separated lowercase hex of each character's Unicode code point (min 2 digits)."""} \\
-\texttt{    return ' '.join(format(ord(c), '02x') for c in text)} \\
+\texttt{    """Returns space{-}separated lowercase hex (no padding) of each character's ordinal value."""} \\
+\texttt{    return ' '.join(f'\{ord(c):x\}' for c in text)} \\
 \texttt{```} \\
             }
         }
@@ -343,7 +299,7 @@
         \cellcolor[rgb]{0.9,0.9,0.9}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
-                \texttt{Game Verdict: LOSS} \\
+                \texttt{Game Verdict: WIN} \\
             }
         }
     }
@@ -354,11 +310,7 @@
         \cellcolor[rgb]{0.9,0.9,0.9}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
-                \texttt{Incorrect.} \\
-\texttt{Failed Cases:} \\
-\texttt{Input: {[}'   '{]} | Expected: 20 20 20 | Got: \_\_ERROR\_\_} \\
-\texttt{Input: {[}'ab'{]} | Expected: 61 62 | Got: \_\_ERROR\_\_} \\
-\texttt{Input: {[}'a{-}b'{]} | Expected: 61 2d 62 | Got: \_\_ERROR\_\_} \\
+                \texttt{That is correct!} \\
             }
         }
     }
@@ -382,8 +334,8 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{def solution(text):} \\
-\texttt{    """Returns space{-}separated lowercase hex of each character's Unicode code point (min 2 digits)."""} \\
-\texttt{    return ' '.join(format(ord(c), '02x') for c in text)} \\
+\texttt{    """Returns space{-}separated lowercase hex (no padding) of each character's ordinal value."""} \\
+\texttt{    return ' '.join(f'\{ord(c):x\}' for c in text)} \\
             }
         }
     }
@@ -395,13 +347,13 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Mode: active\_inputs} \\
-\texttt{Accuracy: 0.010} \\
-\texttt{Information requests: 7/15} \\
+\texttt{Accuracy: 1.000} \\
+\texttt{Information requests: 5/15} \\
 \texttt{Revealed passive examples: 0} \\
-\texttt{Efficiency: 0.600} \\
-\texttt{Slack: 8} \\
-\texttt{Observed{-}pair consistency: 0.250} \\
-\texttt{Parse errors: 0} \\
+\texttt{Efficiency: 0.733} \\
+\texttt{Slack: 10} \\
+\texttt{Observed{-}pair consistency: 1.000} \\
+\texttt{Parse errors: 1} \\
 \texttt{Runtime errors: 0} \\
             }
         }
