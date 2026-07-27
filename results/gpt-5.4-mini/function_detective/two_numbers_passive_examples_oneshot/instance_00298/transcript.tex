@@ -87,7 +87,7 @@
         \cellcolor[rgb]{0.561,0.737,0.561}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"current\_mode":"probing","input\_rationale":"The examples look mostly like a digit{-}counting function with special handling for sign/zeros: zero in b returns 0, same{-}sign pairs behave like total decimal digit counts of absolute values, and mixed{-}sign cases appear to add or remove based on the negative operand. I’m using a best{-}fit heuristic from the examples.","hypothesis":"def f(a: int, b: int) {-}> int:\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns a sign{-}aware digit{-}count based on the two integers.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    if b == 0:\textbackslash{}n        return 0\textbackslash{}n\textbackslash{}n    def digits(n: int) {-}> int:\textbackslash{}n        return len(str(n))\textbackslash{}n\textbackslash{}n    def nonzero\_digits(n: int) {-}> int:\textbackslash{}n        s = str(n)\textbackslash{}n        c = 0\textbackslash{}n        for ch in s:\textbackslash{}n            if ch != '0':\textbackslash{}n                c += 1\textbackslash{}n        return c\textbackslash{}n\textbackslash{}n    def trailing\_zeros(n: int) {-}> int:\textbackslash{}n        s = str(n)\textbackslash{}n        i = len(s) {-} 1\textbackslash{}n        c = 0\textbackslash{}n        while i >= 0 and s{[}i{]} == '0':\textbackslash{}n            c += 1\textbackslash{}n            i {-}= 1\textbackslash{}n        return c\textbackslash{}n\textbackslash{}n    aa = abs(a)\textbackslash{}n    bb = abs(b)\textbackslash{}n    base = digits(aa) + digits(bb)\textbackslash{}n\textbackslash{}n    if a < 0 < b:\textbackslash{}n        return base + nonzero\_digits(aa)\textbackslash{}n    if a > 0 > b and bb < 10:\textbackslash{}n        return base {-} trailing\_zeros(aa)\textbackslash{}n    return base","confidence\_score":22\}} \\
+                \texttt{\{"current\_mode":"don't know","input\_rationale":"The examples strongly suggest a digit{-}length style function with special handling for sign patterns and zero. I’m making the best piecewise fit that matches every provided example exactly.","hypothesis":"def f(a, b):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns a piecewise count based on decimal digit lengths and sign patterns.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    if a == 0 or b == 0:\textbackslash{}n        return 0\textbackslash{}n    da = len(str(abs(a)))\textbackslash{}n    db = len(str(abs(b)))\textbackslash{}n    if a < 0 and b > 0:\textbackslash{}n        return da + db + b\textbackslash{}n    if a > 0 and b < 0:\textbackslash{}n        return 2 * db\textbackslash{}n    return da + db\textbackslash{}n","confidence\_score":18\}} \\
             }
         }
     }
@@ -113,7 +113,7 @@
 \texttt{Failed Cases:} \\
 \texttt{Input: {[}1000, 10{]} | Expected: 4 | Got: 6} \\
 \texttt{Input: {[}2, {-}1{]} | Expected: 5 | Got: 2} \\
-\texttt{Input: {[}1, {-}10{]} | Expected: 4 | Got: 3} \\
+\texttt{Input: {[}{-}10, 10{]} | Expected: 5 | Got: 14} \\
             }
         }
     }
@@ -136,40 +136,17 @@
         \cellcolor[rgb]{0.9,0.9,0.9}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
-                \texttt{def f(a: int, b: int) {-}> int:} \\
-\texttt{    """Returns a sign{-}aware digit{-}count based on the two integers."""} \\
-\texttt{    if b == 0:} \\
+                \texttt{def f(a, b):} \\
+\texttt{    """Returns a piecewise count based on decimal digit lengths and sign patterns."""} \\
+\texttt{    if a == 0 or b == 0:} \\
 \texttt{        return 0} \\
-\\ 
-\texttt{    def digits(n: int) {-}> int:} \\
-\texttt{        return len(str(n))} \\
-\\ 
-\texttt{    def nonzero\_digits(n: int) {-}> int:} \\
-\texttt{        s = str(n)} \\
-\texttt{        c = 0} \\
-\texttt{        for ch in s:} \\
-\texttt{            if ch != '0':} \\
-\texttt{                c += 1} \\
-\texttt{        return c} \\
-\\ 
-\texttt{    def trailing\_zeros(n: int) {-}> int:} \\
-\texttt{        s = str(n)} \\
-\texttt{        i = len(s) {-} 1} \\
-\texttt{        c = 0} \\
-\texttt{        while i >= 0 and s{[}i{]} == '0':} \\
-\texttt{            c += 1} \\
-\texttt{            i {-}= 1} \\
-\texttt{        return c} \\
-\\ 
-\texttt{    aa = abs(a)} \\
-\texttt{    bb = abs(b)} \\
-\texttt{    base = digits(aa) + digits(bb)} \\
-\\ 
-\texttt{    if a < 0 < b:} \\
-\texttt{        return base + nonzero\_digits(aa)} \\
-\texttt{    if a > 0 > b and bb < 10:} \\
-\texttt{        return base {-} trailing\_zeros(aa)} \\
-\texttt{    return base} \\
+\texttt{    da = len(str(abs(a)))} \\
+\texttt{    db = len(str(abs(b)))} \\
+\texttt{    if a < 0 and b > 0:} \\
+\texttt{        return da + db + b} \\
+\texttt{    if a > 0 and b < 0:} \\
+\texttt{        return 2 * db} \\
+\texttt{    return da + db} \\
             }
         }
     }
@@ -181,7 +158,7 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Mode: passive\_examples\_oneshot} \\
-\texttt{Accuracy: 0.310} \\
+\texttt{Accuracy: 0.370} \\
 \texttt{Efficiency: 1.000} \\
 \texttt{Parse errors: 0} \\
 \texttt{Runtime errors: 0} \\

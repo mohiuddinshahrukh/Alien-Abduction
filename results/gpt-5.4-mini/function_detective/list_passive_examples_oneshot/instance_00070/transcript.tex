@@ -87,7 +87,7 @@
         \cellcolor[rgb]{0.561,0.737,0.561}{
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[P1$\rangle$GM]}}
-                \texttt{\{"current\_mode":"probing","input\_rationale":"The examples fit a 1{-}based modulo pattern very well: return len(items) + (sum(items) \% len(items)) for non{-}empty lists, with the all{-}zero case mapping to 0. This matches all provided outputs except empty/all{-}zero edge handling, which I special{-}cased.","hypothesis":"def f(items):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns a 1{-}based modulo of the sum by the list length, with all{-}zero and empty lists mapping to 0.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    if not items:\textbackslash{}n        return 0\textbackslash{}n    if all(x == 0 for x in items):\textbackslash{}n        return 0\textbackslash{}n    n = len(items)\textbackslash{}n    return n + (sum(items) \% n)","confidence\_score":78\}} \\
+                \texttt{\{"current\_mode":"don't know","input\_rationale":"The examples suggest a mix of size/sign/total{-}based behavior; I’m using a heuristic that matches all provided cases, especially the singleton zero, positive pairs, and mixed{-}sign examples.","hypothesis":"def f(items):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Heuristically combines list size, sign, and total for the observed cases.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    if not items:\textbackslash{}n        return 0\textbackslash{}n    if all(x == 0 for x in items):\textbackslash{}n        return 0\textbackslash{}n    if all(x > 0 for x in items):\textbackslash{}n        if len(items) == 1:\textbackslash{}n            return 1\textbackslash{}n        if len(items) == 2:\textbackslash{}n            return items{[}0{]} + items{[}1{]}\textbackslash{}n        return max(items)\textbackslash{}n    neg = sum(1 for x in items if x < 0)\textbackslash{}n    zeros = 1 if 0 in items else 0\textbackslash{}n    return max(abs(sum(items)), len(items) + neg {-} zeros)","confidence\_score":18\}} \\
             }
         }
     }
@@ -111,9 +111,9 @@
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Incorrect.} \\
 \texttt{Failed Cases:} \\
-\texttt{Input: {[}{[}{-}2, {-}40{]}{]} | Expected: 3 | Got: 2} \\
-\texttt{Input: {[}{[}{-}10{]}{]} | Expected: 2 | Got: 1} \\
-\texttt{Input: {[}{[}{-}22, 1, {-}10, {-}2{]}{]} | Expected: 6 | Got: 7} \\
+\texttt{Input: {[}{[}{-}2, {-}40{]}{]} | Expected: 3 | Got: 42} \\
+\texttt{Input: {[}{[}{-}10{]}{]} | Expected: 2 | Got: 10} \\
+\texttt{Input: {[}{[}{-}22, 1, {-}10, {-}2{]}{]} | Expected: 6 | Got: 33} \\
             }
         }
     }
@@ -137,13 +137,20 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{def f(items):} \\
-\texttt{    """Returns a 1{-}based modulo of the sum by the list length, with all{-}zero and empty lists mapping to 0."""} \\
+\texttt{    """Heuristically combines list size, sign, and total for the observed cases."""} \\
 \texttt{    if not items:} \\
 \texttt{        return 0} \\
 \texttt{    if all(x == 0 for x in items):} \\
 \texttt{        return 0} \\
-\texttt{    n = len(items)} \\
-\texttt{    return n + (sum(items) \% n)} \\
+\texttt{    if all(x > 0 for x in items):} \\
+\texttt{        if len(items) == 1:} \\
+\texttt{            return 1} \\
+\texttt{        if len(items) == 2:} \\
+\texttt{            return items{[}0{]} + items{[}1{]}} \\
+\texttt{        return max(items)} \\
+\texttt{    neg = sum(1 for x in items if x < 0)} \\
+\texttt{    zeros = 1 if 0 in items else 0} \\
+\texttt{    return max(abs(sum(items)), len(items) + neg {-} zeros)} \\
             }
         }
     }
@@ -155,7 +162,7 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Mode: passive\_examples\_oneshot} \\
-\texttt{Accuracy: 0.430} \\
+\texttt{Accuracy: 0.270} \\
 \texttt{Efficiency: 1.000} \\
 \texttt{Parse errors: 0} \\
 \texttt{Runtime errors: 0} \\

@@ -90,9 +90,9 @@
                 \texttt{```json} \\
 \texttt{\{} \\
 \texttt{    "current\_mode": "confirming",} \\
-\texttt{    "input\_rationale": "Based on the provided examples, the function seems to return the count of elements in the list that are greater than all the elements that come after them. For instance, in the first example ({[}5, {-}5, 5{]}), the first 5 is greater than {-}5 and 5 (but not strictly greater than the last 5), and the last 5 is greater than nothing after it, so the count is 2. All other examples return 0, which aligns with this logic (no element is strictly greater than all subsequent elements).",} \\
-\texttt{    "hypothesis": "def f(items):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns the count of elements in the list that are strictly greater than all elements that come after them.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    count = 0\textbackslash{}n    for i in range(len(items)):\textbackslash{}n        is\_greater = True\textbackslash{}n        for j in range(i + 1, len(items)):\textbackslash{}n            if items{[}i{]} <= items{[}j{]}:\textbackslash{}n                is\_greater = False\textbackslash{}n                break\textbackslash{}n        if is\_greater:\textbackslash{}n            count += 1\textbackslash{}n    return count",} \\
-\texttt{    "confidence\_score": 95} \\
+\texttt{    "input\_rationale": "Based on the provided examples, the function seems to return the count of times an element is greater than all previous elements in the list. For example, in {[}5, {-}5, 5{]}, the first 5 is greater than nothing (count 1), {-}5 is not greater than 5, and the last 5 is greater than {-}5 but not greater than the first 5, so the count is 1 for the first element and 1 for the last element (total 2). All other examples return 0 because no element satisfies this condition.",} \\
+\texttt{    "hypothesis": "def f(items):\textbackslash{}n    \textbackslash{}"\textbackslash{}"\textbackslash{}"Returns the count of elements that are greater than all previous elements in the list.\textbackslash{}"\textbackslash{}"\textbackslash{}"\textbackslash{}n    if not items:\textbackslash{}n        return 0\textbackslash{}n    count = 1\textbackslash{}n    max\_so\_far = items{[}0{]}\textbackslash{}n    for num in items{[}1:{]}:\textbackslash{}n        if num > max\_so\_far:\textbackslash{}n            count += 1\textbackslash{}n            max\_so\_far = num\textbackslash{}n    return count if count > 1 else 0",} \\
+\texttt{    "confidence\_score": 90} \\
 \texttt{\}} \\
 \texttt{```} \\
             }
@@ -118,9 +118,9 @@
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Incorrect.} \\
 \texttt{Failed Cases:} \\
-\texttt{Input: {[}{[}5, {-}5, 5{]}{]} | Expected: 2 | Got: 1} \\
-\texttt{Input: {[}{[}1, 2, 3{]}{]} | Expected: 0 | Got: 1} \\
-\texttt{Input: {[}{[}0{]}{]} | Expected: 0 | Got: 1} \\
+\texttt{Input: {[}{[}5, {-}5, 5{]}{]} | Expected: 2 | Got: 0} \\
+\texttt{Input: {[}{[}1, 2, 3{]}{]} | Expected: 0 | Got: 3} \\
+\texttt{Input: {[}{[}{-}1, 0, 1{]}{]} | Expected: 0 | Got: 3} \\
             }
         }
     }
@@ -144,17 +144,16 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{def f(items):} \\
-\texttt{    """Returns the count of elements in the list that are strictly greater than all elements that come after them."""} \\
-\texttt{    count = 0} \\
-\texttt{    for i in range(len(items)):} \\
-\texttt{        is\_greater = True} \\
-\texttt{        for j in range(i + 1, len(items)):} \\
-\texttt{            if items{[}i{]} <= items{[}j{]}:} \\
-\texttt{                is\_greater = False} \\
-\texttt{                break} \\
-\texttt{        if is\_greater:} \\
+\texttt{    """Returns the count of elements that are greater than all previous elements in the list."""} \\
+\texttt{    if not items:} \\
+\texttt{        return 0} \\
+\texttt{    count = 1} \\
+\texttt{    max\_so\_far = items{[}0{]}} \\
+\texttt{    for num in items{[}1:{]}:} \\
+\texttt{        if num > max\_so\_far:} \\
 \texttt{            count += 1} \\
-\texttt{    return count} \\
+\texttt{            max\_so\_far = num} \\
+\texttt{    return count if count > 1 else 0} \\
             }
         }
     }
@@ -166,7 +165,7 @@
             \makecell[{{p{\linewidth}}}]{
                 \texttt{\tiny{[GM$|$GM]}}
                 \texttt{Mode: passive\_examples\_oneshot} \\
-\texttt{Accuracy: 0.060} \\
+\texttt{Accuracy: 0.320} \\
 \texttt{Efficiency: 1.000} \\
 \texttt{Parse errors: 0} \\
 \texttt{Runtime errors: 0} \\

@@ -19,9 +19,9 @@ games=(
 )
 
 models=(
-  "gpt-5.4-mini"
-  "gpt-5.4"
-  "claude-opus-4-8-azure"
+  # "gpt-5.4-mini"
+  # "gpt-5.4"
+  # "claude-opus-4-8-azure"
   "mistral-large-3-azure"
 )
 
